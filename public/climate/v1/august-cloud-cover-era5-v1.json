@@ -1,0 +1,698 @@
+{
+  "schemaVersion": 1,
+  "artifactVersion": "era5-august-evening-v1",
+  "generatedAt": "2026-08-03T12:00:00.000Z",
+  "source": {
+    "producer": "Copernicus Climate Change Service / ECMWF",
+    "dataset": "ERA5 hourly data on single levels",
+    "doi": "10.24381/cds.adbb2d47",
+    "deliveryService": "Open-Meteo Historical Weather API",
+    "deliveryUrl": "https://archive-api.open-meteo.com/v1/archive",
+    "modelParameter": "era5",
+    "variable": "cloud_cover",
+    "sourceVariable": "total_cloud_cover",
+    "unit": "percent"
+  },
+  "sampling": {
+    "period": {
+      "startYear": 1991,
+      "endYear": 2020
+    },
+    "month": 8,
+    "utcHour": 18,
+    "samplesPerPoint": 930,
+    "referencePointCount": 41,
+    "nativeGridDegrees": 0.25,
+    "cellSelection": "nearest",
+    "statisticalDownscaling": false
+  },
+  "generation": {
+    "tool": "scripts/generate-cloud-climate.mts",
+    "rawInputAggregateSha256": "a1ac805c5677b4129ae2e15c2a6d4b1c3558efab4aa5ca180b6dec773b680a8e",
+    "rawInputCount": 30,
+    "parameters": "Every August day at 18:00 UTC from 1991 through 2020 at the 41 national map references."
+  },
+  "points": [
+    {
+      "candidateId": "a-coruna",
+      "requestedCoordinate": {
+        "latitude": 43.37135,
+        "longitude": -8.396
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.25,
+        "longitude": -8.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 41.8,
+      "percentile25CloudCoverPercent": 5,
+      "medianCloudCoverPercent": 33,
+      "percentile75CloudCoverPercent": 78.8
+    },
+    {
+      "candidateId": "lugo",
+      "requestedCoordinate": {
+        "latitude": 43.00992,
+        "longitude": -7.55602
+      },
+      "era5GridCoordinate": {
+        "latitude": 43,
+        "longitude": -7.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 42.8,
+      "percentile25CloudCoverPercent": 5,
+      "medianCloudCoverPercent": 34,
+      "percentile75CloudCoverPercent": 82
+    },
+    {
+      "candidateId": "oviedo",
+      "requestedCoordinate": {
+        "latitude": 43.36029,
+        "longitude": -5.84476
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.25,
+        "longitude": -5.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 70.3,
+      "percentile25CloudCoverPercent": 47,
+      "medianCloudCoverPercent": 83,
+      "percentile75CloudCoverPercent": 99
+    },
+    {
+      "candidateId": "leon",
+      "requestedCoordinate": {
+        "latitude": 42.60003,
+        "longitude": -5.57032
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.5,
+        "longitude": -5.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 37.5,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 26,
+      "percentile75CloudCoverPercent": 72.8
+    },
+    {
+      "candidateId": "zamora",
+      "requestedCoordinate": {
+        "latitude": 41.50633,
+        "longitude": -5.74456
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.5,
+        "longitude": -5.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 32.3,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 16.5,
+      "percentile75CloudCoverPercent": 63
+    },
+    {
+      "candidateId": "valladolid",
+      "requestedCoordinate": {
+        "latitude": 41.65541,
+        "longitude": -4.72353
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.75,
+        "longitude": -4.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 34.5,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 21,
+      "percentile75CloudCoverPercent": 69
+    },
+    {
+      "candidateId": "palencia",
+      "requestedCoordinate": {
+        "latitude": 42.00955,
+        "longitude": -4.52406
+      },
+      "era5GridCoordinate": {
+        "latitude": 42,
+        "longitude": -4.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 35.6,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 22.5,
+      "percentile75CloudCoverPercent": 69.8
+    },
+    {
+      "candidateId": "segovia",
+      "requestedCoordinate": {
+        "latitude": 40.94808,
+        "longitude": -4.11839
+      },
+      "era5GridCoordinate": {
+        "latitude": 41,
+        "longitude": -4
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 37.4,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 31,
+      "percentile75CloudCoverPercent": 66
+    },
+    {
+      "candidateId": "burgos",
+      "requestedCoordinate": {
+        "latitude": 42.34106,
+        "longitude": -3.70184
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.25,
+        "longitude": -3.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 37.4,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 28,
+      "percentile75CloudCoverPercent": 67
+    },
+    {
+      "candidateId": "soria",
+      "requestedCoordinate": {
+        "latitude": 41.76401,
+        "longitude": -2.46883
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.75,
+        "longitude": -2.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 39.6,
+      "percentile25CloudCoverPercent": 2,
+      "medianCloudCoverPercent": 35,
+      "percentile75CloudCoverPercent": 72
+    },
+    {
+      "candidateId": "santander",
+      "requestedCoordinate": {
+        "latitude": 43.46589,
+        "longitude": -3.80493
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.5,
+        "longitude": -3.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 51,
+      "percentile25CloudCoverPercent": 18,
+      "medianCloudCoverPercent": 50.5,
+      "percentile75CloudCoverPercent": 85
+    },
+    {
+      "candidateId": "bilbao",
+      "requestedCoordinate": {
+        "latitude": 43.26271,
+        "longitude": -2.92528
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.25,
+        "longitude": -3
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 52.7,
+      "percentile25CloudCoverPercent": 18,
+      "medianCloudCoverPercent": 55,
+      "percentile75CloudCoverPercent": 87
+    },
+    {
+      "candidateId": "vitoria-gasteiz",
+      "requestedCoordinate": {
+        "latitude": 42.84998,
+        "longitude": -2.67268
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.75,
+        "longitude": -2.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 46.7,
+      "percentile25CloudCoverPercent": 10,
+      "medianCloudCoverPercent": 44,
+      "percentile75CloudCoverPercent": 81
+    },
+    {
+      "candidateId": "logrono",
+      "requestedCoordinate": {
+        "latitude": 42.46615,
+        "longitude": -2.45115
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.5,
+        "longitude": -2.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 42.2,
+      "percentile25CloudCoverPercent": 6,
+      "medianCloudCoverPercent": 36,
+      "percentile75CloudCoverPercent": 78
+    },
+    {
+      "candidateId": "guadalajara",
+      "requestedCoordinate": {
+        "latitude": 40.62862,
+        "longitude": -3.16185
+      },
+      "era5GridCoordinate": {
+        "latitude": 40.75,
+        "longitude": -3.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 33,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 22,
+      "percentile75CloudCoverPercent": 57
+    },
+    {
+      "candidateId": "cuenca",
+      "requestedCoordinate": {
+        "latitude": 40.06667,
+        "longitude": -2.13333
+      },
+      "era5GridCoordinate": {
+        "latitude": 40,
+        "longitude": -2.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 30.5,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 15,
+      "percentile75CloudCoverPercent": 56
+    },
+    {
+      "candidateId": "zaragoza",
+      "requestedCoordinate": {
+        "latitude": 41.65606,
+        "longitude": -0.87734
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.75,
+        "longitude": -1
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 32.8,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 19,
+      "percentile75CloudCoverPercent": 62
+    },
+    {
+      "candidateId": "teruel",
+      "requestedCoordinate": {
+        "latitude": 40.3456,
+        "longitude": -1.10646
+      },
+      "era5GridCoordinate": {
+        "latitude": 40.25,
+        "longitude": -1
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 37.9,
+      "percentile25CloudCoverPercent": 4,
+      "medianCloudCoverPercent": 32,
+      "percentile75CloudCoverPercent": 65
+    },
+    {
+      "candidateId": "lleida",
+      "requestedCoordinate": {
+        "latitude": 41.61674,
+        "longitude": 0.62218
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.5,
+        "longitude": 0.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 33.9,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 23,
+      "percentile75CloudCoverPercent": 60.8
+    },
+    {
+      "candidateId": "tarragona",
+      "requestedCoordinate": {
+        "latitude": 41.11905,
+        "longitude": 1.24544
+      },
+      "era5GridCoordinate": {
+        "latitude": 41,
+        "longitude": 1.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 33.4,
+      "percentile25CloudCoverPercent": 4,
+      "medianCloudCoverPercent": 24,
+      "percentile75CloudCoverPercent": 57
+    },
+    {
+      "candidateId": "valencia",
+      "requestedCoordinate": {
+        "latitude": 39.47391,
+        "longitude": -0.37966
+      },
+      "era5GridCoordinate": {
+        "latitude": 39.5,
+        "longitude": -0.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 31.6,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 18,
+      "percentile75CloudCoverPercent": 56
+    },
+    {
+      "candidateId": "castello-de-la-plana",
+      "requestedCoordinate": {
+        "latitude": 39.98567,
+        "longitude": -0.04935
+      },
+      "era5GridCoordinate": {
+        "latitude": 40,
+        "longitude": 0
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 31.9,
+      "percentile25CloudCoverPercent": 3,
+      "medianCloudCoverPercent": 19,
+      "percentile75CloudCoverPercent": 56
+    },
+    {
+      "candidateId": "palma",
+      "requestedCoordinate": {
+        "latitude": 39.56939,
+        "longitude": 2.65024
+      },
+      "era5GridCoordinate": {
+        "latitude": 39.5,
+        "longitude": 2.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 20.9,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 4,
+      "percentile75CloudCoverPercent": 33
+    },
+    {
+      "candidateId": "san-anton-de-corveiro-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 43.6636388,
+        "longitude": -8.0701365
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.75,
+        "longitude": -8
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 47.7,
+      "percentile25CloudCoverPercent": 14,
+      "medianCloudCoverPercent": 43.5,
+      "percentile75CloudCoverPercent": 83
+    },
+    {
+      "candidateId": "punta-del-pozacu-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 43.5660991,
+        "longitude": -6.0627813
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.5,
+        "longitude": -6
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 63.5,
+      "percentile25CloudCoverPercent": 37,
+      "medianCloudCoverPercent": 74,
+      "percentile75CloudCoverPercent": 92.8
+    },
+    {
+      "candidateId": "punta-galea-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 43.3725691,
+        "longitude": -3.0364457
+      },
+      "era5GridCoordinate": {
+        "latitude": 43.25,
+        "longitude": -3
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 52.7,
+      "percentile25CloudCoverPercent": 18,
+      "medianCloudCoverPercent": 55,
+      "percentile75CloudCoverPercent": 87
+    },
+    {
+      "candidateId": "ripagaina-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 42.8195058,
+        "longitude": -1.6132691
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.75,
+        "longitude": -1.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 41.7,
+      "percentile25CloudCoverPercent": 9,
+      "medianCloudCoverPercent": 34,
+      "percentile75CloudCoverPercent": 73
+    },
+    {
+      "candidateId": "alto-la-cruz-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 42.537226,
+        "longitude": -3.7831015
+      },
+      "era5GridCoordinate": {
+        "latitude": 42.5,
+        "longitude": -3.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 41.6,
+      "percentile25CloudCoverPercent": 4,
+      "medianCloudCoverPercent": 36,
+      "percentile75CloudCoverPercent": 74
+    },
+    {
+      "candidateId": "bujal-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 41.6499197,
+        "longitude": -0.3635567
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.75,
+        "longitude": -0.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 34.5,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 23,
+      "percentile75CloudCoverPercent": 64
+    },
+    {
+      "candidateId": "mestrat-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 40.4116805,
+        "longitude": 0.2001519
+      },
+      "era5GridCoordinate": {
+        "latitude": 40.5,
+        "longitude": 0.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 36.2,
+      "percentile25CloudCoverPercent": 6,
+      "medianCloudCoverPercent": 26,
+      "percentile75CloudCoverPercent": 64
+    },
+    {
+      "candidateId": "des-rafal-viewpoint",
+      "requestedCoordinate": {
+        "latitude": 39.6815259,
+        "longitude": 2.5072266
+      },
+      "era5GridCoordinate": {
+        "latitude": 39.75,
+        "longitude": 2.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 21,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 6,
+      "percentile75CloudCoverPercent": 31
+    },
+    {
+      "candidateId": "madrid",
+      "requestedCoordinate": {
+        "latitude": 40.4165,
+        "longitude": -3.70256
+      },
+      "era5GridCoordinate": {
+        "latitude": 40.5,
+        "longitude": -3.75
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 30.8,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 17,
+      "percentile75CloudCoverPercent": 55.8
+    },
+    {
+      "candidateId": "barcelona",
+      "requestedCoordinate": {
+        "latitude": 41.38879,
+        "longitude": 2.15899
+      },
+      "era5GridCoordinate": {
+        "latitude": 41.5,
+        "longitude": 2.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 38.6,
+      "percentile25CloudCoverPercent": 8,
+      "medianCloudCoverPercent": 30,
+      "percentile75CloudCoverPercent": 65
+    },
+    {
+      "candidateId": "seville",
+      "requestedCoordinate": {
+        "latitude": 37.38283,
+        "longitude": -5.97317
+      },
+      "era5GridCoordinate": {
+        "latitude": 37.5,
+        "longitude": -6
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 13.4,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 0,
+      "percentile75CloudCoverPercent": 10
+    },
+    {
+      "candidateId": "malaga",
+      "requestedCoordinate": {
+        "latitude": 36.72016,
+        "longitude": -4.42034
+      },
+      "era5GridCoordinate": {
+        "latitude": 36.75,
+        "longitude": -4.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 13,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 1,
+      "percentile75CloudCoverPercent": 13
+    },
+    {
+      "candidateId": "murcia",
+      "requestedCoordinate": {
+        "latitude": 37.98704,
+        "longitude": -1.13004
+      },
+      "era5GridCoordinate": {
+        "latitude": 38,
+        "longitude": -1.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 26.4,
+      "percentile25CloudCoverPercent": 1,
+      "medianCloudCoverPercent": 14,
+      "percentile75CloudCoverPercent": 42.8
+    },
+    {
+      "candidateId": "las-palmas-de-gran-canaria",
+      "requestedCoordinate": {
+        "latitude": 28.10178,
+        "longitude": -15.41573
+      },
+      "era5GridCoordinate": {
+        "latitude": 28,
+        "longitude": -15.5
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 19,
+      "percentile25CloudCoverPercent": 3,
+      "medianCloudCoverPercent": 11,
+      "percentile75CloudCoverPercent": 25
+    },
+    {
+      "candidateId": "santa-cruz-de-tenerife",
+      "requestedCoordinate": {
+        "latitude": 28.46824,
+        "longitude": -16.25462
+      },
+      "era5GridCoordinate": {
+        "latitude": 28.5,
+        "longitude": -16.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 27.7,
+      "percentile25CloudCoverPercent": 4,
+      "medianCloudCoverPercent": 21,
+      "percentile75CloudCoverPercent": 43
+    },
+    {
+      "candidateId": "badajoz",
+      "requestedCoordinate": {
+        "latitude": 38.87789,
+        "longitude": -6.97061
+      },
+      "era5GridCoordinate": {
+        "latitude": 39,
+        "longitude": -7
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 20,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 0,
+      "percentile75CloudCoverPercent": 33
+    },
+    {
+      "candidateId": "ceuta",
+      "requestedCoordinate": {
+        "latitude": 35.88919,
+        "longitude": -5.32042
+      },
+      "era5GridCoordinate": {
+        "latitude": 36,
+        "longitude": -5.25
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 15.7,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 1.5,
+      "percentile75CloudCoverPercent": 15.8
+    },
+    {
+      "candidateId": "melilla",
+      "requestedCoordinate": {
+        "latitude": 35.29369,
+        "longitude": -2.93833
+      },
+      "era5GridCoordinate": {
+        "latitude": 35.25,
+        "longitude": -3
+      },
+      "sampleCount": 930,
+      "meanCloudCoverPercent": 22.8,
+      "percentile25CloudCoverPercent": 0,
+      "medianCloudCoverPercent": 6,
+      "percentile75CloudCoverPercent": 38.8
+    }
+  ],
+  "limitations": [
+    "Values are ERA5 reanalysis grid-cell cloud fractions, not station observations or a forecast for 12 August 2026.",
+    "The 0.25 degree grid cannot resolve site-scale cloud, fog, coastal or mountain effects.",
+    "Reference-point statistics do not form a continuous Spain-wide raster and are not a probability of successful viewing."
+  ]
+}

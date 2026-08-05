@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "coordinateReferenceSystem": "WGS 84 (EPSG:4326)",
+  "references": {
+    "soria": {
+      "latitude": 41.7633842,
+      "longitude": -2.4642041
+    },
+    "arguedas": {
+      "latitude": 42.1758188,
+      "longitude": -1.5970062
+    },
+    "el-ferial": {
+      "latitude": 42.2891948,
+      "longitude": -1.5762507
+    },
+    "burgos-neutral-control": {
+      "latitude": 42.3439,
+      "longitude": -3.6969
+    },
+    "soria-neutral-control": {
+      "latitude": 41.7636,
+      "longitude": -2.4649
+    }
+  }
+}

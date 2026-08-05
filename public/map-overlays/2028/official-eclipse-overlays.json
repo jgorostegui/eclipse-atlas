@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 3,
+  "artifactVersion": "1.0.0",
+  "event": {
+    "id": "2028",
+    "date": "2028-01-26",
+    "centralPhaseKind": "annular",
+    "centralShadowKind": "antumbra"
+  },
+  "source": {
+    "name": "EPHEMERIDES_2028.TIFF",
+    "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+    "sourcePage": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12643914",
+    "retrievedAt": "2026-08-03",
+    "license": "CC BY 4.0-compatible IGN/CNIG data policy",
+    "requiredAttribution": "Obra derivada de TrioEclipses_España 2026-2028 CC-BY 4.0 ign.es",
+    "sha256": "107f0bff3c7724413ae979277a0f01574478fa275908a3614aa370a130386f81",
+    "bytes": 133014547,
+    "epsg": 3857,
+    "noDataValue": -1000,
+    "nativeCellSizeMetres": 1222.99245256282,
+    "obscurationClampedPixelCount": 0
+  },
+  "vectorSource": {
+    "name": "ECLIPSES_2028.GPKG",
+    "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+    "sourcePage": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12643915",
+    "retrievedAt": "2026-08-03",
+    "license": "CC BY 4.0-compatible IGN/CNIG data policy",
+    "requiredAttribution": "Obra derivada de TrioEclipses_España 2026-2028 CC-BY 4.0 ign.es",
+    "sha256": "a44bd719ace45edcb60bd28ae75e6e78f2e9846498edb55ccb4d354f9d112b54",
+    "bytes": 33366016,
+    "epsg": 4326,
+    "durationLayer": "durtot_estandard_2028 — contour",
+    "shadowLayer": "shadows_merged_16.655-17.007-2028-simplified-0.0001 — shadows_merged_16"
+  },
+  "crop": {
+    "sourcePixelWindow": [
+      620,
+      843,
+      2714,
+      2771
+    ],
+    "width": 2094,
+    "height": 1928,
+    "epsg": 3857,
+    "leafletBounds": {
+      "south": 27.498526722798296,
+      "west": -18.50097656250001,
+      "north": 44.50434127765394,
+      "east": 4.50439453124999
+    },
+    "resampling": "none; one source pixel to one output pixel"
+  },
+  "generatorSha256": "aff8b2f77511e97d0e63709f5a8637541305a85d75d2362be4fa35939ceb6345",
+  "outputs": [
+    {
+      "id": "solar-altitude-at-maximum",
+      "file": "solar-altitude-at-maximum.png",
+      "unit": "degrees",
+      "legendTicks": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "palette": [
+        "#27324d",
+        "#4c5d76",
+        "#827370",
+        "#d28a5f",
+        "#ffd27a"
+      ],
+      "width": 2094,
+      "height": 1928,
+      "bytes": 453806,
+      "sha256": "a51fad8a2a2ff67cc1c4c6c6be3b75d455475da32dc2295f542779efa62ca824"
+    },
+    {
+      "id": "maximum-obscuration",
+      "file": "maximum-obscuration.png",
+      "unit": "percent",
+      "legendTicks": [
+        50,
+        60,
+        70,
+        80,
+        90,
+        100
+      ],
+      "palette": [
+        "#eadcf3",
+        "#c9a4d5",
+        "#a66aae",
+        "#7c3f82",
+        "#4b214f"
+      ],
+      "width": 2094,
+      "height": 1928,
+      "bytes": 622806,
+      "sha256": "4951a37a5f68566b209fc2c527b66a24ae74cc43b92d87ede4c91e3be04c917f"
+    },
+    {
+      "id": "totality-duration",
+      "file": "central-phase-duration.png",
+      "unit": "seconds",
+      "legendTicks": [
+        0,
+        120,
+        240,
+        360,
+        480
+      ],
+      "palette": [
+        "#ffe8c7",
+        "#f6b47b",
+        "#e77a5f",
+        "#bb3f51",
+        "#6f1d3c"
+      ],
+      "width": 2094,
+      "height": 1928,
+      "bytes": 331781,
+      "sha256": "63fd6b9357e47e5c12406ad3bac4842690f45e138d47dca3642d89de93467c28"
+    }
+  ],
+  "animation": {
+    "id": "umbra-passage",
+    "file": "official-central-shadow.json",
+    "shadowKind": "antumbra",
+    "frameCount": 353,
+    "startUtcHours": 16.655,
+    "endUtcHours": 17.007,
+    "stepSeconds": 3.6,
+    "sha256": "ad276df9addc54df01dddfef436a489f9e815c6dcf32294d41f90e42dd7bcb28"
+  },
+  "useConstraints": {
+    "visualizationOnly": true,
+    "pixelQueryEnabled": false,
+    "usedForRecommendation": false
+  },
+  "limitations": [
+    "Regional pixels are approximately 1.223 km and are not point values.",
+    "Colour scales are contextual and must not be decoded as exact measurements.",
+    "Central-shadow frames are discrete official samples every 3.6 seconds."
+  ]
+}

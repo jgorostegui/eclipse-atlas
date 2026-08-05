@@ -1,0 +1,63 @@
+{
+  "name": "eclipse-atlas",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Interactive planning tool for Spain's 2026, 2027 and 2028 solar eclipses.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 3000",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 3000",
+    "prepublishOnly": "node -e \"throw new Error('Eclipse Atlas is deployed as an application, not an npm package.')\"",
+    "lint": "eslint . --max-warnings 0",
+    "audit": "npm audit --audit-level=high",
+    "test:unit": "vitest run",
+    "test:repository": "node --test tests/*.test.mjs",
+    "test:ui": "npm run build && playwright test",
+    "verification:fixtures": "node --experimental-strip-types scripts/acquire-verification-fixtures.mts",
+    "verification:generate": "node --experimental-strip-types scripts/run-scientific-verification.mts",
+    "verification:check": "node scripts/scientific-verification.mjs",
+    "climate:generate": "node --experimental-strip-types scripts/generate-cloud-climate.mts",
+    "overlays:generate": "node --experimental-strip-types scripts/generate-official-overview.mts",
+    "overlays:generate:events": "node --experimental-strip-types scripts/generate-official-event-overviews.mts",
+    "test": "npm run build && npm run test:unit && npm run test:repository",
+    "check": "npm run lint && npm run audit && npm run test && npm run verification:check"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.2.8",
+    "@fontsource/manrope": "^5.2.8",
+    "astronomy-engine": "^2.1.19",
+    "leaflet": "^1.9.4",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
+    "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.62.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/geojson": "^7946.0.16",
+    "@types/leaflet": "^1.9.21",
+    "@types/node": "^22.19.19",
+    "@types/pngjs": "^6.0.5",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "geotiff": "^3.0.5",
+    "globals": "^17.3.0",
+    "jsdom": "^30.0.1",
+    "pngjs": "^7.0.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "vite": "^8.0.16",
+    "vitest": "^4.1.10"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "artifactVersion": "1.0.0",
+  "files": {
+    "official-eclipse-overlays.json": "d1613e1ce7a32438314d9d6dcefeb421a3940ce75336457927610db64cd0dc23",
+    "solar-altitude-at-maximum.png": "a51fad8a2a2ff67cc1c4c6c6be3b75d455475da32dc2295f542779efa62ca824",
+    "maximum-obscuration.png": "4951a37a5f68566b209fc2c527b66a24ae74cc43b92d87ede4c91e3be04c917f",
+    "central-phase-duration.png": "63fd6b9357e47e5c12406ad3bac4842690f45e138d47dca3642d89de93467c28",
+    "official-central-shadow.json": "ad276df9addc54df01dddfef436a489f9e815c6dcf32294d41f90e42dd7bcb28"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 2,
+  "artifactVersion": "2.1.0",
+  "source": {
+    "name": "10BANDS_2026_3857_COG.TIFF",
+    "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+    "sourcePage": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12631995",
+    "retrievedAt": "2026-08-02",
+    "license": "CC BY 4.0-compatible IGN/CNIG data policy",
+    "requiredAttribution": "Información astronómica oficial ofrecida por el Instituto Geográfico Nacional siguiendo los cálculos realizados por el Observatorio Astronómico Nacional",
+    "sha256": "547d772490b5080f6f423ccef382a78ba5a235791cd7234b5060724e77b4baa0",
+    "bytes": 359868192,
+    "epsg": 3857,
+    "noDataValue": -1000,
+    "nativeCellSizeMetres": 1222.99245256282,
+    "elevationModel": "GMTED2010 at 30 arc-second resolution"
+  },
+  "vectorSource": {
+    "name": "ECLIPSES.GPKG",
+    "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+    "sourcePage": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12631995",
+    "retrievedAt": "2026-08-02",
+    "license": "CC BY 4.0-compatible IGN/CNIG data policy",
+    "requiredAttribution": "Información astronómica oficial ofrecida por el Instituto Geográfico Nacional siguiendo los cálculos realizados por el Observatorio Astronómico Nacional",
+    "sha256": "4bc79c4c2e3692a1105cd9d415f5f10f1b4076af8ad14f9cf48169ec070b8944",
+    "bytes": 12054528,
+    "epsg": 4326
+  },
+  "crop": {
+    "sourcePixelWindow": [
+      620,
+      843,
+      2714,
+      2771
+    ],
+    "width": 2094,
+    "height": 1928,
+    "epsg": 3857,
+    "projectedBounds": {
+      "west": -2059519.2901157902,
+      "south": 3185895.3389261453,
+      "east": 501426.9055507551,
+      "north": 5543824.787467263
+    },
+    "leafletBounds": {
+      "south": 27.498526722798296,
+      "west": -18.50097656250001,
+      "north": 44.50434127765394,
+      "east": 4.50439453124999
+    },
+    "resampling": "none; one source pixel to one output pixel"
+  },
+  "generatorSha256": "54af806710574425bb5efe574ea8c38da85d2077257b7004c40626bd34bcd642",
+  "configurationSha256": "4098c44b43603b34181b3f8ac27c207725dfceaf7dcd677e1798e39712078e2c",
+  "outputs": [
+    {
+      "id": "solar-altitude-at-maximum",
+      "file": "solar-altitude-at-maximum.png",
+      "sourceBand": 1,
+      "quantity": "Apparent, refraction-adjusted solar-centre altitude at maximum",
+      "unit": "degrees",
+      "formula": "display value = source band 1 in degrees",
+      "colourDomain": [
+        0,
+        25
+      ],
+      "legendTicks": [
+        0,
+        5,
+        10,
+        15,
+        20,
+        25
+      ],
+      "palette": [
+        "#27324d",
+        "#4c5d76",
+        "#827370",
+        "#d28a5f",
+        "#ffd27a"
+      ],
+      "noDataAlpha": 0,
+      "width": 2094,
+      "height": 1928,
+      "bytes": 446012,
+      "sha256": "99f9fe27e7576055f2160bfe24d098e439305301f9a3ea6fe243334b430faa52",
+      "colourClampOnly": true,
+      "noDataValue": -1000,
+      "observableMaximumMask": "transparent when maximum UTC (band 7) is after sunset UTC (band 5), or either time is no-data"
+    },
+    {
+      "id": "maximum-obscuration",
+      "file": "maximum-obscuration.png",
+      "sourceBand": 3,
+      "quantity": "Maximum obscured fraction of the apparent solar disc",
+      "unit": "percent",
+      "formula": "display percent = source band 3 fraction × 100",
+      "colourDomain": [
+        80,
+        100
+      ],
+      "legendTicks": [
+        80,
+        85,
+        90,
+        95,
+        100
+      ],
+      "palette": [
+        "#eadcf3",
+        "#c9a4d5",
+        "#a66aae",
+        "#7c3f82",
+        "#4b214f"
+      ],
+      "noDataAlpha": 0,
+      "width": 2094,
+      "height": 1928,
+      "bytes": 870868,
+      "sha256": "6f591d08b4f871ad06daf19d1a966dcbe4638faf7f504bc1879185fbddebfcca",
+      "colourClampOnly": true,
+      "noDataValue": -1000,
+      "observableMaximumMask": "transparent when maximum UTC (band 7) is after sunset UTC (band 5), or either time is no-data",
+      "sourceAudit": {
+        "physicalDomain": [
+          0,
+          1
+        ],
+        "declaredRawDomain": [
+          0,
+          1
+        ],
+        "renderToleranceFraction": 0.00002,
+        "renderNormalization": "clamp-only-for-colour",
+        "unexpectedOutOfTolerancePolicy": "abort generation",
+        "scientificValuesModified": false,
+        "pixelQueryEnabled": false,
+        "displayTransform": "clamp(raw, 0, 1) × 100 for colour only; raw values are retained in audit statistics",
+        "maximumUpperExcess": 0.000013113021850585938,
+        "observedRawMinimum": 0.3769720196723938,
+        "observedRawMaximum": 1.0000131130218506,
+        "abovePhysicalDomainCount": 2669,
+        "belowPhysicalDomainCount": 0,
+        "noDataCount": 0,
+        "upperClampCount": 2669,
+        "lowerClampCount": 0,
+        "colourClampCount": 2669,
+        "outOfToleranceCount": 0
+      }
+    },
+    {
+      "id": "totality-duration",
+      "file": "totality-duration.png",
+      "sourceLayer": "durtot_estandard_2026 — contour",
+      "quantity": "Official totality-duration range",
+      "unit": "seconds",
+      "formula": "colour = midpoint of the containing official duration range",
+      "colourDomain": [
+        0,
+        123
+      ],
+      "legendTicks": [
+        0,
+        30,
+        60,
+        90,
+        120
+      ],
+      "palette": [
+        "#ffe8c7",
+        "#f6b47b",
+        "#e77a5f",
+        "#bb3f51",
+        "#6f1d3c"
+      ],
+      "noDataAlpha": 0,
+      "width": 2094,
+      "height": 1928,
+      "bytes": 89886,
+      "sha256": "940a1ace375110a3f25760b83c414c9f181d96e7954a632dd1197baa5f8e567e",
+      "rasterisation": "EPSG:4326 official range polygons filled at EPSG:3857 output pixel centres",
+      "sourceAudit": {
+        "bandCount": 13,
+        "minimumSeconds": 0,
+        "maximumSeconds": 122.7996826171875,
+        "bandValuesModified": false,
+        "pixelQueryEnabled": false,
+        "coverageMask": {
+          "source": "union of 277 official sampled umbra footprints",
+          "includedPixelCount": 426735,
+          "excludedPixelCount": 3610497,
+          "sameLineageDisplayTransform": true
+        },
+        "displayTransform": "Pixels inside the official sampled-umbra union receive the colour of their containing official duration range; pixels outside are transparent and no point value is exposed."
+      }
+    }
+  ],
+  "animation": {
+    "id": "umbra-passage",
+    "file": "official-umbra-passage-v1.json",
+    "frameCount": 277,
+    "startUtcHours": 18.293,
+    "endUtcHours": 18.569,
+    "stepSeconds": 3.6,
+    "sha256": "1dd2250d6f63d1426b0ce4426bd3816bbbbd5835acf558de2cd56ca9db55c9a7"
+  },
+  "useConstraints": {
+    "visualizationOnly": true,
+    "pixelQueryEnabled": false,
+    "usedForRecommendation": false,
+    "sameLineageAsOfficialAstronomyFixture": true,
+    "terrainOrHorizonLayerAvailable": false
+  },
+  "limitations": [
+    "The regional pixels are approximately 1.223 km and are not point values.",
+    "The colour scale is contextual and must not be decoded as an exact measurement.",
+    "The altitude is for the apparent solar centre, not a terrain-clearance margin.",
+    "Totality duration is rendered as official ranges and must not be decoded as a point value.",
+    "Umbra frames are discrete official samples every 3.6 seconds; polygon geometry is not interpolated.",
+    "The umbra is the footprint of totality, not cloud, ambient brightness or terrain shadow.",
+    "This source is already used by the verification harness and is not a second independent ephemeris."
+  ]
+}

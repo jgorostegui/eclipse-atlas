@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "artifactVersion": "2.1.0",
+  "files": {
+    "official-eclipse-overlays-v1.json": "da07e02f1846f9a190b290b246dcd0293bbc861b982c23876f50110ecb04a88f",
+    "solar-altitude-at-maximum.png": "99f9fe27e7576055f2160bfe24d098e439305301f9a3ea6fe243334b430faa52",
+    "maximum-obscuration.png": "6f591d08b4f871ad06daf19d1a966dcbe4638faf7f504bc1879185fbddebfcca",
+    "totality-duration.png": "940a1ace375110a3f25760b83c414c9f181d96e7954a632dd1197baa5f8e567e",
+    "official-umbra-passage-v1.json": "1dd2250d6f63d1426b0ce4426bd3816bbbbd5835acf558de2cd56ca9db55c9a7"
+  }
+}

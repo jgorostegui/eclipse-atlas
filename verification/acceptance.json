@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "minimumValidationPointCount": 30,
+  "minimumMdt05ComparisonCount": 3,
+  "minimumNearbyHorizonPairCount": 1,
+  "requiredProductReferenceIds": [
+    "soria",
+    "arguedas",
+    "el-ferial",
+    "burgos-neutral-control",
+    "soria-neutral-control"
+  ],
+  "numericalThresholds": {
+    "contactTimeAbsoluteSeconds": 2,
+    "maximumTimeAbsoluteSeconds": 2,
+    "totalityDurationAbsoluteSeconds": 2,
+    "solarPositionAbsoluteDegrees": 0.05,
+    "obscurationAbsoluteFraction": 0.001,
+    "terrainRgbEncodedResolutionMetres": 0.1,
+    "terrainRgbToMdt05HorizonAbsoluteDegrees": 0.15,
+    "nearbyHorizonDifferentialAbsoluteDegrees": 0.3,
+    "terrainToFieldHorizonAbsoluteDegrees": 0.25,
+    "recommendationClearanceDegrees": 1
+  },
+  "requiredEvidenceCounts": {
+    "independentAstronomySources": 2,
+    "fieldHorizonComparisons": 1,
+    "independentReviews": 1,
+    "exactVenues": 1,
+    "currentWeatherArtifacts": 1,
+    "freshOperationsReviews": 1,
+    "documentedClearances": 1
+  }
+}

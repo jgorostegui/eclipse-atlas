@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "fixtureVersion": "1.0.0",
+  "eventDate": "2026-08-12",
+  "timeStandard": "UTC",
+  "displayTimeZone": "Europe/Madrid",
+  "thresholds": {
+    "contactTimeAbsoluteSeconds": 2,
+    "maximumTimeAbsoluteSeconds": 2,
+    "totalityDurationAbsoluteSeconds": 2,
+    "solarPositionAbsoluteDegrees": 0.05,
+    "obscurationAbsoluteFraction": 0.001,
+    "terrainRgbEncodedResolutionMetres": 0.1,
+    "terrainRgbToMdt05HorizonAbsoluteDegrees": 0.15,
+    "terrainToFieldHorizonAbsoluteDegrees": 0.25,
+    "recommendationClearanceDegrees": 1
+  },
+  "officialAstronomyFixture": {
+    "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+    "name": "10BANDS_2026_3857_COG.TIFF",
+    "sourcePage": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12631995",
+    "license": "CC BY 4.0-compatible IGN/CNIG data policy",
+    "sha256": "547d772490b5080f6f423ccef382a78ba5a235791cd7234b5060724e77b4baa0",
+    "observerElevationModel": "GMTED2010, 30 arc-second elevation used by the official ephemeris raster; exact per-cell elevation is not included as a band",
+    "spatialReference": "EPSG:3857",
+    "nativeCellSizeMetres": 1222.99245256282,
+    "noDataValue": -1000,
+    "bands": [
+      "refracted solar-centre altitude at maximum in degrees",
+      "solar-centre azimuth at maximum in degrees",
+      "maximum obscuration fraction",
+      "sunrise in decimal UTC hours",
+      "sunset in decimal UTC hours",
+      "partial begin in decimal UTC hours",
+      "maximum in decimal UTC hours",
+      "partial end in decimal UTC hours",
+      "total begin in decimal UTC hours or no-data",
+      "total end in decimal UTC hours or no-data"
+    ]
+  },
+  "officialDescriptionFixture": {
+    "sha256": "d0004551b07fa21cfc91bcc563c299d030725d29f5e6e4ee76ed846a6c7fd954"
+  },
+  "officialContourFixture": {
+    "sha256": "4bc79c4c2e3692a1105cd9d415f5f10f1b4076af8ad14f9cf48169ec070b8944"
+  },
+  "terrainRgbFixture": {
+    "producer": "IGN/CNIG",
+    "urlTemplate": "https://xyz-mdt.idee.es/1.0.0/raster-dem/{z}/{x}/{y}.png",
+    "zoom": 11,
+    "tileSizePixels": 512,
+    "decode": "elevation = -10000 + (R * 256^2 + G * 256 + B) * 0.1",
+    "storage": "External fixture directory configured at generation time"
+  },
+  "mdt05Fixture": {
+    "producer": "IGN/CNIG PNOA-LiDAR",
+    "service": "https://servicios.idee.es/wcs-inspire/mdt",
+    "coverageId": "Elevacion4258_5",
+    "license": "CC BY 4.0 scne.es",
+    "sampleIntervalMetres": 5,
+    "segmentLengthMetres": 5000,
+    "maximumDistanceMetres": 100000,
+    "storage": "External fixture directory configured at generation time"
+  }
+}

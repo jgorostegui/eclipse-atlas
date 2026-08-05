@@ -1,0 +1,660 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-04T00:00:00.000Z",
+  "sources": [
+    {
+      "id": "astronomy-engine-2.1.19",
+      "name": "Astronomy Engine",
+      "producer": "Don Cross / CosineKitty",
+      "url": "https://github.com/cosinekitty/astronomy",
+      "role": "Topocentric apparent Sun and Moon positions and angular radii, plus ideal-horizon sunset, calculated in the browser.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "2.1.19",
+      "coverage": "Point calculations for user-provided terrestrial coordinates.",
+      "resolution": "Analytical ephemeris calculation; project documentation states accuracy within approximately one arcminute.",
+      "license": {
+        "name": "MIT",
+        "url": "https://github.com/cosinekitty/astronomy/blob/master/LICENSE"
+      },
+      "attribution": "Astronomy calculations by Astronomy Engine.",
+      "transformation": "The application supplies latitude, longitude and an effective observer elevation equal to IGN/CNIG TerrainRGB ground elevation plus an explicit 1.5 metre planning viewpoint height. The engine's Delta T hook selects the IERS Bulletin A value for 2026 and the NASA/GSFC long-range prediction published with the 2027 or 2028 element table. Apparent positions are evaluated at the contact and maximum instants supplied by the owned Besselian local-circumstances implementation. SearchRiseSet supplies the apparent upper-limb sunset against an ideal horizon using its documented standard refraction; the result is not a terrain or obstacle sunset. Astronomical output remains unknown when ground elevation cannot be resolved.",
+      "limitations": [
+        "Results must be validated against an independent official source before they are used for a release recommendation.",
+        "The 1.5 metre viewpoint height is a planning assumption, not a measured tripod, eye or instrument height for an exact venue.",
+        "A positive apparent solar-centre altitude does not establish terrain, building or vegetation clearance at that contact."
+      ]
+    },
+    {
+      "id": "nasa-gsfc-2026-besselian-elements",
+      "name": "Besselian elements for the total solar eclipse of 12 August 2026",
+      "producer": "Fred Espenak / NASA Goddard Space Flight Center",
+      "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20260812",
+      "role": "Published polynomial elements used by the owned browser implementation to calculate local contacts, maximum, eclipse type, magnitude, obscuration and totality duration.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "NASA/GSFC Solar Eclipse Search Engine page updated 2023-10-30; VSOP87/ELP2000-82 elements centred on 18:00 TDT.",
+      "coverage": "Local circumstances for the 12 August 2026 total solar eclipse during the published 15:00–21:00 TDT validity interval.",
+      "resolution": "Polynomial coefficients are retained at the precision exposed by the source page's element data; root solving targets substantially finer internal precision than displayed output.",
+      "license": {
+        "name": "Explicit reuse permission with required acknowledgement",
+        "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20260812"
+      },
+      "attribution": "Eclipse Predictions by Fred Espenak, NASA's GSFC.",
+      "transformation": "The owned implementation evaluates the published x, y, declination, mu, penumbra-radius and umbra-radius polynomials in TDT, transforms the WGS 84 observer into fundamental-plane coordinates, and solves external, internal and maximum roots with safeguarded bisection. The source page's historical 75.4 second Delta T assumption is replaced by the event-specific 69.17309 second value derived from IERS Bulletin A XXXIX-031; TT-UTC remains 69.184 seconds.",
+      "limitations": [
+        "The published elements use the VSOP87/ELP2000-82 ephemeris lineage and are product inputs, not independent verification evidence.",
+        "The source notes that path edges are limited by the lunar limb profile; the owned smooth-limb implementation does not predict Baily's-bead timing for a surveyed venue.",
+        "A contact time does not establish visibility above local terrain, buildings, vegetation or cloud."
+      ]
+    },
+    {
+      "id": "nasa-gsfc-2027-besselian-elements",
+      "name": "Besselian elements for the total solar eclipse of 2 August 2027",
+      "producer": "Fred Espenak / NASA Goddard Space Flight Center",
+      "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20270802",
+      "role": "Published polynomial elements used by the owned browser implementation to calculate 2027 local contacts, maximum, eclipse type, magnitude, obscuration and totality duration.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "NASA/GSFC VSOP87/ELP2000-82 elements centred on 10:00 TDT; published Delta T 76.0 seconds.",
+      "coverage": "Local circumstances for the 2 August 2027 total solar eclipse during the published 07:00 to 13:00 TDT fit interval.",
+      "resolution": "Polynomial coefficients are retained at the precision exposed by the NASA/GSFC source table.",
+      "license": {
+        "name": "Explicit reuse permission with required acknowledgement",
+        "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20270802"
+      },
+      "attribution": "Eclipse Predictions by Fred Espenak, NASA's GSFC.",
+      "transformation": "The same owned Besselian solver used for 2026 evaluates the event-specific polynomial table and uses the source's 76.0 second Delta T prediction. Regression tests compare Cádiz, Ceuta and Málaga durations with the IGN published city summaries.",
+      "limitations": [
+        "The NASA elements are product inputs and are not independent verification evidence.",
+        "The smooth-limb calculation does not predict Baily's-bead timing for a surveyed venue.",
+        "The long-range Delta T value must be replaced with final Earth-orientation data for a post-event scientific archive."
+      ]
+    },
+    {
+      "id": "nasa-gsfc-2028-besselian-elements",
+      "name": "Besselian elements for the annular solar eclipse of 26 January 2028",
+      "producer": "Fred Espenak / NASA Goddard Space Flight Center",
+      "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20280126",
+      "role": "Published polynomial elements used by the owned browser implementation to calculate 2028 local contacts, maximum, eclipse type, magnitude, obscuration and annularity duration.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "NASA/GSFC VSOP87/ELP2000-82 elements centred on 15:00 TDT; published Delta T 76.3 seconds.",
+      "coverage": "Local circumstances for the 26 January 2028 annular solar eclipse. The published coefficient fit covers 12:00 to 18:00 TDT.",
+      "resolution": "Polynomial coefficients are retained at the precision exposed by the NASA/GSFC source table.",
+      "license": {
+        "name": "Explicit reuse permission with required acknowledgement",
+        "url": "https://eclipse.gsfc.nasa.gov/SEsearch/SEdata.php?Ecl=20280126"
+      },
+      "attribution": "Eclipse Predictions by Fred Espenak, NASA's GSFC.",
+      "transformation": "The same owned Besselian solver evaluates the event-specific polynomial table and uses the source's 76.3 second Delta T prediction. The Spanish C4 search continues the published polynomial by 15 minutes because the partial phase leaves western Spain shortly after the stated six-hour fit interval. Regression tests compare the end time with the IGN published 19:08 CET end and check the roughly seven-minute annularity in Sevilla, Córdoba and Valencia.",
+      "limitations": [
+        "The NASA elements are product inputs and are not independent verification evidence.",
+        "Spanish C4 uses a short continuation beyond the stated coefficient-fit interval and must be replaced by a later event-specific reference before a rigorous 2028 release claim.",
+        "The long-range Delta T value must be replaced with final Earth-orientation data for a post-event scientific archive."
+      ]
+    },
+    {
+      "id": "iers-bulletin-a-xxxix-031",
+      "name": "IERS Bulletin A XXXIX-031",
+      "producer": "IERS Rapid Service/Prediction Center, U.S. Naval Observatory",
+      "url": "https://datacenter.iers.org/data/6/bulletina-xxxix-031.txt",
+      "role": "Event-specific Earth-rotation and civil-time inputs used to derive TT-UTC and Delta T for 12 August 2026.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "Issued 2026-07-30; frozen SHA-256 d5915dd3f5e9b82fbbaab0b77021374425b2e2fc0b908c7bbbb0b6a62a379aea.",
+      "coverage": "MJD 61264 (12 August 2026): TAI-UTC 37 s, TT-TAI 32.184 s and predicted UT1-UTC +0.01091 s.",
+      "resolution": "Daily published prediction. Derived TT-UTC is 69.184 s and Delta T is 69.17309 s.",
+      "license": {
+        "name": "No explicit reuse licence identified in the cited bulletin; source attribution retained",
+        "url": "https://datacenter.iers.org/data/6/bulletina-xxxix-031.txt"
+      },
+      "attribution": "Earth-orientation prediction: IERS Rapid Service/Prediction Center.",
+      "transformation": "TT-UTC = (TAI-UTC) + (TT-TAI). Delta T = (TT-UTC) - (UT1-UTC). The derived event value configures Astronomy Engine and the owned Besselian hour-angle calculation.",
+      "limitations": [
+        "The 12 August UT1-UTC value was a prediction when the bulletin was issued and should be refreshed from a later final IERS product for a post-event scientific archive.",
+        "The implementation does not currently apply the bulletin's polar-motion values; their omission is recorded as a model limitation rather than silently inferred."
+      ]
+    },
+    {
+      "id": "ign-oan-2026-eclipse-raster",
+      "name": "Official 2026 eclipse regional raster",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12631995",
+      "role": "National map context for modelled apparent solar-centre altitude and maximum obscuration.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "10BANDS_2026_3857_COG.TIFF; frozen SHA-256 547d772490b5080f6f423ccef382a78ba5a235791cd7234b5060724e77b4baa0.",
+      "coverage": "A 2094 × 1928 pixel-aligned crop covering the configured TerrainRGB request-envelope overview, including neighbouring territory and sea.",
+      "resolution": "EPSG:3857 cells of 1222.99245256282 metres; the official calculation uses GMTED2010 elevation at approximately 30 arc-seconds.",
+      "license": {
+        "name": "CC BY 4.0-compatible IGN/CNIG data policy",
+        "url": "https://www.ign.es/web/ign/portal/politica-datos"
+      },
+      "attribution": "Información astronómica oficial ofrecida por el Instituto Geográfico Nacional siguiendo los cálculos realizados por el Observatorio Astronómico Nacional.",
+      "transformation": "An offline deterministic generator verifies the frozen COG checksum and metadata, crops source pixels without reprojection or interpolation, renders band 1 as apparent solar-centre altitude in degrees and band 3 as obscuration percentage with quantity-specific palettes, masks no-data and maximum-after-sunset cells, and publishes only lossless PNG files with a versioned manifest and checksums. Altitudes below 0 degrees and obscuration below the displayed 80 percent domain are transparent visual cutoffs, not reclassified values. A versioned tolerance of 0.00002 is applied only to the colour index for small band-3 floating-point excursions; scientific values are not rewritten.",
+      "limitations": [
+        "The overlay is visual regional context and does not expose or imply an exact value at a clicked coordinate.",
+        "The altitude describes the apparent solar centre at maximum and is not a terrain-clearance or whole-disc horizon result.",
+        "The obscuration layer is not magnitude, weather probability, viewing quality or a recommendation.",
+        "This raster is the same IGN/OAN source used by the verification harness and does not count as a second independent ephemeris.",
+        "The source COG is not redistributed by the application."
+      ]
+    },
+    {
+      "id": "ign-oan-2026-eclipse-geopackage",
+      "name": "Official 2026 eclipse vector package",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://centrodedescargas.cnig.es/CentroDescargas/detalleArchivo?sec=12631995",
+      "role": "National totality-duration ranges and discrete umbra-passage frames.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "ECLIPSES.GPKG; 12,054,528 bytes; frozen SHA-256 4bc79c4c2e3692a1105cd9d415f5f10f1b4076af8ad14f9cf48169ec070b8944.",
+      "coverage": "EPSG:4326 totality-duration polygons and umbra footprints for the 12 August 2026 eclipse, cropped by the runtime map viewport.",
+      "resolution": "13 duration ranges from 0–10 through 120–122.7997 seconds; 277 umbra footprints from 18.293 to 18.569 decimal UTC hours at 0.001 hour (3.6 second) intervals. The upstream shadow layer declares a 0.0001-degree simplification.",
+      "license": {
+        "name": "CC BY 4.0-compatible IGN/CNIG data policy",
+        "url": "https://www.ign.es/web/ign/portal/politica-datos"
+      },
+      "attribution": "Información astronómica oficial ofrecida por el Instituto Geográfico Nacional siguiendo los cálculos realizados por el Observatorio Astronómico Nacional.",
+      "transformation": "An offline deterministic generator verifies the frozen byte size, SHA-256, EPSG:4326 MULTIPOLYGON schemas, feature counts, duration-range continuity, timestamp flags and 3.6 second cadence. It rasterizes duration polygons at EPSG:3857 output pixel centres and applies the rasterized union of all 277 same-package umbra footprints as a totality-envelope mask, retaining the official 0–10 second edge band while making cells outside totality transparent. Umbra rings receive an additional 1/120-degree Douglas–Peucker simplification only when relative ring-area error remains at or below 1 percent, then coordinates are rounded to six decimals. Polygon shapes are never interpolated. Upstream IDs, layer names, time-flag columns and absolute producer paths are removed; only UTC hours and coordinates are published in a checksum-bound JSON artifact.",
+      "limitations": [
+        "Duration colours represent official ranges and are not an exact point value.",
+        "Umbra frames are discrete samples; playback selects the nearest frame and does not infer intermediate polygon topology.",
+        "An umbra footprint means totality at the sampled instant, not cloud, ambient brightness, weather or terrain shadow.",
+        "The additional simplification is suitable for national visualization, not boundary surveying or point classification.",
+        "This package shares IGN/OAN eclipse lineage with the official raster and does not count as an independent ephemeris or unlock a recommendation.",
+        "The source GeoPackage is not redistributed by the application."
+      ]
+    },
+    {
+      "id": "ign-oan-2027-eclipse-products",
+      "name": "Official 2027 eclipse raster and vector products",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://centrodedescargas.cnig.es/CentroDescargas/eclipses",
+      "role": "National 2027 solar-altitude, obscuration, totality-duration and umbra-passage context.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "EPHEMERIDES_2027.TIFF SHA-256 ab3df8197868e4348c8b924eb66f2f7c5c7a4a93445c2675296a87516ba0ae69; ECLIPSES_2027.GPKG SHA-256 050547adca464254b10dcaa71deaed0153f86da9dc0767fcb315aaf5a047d053.",
+      "coverage": "Official 2 August 2027 eclipse products covering Spain and surrounding regional context.",
+      "resolution": "EPSG:3857 raster cells of 1222.99245256282 metres and 724 EPSG:4326 umbra samples at 3.6 second cadence.",
+      "license": {
+        "name": "CC BY 4.0-compatible IGN/CNIG data policy",
+        "url": "https://www.ign.es/web/ign/portal/politica-datos"
+      },
+      "attribution": "Obra derivada de TrioEclipses_España 2026-2028 CC-BY 4.0 ign.es",
+      "transformation": "A deterministic offline generator verifies both source hashes, crops raster cells without interpolation, renders lossless quantity-specific PNG layers, validates the vector package, and publishes only simplified time-stamped umbra geometry in a checksum-bound JSON artifact.",
+      "limitations": [
+        "The layers provide regional context and are not queried as exact point values.",
+        "The source containers are not redistributed.",
+        "The product shares official IGN/OAN eclipse lineage with the visual reference and is not an independent ephemeris."
+      ]
+    },
+    {
+      "id": "ign-oan-2028-eclipse-products",
+      "name": "Official 2028 eclipse raster and vector products",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://centrodedescargas.cnig.es/CentroDescargas/eclipses",
+      "role": "National 2028 solar-altitude, obscuration, annularity-duration and antumbra-passage context.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "EPHEMERIDES_2028.TIFF SHA-256 107f0bff3c7724413ae979277a0f01574478fa275908a3614aa370a130386f81; ECLIPSES_2028.GPKG SHA-256 a44bd719ace45edcb60bd28ae75e6e78f2e9846498edb55ccb4d354f9d112b54.",
+      "coverage": "Official 26 January 2028 eclipse products covering Spain and surrounding regional context.",
+      "resolution": "EPSG:3857 raster cells of 1222.99245256282 metres and 353 EPSG:4326 antumbra samples at 3.6 second cadence.",
+      "license": {
+        "name": "CC BY 4.0-compatible IGN/CNIG data policy",
+        "url": "https://www.ign.es/web/ign/portal/politica-datos"
+      },
+      "attribution": "Obra derivada de TrioEclipses_España 2026-2028 CC-BY 4.0 ign.es",
+      "transformation": "A deterministic offline generator verifies both source hashes, crops raster cells without interpolation, renders lossless quantity-specific PNG layers, validates the vector package, and publishes only simplified time-stamped antumbra geometry in a checksum-bound JSON artifact.",
+      "limitations": [
+        "The layers provide regional context and are not queried as exact point values.",
+        "The source containers are not redistributed.",
+        "The product shares official IGN/OAN eclipse lineage with the visual reference and is not an independent ephemeris."
+      ]
+    },
+    {
+      "id": "ign-cnig-terrain-rgb",
+      "name": "TerrainRGB XYZ service",
+      "producer": "Instituto Geográfico Nacional / Centro Nacional de Información Geográfica",
+      "url": "https://blog-idee.blogspot.com/2024/03/nuevo-servicio-xyz-del-modelo-digital.html",
+      "role": "Western terrain-horizon profile calculated directly in the browser.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "Service observed 2026-08-02; source dataset version not asserted by the application.",
+      "coverage": "Configured request envelopes intended to cover the Iberian Peninsula, Balearic Islands, Ceuta, Canary Islands and Melilla; the service determines pixel-level data availability.",
+      "resolution": "Zoom 11, 512 × 512 pixel TerrainRGB samples; ground resolution varies by latitude and is approximately tens of metres.",
+      "license": {
+        "name": "CC BY 4.0-compatible IGN/CNIG data policy",
+        "url": "https://www.ign.es/web/ign/portal/politica-datos"
+      },
+      "attribution": "TerrainRGB XYZ service, accessed 2026-08-02 · CC BY 4.0-compatible · © Instituto Geográfico Nacional de España.",
+      "transformation": "The application requests https://xyz-mdt.idee.es/1.0.0/raster-dem/{z}/{x}/{y}.png. RGB values are decoded with elevation = -10000 + (R × 256² + G × 256 + B) × 0.1; transparent and out-of-range pixels are rejected as no-data. It starts with 61 profile rays across 30 degrees around the peak solar azimuth and expands the 0.5 degree profile grid when needed to cover the C1-to-C4 solar track, spherical disc width and one degree of interpolation padding. A separate local solar-disc sweep has no azimuth gap wider than 0.05 degrees. The model adds an explicit 1.5 metre planning viewpoint height, applies Earth curvature and a documented standard refraction coefficient, and reports geometric terrain-disc intersection without a quality score.",
+      "limitations": [
+        "The terrain model does not represent current vegetation, temporary structures or every building.",
+        "The model is a planning aid and cannot replace an on-site horizon photograph or survey.",
+        "The current profile samples to 100 km at discrete distances and azimuths and can still miss features between samples.",
+        "The rectangular request envelopes are not Spain's political boundary, include neighbouring territory and sea, and do not guarantee a valid elevation pixel.",
+        "The Step 6 TerrainRGB-to-MDT05 residual sample contains five mainland points, including one targeted nearby coastal pair, and is not evidence of Spain-wide accuracy."
+      ]
+    },
+    {
+      "id": "ign-oan-2026-city-anchors",
+      "name": "IGN/OAN 12 August 2026 eclipse overview",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://eclipses.ign.es/eclipse-total-sol-de-12-de-agosto-2026.html",
+      "role": "Selection basis for the twenty-three city anchors identified by IGN/OAN as crossed by totality.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "Public eclipse overview reviewed 2026-08-02.",
+      "coverage": "The twenty-three Spanish city names listed by IGN/OAN as crossed by totality.",
+      "resolution": "City-name selection only; coordinates come from the separately catalogued GeoNames snapshot.",
+      "license": {
+        "name": "Linked official information; no page text redistributed"
+      },
+      "attribution": "City selection basis: Instituto Geográfico Nacional / Observatorio Astronómico Nacional.",
+      "transformation": "The listed city names were matched to GeoNames feature identifiers. No venue, ranking or city-centre eclipse value was copied.",
+      "limitations": [
+        "A city anchor is not an observation venue or a claim that every point in the municipality lies within totality.",
+        "Exact point circumstances are calculated by the application only after the user selects a coordinate."
+      ]
+    },
+    {
+      "id": "geonames-spain-place-snapshot",
+      "name": "GeoNames Spain geographical names snapshot",
+      "producer": "GeoNames",
+      "url": "https://download.geonames.org/export/dump/ES.zip",
+      "role": "Coordinates and stable feature identifiers for the national city-anchor catalogue.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "ES.zip last modified 2026-08-02T02:04:18Z; SHA-256 3d364dcde86afbfed94f62cf598ae724647bab2dfbd3d18004d84cf73c36aac6.",
+      "coverage": "Spain, including peninsula, Balearic Islands, Canary Islands, Ceuta and Melilla.",
+      "resolution": "Point coordinates for named populated-place features; not venue coordinates.",
+      "license": {
+        "name": "Creative Commons Attribution 4.0",
+        "url": "https://creativecommons.org/licenses/by/4.0/"
+      },
+      "attribution": "Place coordinates: GeoNames, licensed under CC BY 4.0.",
+      "transformation": "Selected populated-place records were reduced to feature ID, name, representative coordinate and region in a versioned JSON catalogue. Source decimal precision is retained.",
+      "limitations": [
+        "A populated-place coordinate is a geographic anchor, not a viewing site.",
+        "GeoNames coordinates do not establish local horizon, access, capacity or operations."
+      ]
+    },
+    {
+      "id": "openstreetmap-candidate-coordinates",
+      "name": "OpenStreetMap local references and viewpoint candidates",
+      "producer": "OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "role": "Coordinates for retained local references, independently selected viewpoint candidates and independently resolved official-programme venue references.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "Local objects and a viewpoint discovery snapshot reviewed 2026-08-03; viewpoint snapshot timestamp 2026-08-02T21:06:21Z.",
+      "coverage": "Arguedas, Embalse del Ferial, Burgos neutral control and Soria neutral control local references; eight tourism=viewpoint features; four Navarra official-programme references; and four Aragón official-programme references.",
+      "resolution": "Named feature points or centroids; explicitly not official viewing-enclosure coordinates.",
+      "license": {
+        "name": "Open Data Commons Open Database License 1.0",
+        "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+      },
+      "attribution": "© OpenStreetMap contributors.",
+      "transformation": "Local Nominatim results, viewpoint records and independently mapped official-programme features were reduced to named feature identifiers and representative latitude/longitude values. A southwest-to-northwest direction tag was used only as a coarse viewpoint discovery filter. Official programme status always comes from a separately catalogued public-authority page. Precision and source links are preserved.",
+      "limitations": [
+        "These coordinates are planning references, not organizer-approved viewing positions.",
+        "A direction tag does not establish the exact eclipse azimuth or a clear terrain horizon.",
+        "Local access, ownership, field obstructions and operations remain unverified."
+      ]
+    },
+    {
+      "id": "jcyl-2026-recommended-observation-points",
+      "name": "Recommended observation points for the 12 August 2026 eclipse",
+      "producer": "Junta de Castilla y León",
+      "url": "https://www.jcyl.es/web/es/portada/eclipse-solar/puntos-visualizacion-recomendados.html",
+      "role": "Official coordinates and labels for the 75 Castilla y León observation-point rows displayed by the application.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "Eclipse2026_PuntosObservacion.xlsx; 75 rows; frozen SHA-256 24d2c40e0c86a43d6efd69d10f76e7178f8f4b915f922c34b06642373be23619.",
+      "coverage": "Ávila, Burgos, León, Palencia, Salamanca, Segovia, Soria, Valladolid and Zamora.",
+      "resolution": "Point coordinates published in the official spreadsheet; location labels range from municipalities to named settlements.",
+      "license": {
+        "name": "Junta de Castilla y León public-sector information reuse conditions",
+        "url": "https://gobiernoabierto.jcyl.es/web/jcyl/GobiernoAbierto/es/Plantilla100Detalle/1284216489702/Texto%20Generico/1246989714819/Texto"
+      },
+      "attribution": "Origen de los datos: Junta de Castilla y León.",
+      "transformation": "All 75 source rows are retained with source order, coordinate precision, province, municipality and location label. Stable owned identifiers are added. Duplicate labels with different published coordinates are not silently merged.",
+      "limitations": [
+        "The spreadsheet contains 75 rows but 72 unique province/municipality/location tuples; Burgos, Tejada and Tiedra each have two coordinates.",
+        "The Riaza row has no municipality value, so its published location label is used as the municipality fallback.",
+        "A published point does not by itself establish current admission, capacity, traffic control, weather or a field-verified western horizon.",
+        "Reuse and attribution do not imply endorsement by the Junta de Castilla y León."
+      ]
+    },
+    {
+      "id": "aragon-official-observation-network",
+      "name": "Official Aragón eclipse observation points",
+      "producer": "Government of Aragón / Turismo de Aragón",
+      "url": "https://www.turismodearagon.com/eclipse-solar-2026/",
+      "role": "Outbound operational pages establishing the official programme status of Javalambre, Calamocha, Épila and MotorLand Aragón.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-03",
+      "version": "Live programme reviewed 2026-08-03.",
+      "coverage": "The four current Government of Aragón POGA locations.",
+      "resolution": "Human-readable event pages; mapped coordinates come independently from OpenStreetMap features.",
+      "license": {
+        "name": "No open structured-data licence confirmed; only official outbound URLs and programme status are retained"
+      },
+      "attribution": "Programme information remains on the official Turismo de Aragón website.",
+      "transformation": "The application stores the official point name, outbound page, review date and a separately sourced representative coordinate. Reservation, capacity and traffic details are not copied.",
+      "limitations": [
+        "Operational information can change without notice.",
+        "The Calamocha and Épila markers are explicitly municipality references rather than enclosure coordinates."
+      ]
+    },
+    {
+      "id": "regional-official-observation-directories",
+      "name": "Spanish regional eclipse observation directories",
+      "producer": "Spanish regional public authorities and their designated science or tourism bodies",
+      "url": "https://www.trioeclipses.es/",
+      "role": "Curated outbound links to current regional observation directories without republishing unlicensed structured venue catalogs.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-03",
+      "version": "Fourteen regional links reviewed 2026-08-03.",
+      "coverage": "Andalucía, Aragón, Asturias, Illes Balears, Cantabria, Castilla-La Mancha, Castilla y León, Catalunya, Comunitat Valenciana, Euskadi, Galicia, La Rioja, Madrid and Navarra.",
+      "resolution": "Human-facing live directories and programme pages.",
+      "license": {
+        "name": "Linked official information; no unlicensed regional structured catalog is redistributed"
+      },
+      "attribution": "Each link identifies the responsible regional producer in the application.",
+      "transformation": "Only the region, responsible producer and official outbound URL are retained. Venue descriptions, capacities, images, proprietary map payloads and mutable status fields are not mirrored.",
+      "limitations": [
+        "Regional lists can change close to the event and must be checked before travel.",
+        "A linked directory is not a release recommendation or evidence that every listed point has a field-verified horizon."
+      ]
+    },
+    {
+      "id": "openstreetmap-standard-tiles",
+      "name": "OpenStreetMap standard tile layer",
+      "producer": "OpenStreetMap contributors and OpenStreetMap Foundation",
+      "url": "https://operations.osmfoundation.org/policies/tiles/",
+      "role": "Low-volume prototype basemap with visible attribution.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-02",
+      "version": "Live community tile service.",
+      "coverage": "Interactive map viewport.",
+      "resolution": "Web Mercator raster tiles by zoom level.",
+      "license": {
+        "name": "ODbL data; tile usage subject to the OSMF tile policy",
+        "url": "https://www.openstreetmap.org/copyright"
+      },
+      "attribution": "© OpenStreetMap contributors.",
+      "transformation": "Tiles are displayed without modification through Leaflet.",
+      "limitations": [
+        "The community tile service has no SLA and is suitable only for a low-volume prototype.",
+        "A production release with material traffic must use an appropriate provider or a self-hosted regional archive."
+      ]
+    },
+    {
+      "id": "copernicus-era5-august-cloud-climate",
+      "name": "ERA5 August evening cloud-cover climatology",
+      "producer": "Copernicus Climate Change Service / ECMWF; delivered by Open-Meteo",
+      "url": "https://doi.org/10.24381/cds.adbb2d47",
+      "role": "Checksum-bound historical cloud-cover context for the 41 national planning references.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "ERA5 1991–2020 August sample; public artifact era5-august-evening-v1; SHA-256 3d85c8128b2c029103eb5547b5be06605245330b7f7ec9edff23171a09678b6f.",
+      "coverage": "The 41 independently sourced national reference points displayed by the clean Spain-wide map.",
+      "resolution": "ERA5 0.25 degree nearest grid cell; 930 hourly samples per point at 18:00 UTC, comprising every August day from 1991 through 2020.",
+      "license": {
+        "name": "Open-Meteo API data under Creative Commons Attribution 4.0; upstream Copernicus licence retained",
+        "url": "https://open-meteo.com/en/licence"
+      },
+      "attribution": "ERA5: Copernicus Climate Change Service / ECMWF. Historical API delivery: Open-Meteo, CC BY 4.0.",
+      "transformation": "The reproducible scripts/generate-cloud-climate.mts generator requests ERA5 total cloud cover through the Open-Meteo Historical Weather API with model=era5, UTC, nearest-cell selection and no statistical downscaling. It validates 30 annual responses, rejects missing or out-of-range values, calculates the mean and 25th, 50th and 75th percentiles at each reference, records an aggregate SHA-256 for the 30 locally retained raw responses, and publishes only the compact versioned JSON artifact and checksum.",
+      "limitations": [
+        "This is reanalysis climatology, not a forecast for 12 August 2026 and not a probability of successful viewing.",
+        "A 0.25 degree grid cell cannot resolve site-scale cloud, coastal fog or mountain effects.",
+        "The 41 point summaries do not form a continuous Spain-wide weather raster and must not be interpolated into one."
+      ]
+    },
+    {
+      "id": "open-meteo-ecmwf-ifs-forecast",
+      "name": "ECMWF IFS HRES forecast delivered by Open-Meteo",
+      "producer": "European Centre for Medium-Range Weather Forecasts / Open-Meteo",
+      "url": "https://open-meteo.com/en/docs/ecmwf-api",
+      "role": "Runtime point forecast for cloud layers, precipitation, 10 metre wind and gusts around the eclipse hours.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "Live ECMWF IFS HRES 9 km model delivery; run metadata is read at runtime and shown beside the result.",
+      "coverage": "Selected, compared, or nationally displayed reference coordinates when the live upstream service contains the full 17:00 through 20:00 UTC planning window on 12 August 2026.",
+      "resolution": "Nominal 9 km ECMWF IFS HRES output delivered on an hourly API time series. Native steps become 3-hourly after 90 forecast hours and 6-hourly after 144 hours; Open-Meteo dynamically interpolates them to the returned hourly series. Returned service coordinates and the Open-Meteo downscaling elevation are retained for each point.",
+      "license": {
+        "name": "Creative Commons Attribution 4.0",
+        "url": "https://open-meteo.com/en/licence"
+      },
+      "attribution": "Weather data by Open-Meteo; forecast model ECMWF IFS HRES.",
+      "transformation": "The browser validates Open-Meteo run metadata, HTTP status, JSON MIME type, body size, response units, batch location_id identity, array alignment and defensive physical ranges under an eight-second request deadline. It requests a batch for the required locations and selects the four returned hours from 17:00 through 20:00 UTC without adding client-side interpolation. It aligns the hourly display with local C1, central phase, maximum, C4 and ideal-horizon sunset, then shows cloud layers, precipitation, wind and gust from the returned hour nearest maximum. Open-Meteo may interpolate coarser native forecast steps and applies its documented land-cell selection and 90 metre elevation downscaling. The browser first attempts the identified single-run endpoint only when its metadata covers the complete window. Exact-run availability, timeout and transport failures fall back to the explicitly labelled rolling ECMWF endpoint unless the caller cancelled the request. Rolling responses are not pinned to the displayed latest-run metadata and are never labelled as an exact run. Total precipitation is the preceding-hour sum and wind gust is the preceding three-hour maximum. Null, malformed, misidentified, misaligned, out-of-range, unavailable or failed responses remain unknown.",
+      "limitations": [
+        "A single deterministic model does not express ensemble uncertainty and can change materially between runs.",
+        "The free Open-Meteo API is non-commercial, rate-limited and has no availability guarantee; production use must satisfy the current service terms.",
+        "Runtime values are not archived by the stable scientific report and do not satisfy or unlock the weather release gate.",
+        "Nine kilometre model output does not establish the cloud actually present at an exact venue."
+      ]
+    },
+    {
+      "id": "open-meteo-noaa-gfs-forecast",
+      "name": "NOAA GFS forecast delivered by Open-Meteo",
+      "producer": "National Oceanic and Atmospheric Administration / Open-Meteo",
+      "url": "https://open-meteo.com/en/docs/gfs-api",
+      "role": "Independent deterministic total-cloud-cover comparison for the selected location around the 2026 eclipse hours.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-04",
+      "version": "Live GFS seamless delivery requested explicitly with models=gfs_seamless.",
+      "coverage": "The selected coordinate when GFS contains the full 17:00 through 20:00 UTC window on 12 August 2026.",
+      "resolution": "Nominal 0.11 degree, approximately 13 km global surface output. GFS changes from hourly to three-hourly steps after 120 forecast hours, and Open-Meteo interpolates the returned series to hourly values.",
+      "license": {
+        "name": "Open-Meteo API data under Creative Commons Attribution 4.0; NOAA source attribution retained",
+        "url": "https://open-meteo.com/en/licence"
+      },
+      "attribution": "Weather data by Open-Meteo; forecast model NOAA GFS.",
+      "transformation": "The browser requests only total cloud cover from the dedicated GFS endpoint for the event date. It validates status, JSON MIME type, body size, units, coordinates, array alignment, time ordering and values under an eight-second deadline. It displays the four returned event-window hours in local civil time without client-side interpolation. Missing hours remain unavailable.",
+      "limitations": [
+        "This is one deterministic model, not an independent probability or an ensemble.",
+        "The response is rolling delivery and does not expose an exact model-run identity in this interface.",
+        "A thirteen kilometre grid and model timing errors cannot establish whether the solar line of sight will be cloud-free at an exact venue."
+      ]
+    },
+    {
+      "id": "open-meteo-dwd-icon-forecast",
+      "name": "DWD ICON forecast delivered by Open-Meteo",
+      "producer": "Deutscher Wetterdienst / Open-Meteo",
+      "url": "https://open-meteo.com/en/docs/dwd-api",
+      "role": "Independent deterministic total-cloud-cover comparison for the selected location around the 2026 eclipse hours.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-04",
+      "version": "Live ICON seamless delivery requested explicitly with models=icon_seamless.",
+      "coverage": "The selected coordinate when ICON contains the full 17:00 through 20:00 UTC window on 12 August 2026.",
+      "resolution": "ICON Global is nominally 0.1 degree, approximately 11 km, with a 7.5 day forecast. Open-Meteo may combine higher-resolution ICON Europe output when it is available and interpolates three-hourly values to hourly after 78 forecast hours.",
+      "license": {
+        "name": "Open-Meteo API data under Creative Commons Attribution 4.0; DWD source attribution retained",
+        "url": "https://open-meteo.com/en/licence"
+      },
+      "attribution": "Weather data by Open-Meteo; forecast model DWD ICON.",
+      "transformation": "The browser requests only total cloud cover from the dedicated ICON endpoint for the event date. It applies the same deadline and validation as the GFS comparison, then displays the four returned event-window hours in local civil time. If the model has not reached all four hours, the row says that it is outside the forecast horizon instead of substituting zero.",
+      "limitations": [
+        "ICON may not reach the eclipse window until closer to the event than GFS, GEM or ECMWF.",
+        "This is one deterministic model, not an independent probability or an ensemble.",
+        "A model grid cannot resolve every small cloud, coastal effect or mountain cloud on the solar line of sight."
+      ]
+    },
+    {
+      "id": "open-meteo-eccc-gem-forecast",
+      "name": "ECCC GEM forecast delivered by Open-Meteo",
+      "producer": "Environment and Climate Change Canada / Open-Meteo",
+      "url": "https://open-meteo.com/en/docs/gem-api",
+      "role": "Independent deterministic total-cloud-cover comparison for the selected location around the 2026 eclipse hours.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-04",
+      "version": "Live GEM seamless delivery requested explicitly with models=gem_seamless.",
+      "coverage": "The selected coordinate when GEM contains the full 17:00 through 20:00 UTC window on 12 August 2026.",
+      "resolution": "GEM Global is nominally 0.15 degree, approximately 15 km, with three-hourly native output and a forecast length of up to 10 days. Open-Meteo interpolates the returned series to hourly values.",
+      "license": {
+        "name": "Open-Meteo API data under Creative Commons Attribution 4.0; ECCC source attribution retained",
+        "url": "https://open-meteo.com/en/licence"
+      },
+      "attribution": "Weather data by Open-Meteo; forecast model ECCC GEM.",
+      "transformation": "The browser requests only total cloud cover from the dedicated GEM endpoint for the event date. It applies the same deadline and validation as the other deterministic comparisons, then displays the four returned event-window hours in local civil time without adding client-side interpolation.",
+      "limitations": [
+        "The hourly series is interpolated by Open-Meteo from three-hourly GEM Global output.",
+        "This is one deterministic model, not an independent probability or an ensemble.",
+        "A fifteen kilometre grid cannot establish whether the solar line of sight will be cloud-free at an exact venue."
+      ]
+    },
+    {
+      "id": "aemet-municipal-forecast-link",
+      "name": "AEMET municipal forecasts",
+      "producer": "Agencia Estatal de Meteorología",
+      "url": "https://www.aemet.es/es/eltiempo/prediccion/municipios",
+      "role": "Outbound official Spanish forecast cross-check shown beside the selected-location sky evidence.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-04",
+      "version": "Live AEMET municipal forecast search reviewed 2026-08-04.",
+      "coverage": "Municipal forecasts published by AEMET for Spain.",
+      "resolution": "Human-facing official forecast pages; the application does not copy or parse their values.",
+      "license": {
+        "name": "Linked official information; no structured AEMET content redistributed"
+      },
+      "attribution": "Official forecast cross-check: AEMET.",
+      "transformation": "When a saved point has a known municipality, the selected-location panel opens the AEMET municipality search with that name already entered. Other points open the general municipality search. AEMET OpenData is not called from the static browser because its API requires a key that must not be exposed client-side.",
+      "limitations": [
+        "The link is not a point-specific archived forecast and does not satisfy the weather release gate.",
+        "A prefilled name can still require confirmation when municipalities share a name or the saved point lies outside the named settlement.",
+        "Users must confirm the municipality and check the latest issue time on AEMET."
+      ]
+    },
+    {
+      "id": "eklipsenavarra-operational-links",
+      "name": "Eklipse Navarra operational pages",
+      "producer": "Government of Navarra / NICDO",
+      "url": "https://eklipsenavarra.com/es/puntos-de-observacion",
+      "role": "Outbound links for users to verify current admission and operational information.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-03",
+      "version": "Live web pages reviewed 2026-08-03.",
+      "coverage": "The official Navarra network directory plus the Arguedas/Virgen del Yugo, Bardenas Aguilares, Bardenas El Ferial and Sendaviva pages linked from map points.",
+      "resolution": "Human-readable operational records; no structured dataset is copied.",
+      "license": {
+        "name": "No open structured-data licence confirmed"
+      },
+      "attribution": "Operational information remains on the official Eklipse Navarra website.",
+      "transformation": "The application stores official outbound URLs, a review date and independently resolved OpenStreetMap venue references. The official operational GeoJSON, ticket status, price, services and capacity are not republished.",
+      "limitations": [
+        "Operational information can change without notice.",
+        "Users must verify the official page immediately before travel or purchase."
+      ]
+    },
+    {
+      "id": "burgos-neutral-control-programme",
+      "name": "Burgos neutral control municipal eclipse announcement",
+      "producer": "Burgos neutral control City Council",
+      "url": "https://www.example.invalid/noticias/burgos-neutral-control-se-prepara-para-el-historico-eclipse-total-de-sol-del-12-de-agosto",
+      "role": "Outbound link confirming a municipal programme without asserting an exact viewing venue.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-02",
+      "version": "Municipal announcement reviewed 2026-08-02.",
+      "coverage": "Burgos neutral control municipality.",
+      "resolution": "Municipality-level programme information.",
+      "license": {
+        "name": "No open structured-data licence confirmed"
+      },
+      "attribution": "Programme information: Burgos neutral control City Council.",
+      "transformation": "The application links to the municipal announcement and labels the map coordinate as an approximate town centre.",
+      "limitations": [
+        "The announcement is not treated as a reusable venue dataset.",
+        "The exact viewing position remains unverified in the application."
+      ]
+    },
+    {
+      "id": "ign-eclipse-practical-recommendations",
+      "name": "Practical recommendations for observing the 12 August 2026 eclipse",
+      "producer": "Instituto Geográfico Nacional / Observatorio Astronómico Nacional",
+      "url": "https://eclipses.ign.es/recomendaciones-practicas.html",
+      "role": "Linked official planning context for the low western Sun, horizon clearance, local circumstances and practical observation constraints.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-02",
+      "version": "Live guidance reviewed 2026-08-02.",
+      "coverage": "Public guidance for the 12 August 2026 eclipse in Spain.",
+      "resolution": "Human-readable guidance; no structured values are copied into the application.",
+      "license": {
+        "name": "Linked official guidance; no source text redistributed"
+      },
+      "attribution": "Observation guidance remains on the IGN eclipse website.",
+      "transformation": "The guidance informed the separation of national geometry, local horizon and operational evidence. All displayed numerical results come from the separately catalogued calculation and data sources.",
+      "limitations": [
+        "The guidance is contextual material, not an independent numerical validation fixture.",
+        "A regional recommendation cannot establish the field horizon, access or weather at an exact venue."
+      ]
+    },
+    {
+      "id": "trio-eclipses-public-platform",
+      "name": "Trío de Eclipses official public platform",
+      "producer": "Spanish Government interministerial eclipse commission / FECYT",
+      "url": "https://www.trioeclipses.es/",
+      "role": "Official event information for the Spanish eclipses of 2026, 2027 and 2028, plus a linked public-product reference for eclipse phases, municipality lookup, obscuration, totality duration, sunset and camera-orientation concepts.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-03",
+      "version": "Public platform and 2026 viewer reviewed 2026-08-03.",
+      "coverage": "Public information for the Spanish eclipses of 2026, 2027 and 2028; only the 2026 product was reviewed for interface coverage.",
+      "resolution": "Human-facing website and viewer; no API response, code or structured output is redistributed.",
+      "license": {
+        "name": "Linked public information; no structured content redistributed"
+      },
+      "attribution": "Public-product context: Trío de Eclipses.",
+      "transformation": "The official platform is used as a feature-coverage and terminology reference. The owned interface calculates all three events from the separately catalogued NASA and IGN/CNIG sources and does not reproduce the official viewer design, proprietary code or static location outputs.",
+      "limitations": [
+        "This platform is not treated as independent scientific verification evidence.",
+        "Camera orientation does not measure terrain, buildings, vegetation or current field conditions."
+      ]
+    },
+    {
+      "id": "turismo-asturias-los-quebrantos-coordinate",
+      "name": "Playa de Los Quebrantos official visitor page",
+      "producer": "Turismo Asturias / Principado de Asturias",
+      "url": "https://www.turismoasturias.es/es/descubre/costa/playas/playa-de-los-quebrantos",
+      "role": "Coordinate provenance for the frozen Los Quebrantos coastal horizon regression point used next to Punta d'El Pozacu.",
+      "status": "in-use",
+      "retrievedAt": "2026-08-03",
+      "version": "Live official visitor page reviewed 2026-08-03.",
+      "coverage": "One published WGS 84 coordinate for Playa de Los Quebrantos, Asturias.",
+      "resolution": "Six decimal degrees as published by Turismo Asturias; the fixture is 209.64 metres from the product's Punta d'El Pozacu point.",
+      "license": {
+        "name": "Single factual coordinate retained with producer attribution; page text and media are not redistributed"
+      },
+      "attribution": "Coordinate source: Turismo Asturias / Principado de Asturias.",
+      "transformation": "The published latitude and longitude are retained without added precision in the versioned validation-point manifest. IGN/CNIG TerrainRGB and MDT05 values are sampled independently at that coordinate.",
+      "limitations": [
+        "The coordinate identifies the beach page reference, not a surveyed observing position or an endorsed venue.",
+        "TerrainRGB and MDT05 share IGN/CNIG elevation lineage, and neither models vegetation, temporary structures or every near-field obstruction."
+      ]
+    },
+    {
+      "id": "aas-eye-safety",
+      "name": "Solar eclipse eye-safety guidance",
+      "producer": "American Astronomical Society Solar Eclipse Task Force",
+      "url": "https://eclipse.aas.org/eye-safety",
+      "role": "Public safety guidance for direct viewing during partial phases and for optical equipment.",
+      "status": "linked-only",
+      "retrievedAt": "2026-08-02",
+      "version": "Live guidance reviewed 2026-08-02.",
+      "coverage": "All direct solar viewing before and after totality, including telescopes, binoculars and camera lenses.",
+      "resolution": "Human-readable safety guidance; no timing data or structured content is redistributed.",
+      "license": {
+        "name": "Linked guidance; no source text redistributed"
+      },
+      "attribution": "Eye-safety guidance: American Astronomical Society Solar Eclipse Task Force.",
+      "transformation": "The public source catalog retains one link to the complete AAS guidance; the primary map workflow does not reproduce or paraphrase it.",
+      "limitations": [
+        "Users must inspect viewers before use and supervise children.",
+        "A solar viewer is not a substitute for a front-mounted filter on optical equipment."
+      ]
+    }
+  ]
+}
