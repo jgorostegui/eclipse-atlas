@@ -138,6 +138,7 @@ a {
 
 .masthead-art {
   overflow: hidden;
+  background-image: var(--masthead-art-desktop);
   background-position: center 7%;
   background-size: cover;
   filter: saturate(0.88) contrast(1.04) brightness(0.72);
@@ -433,8 +434,32 @@ a {
   gap: 9px;
 }
 
-.masthead button:focus-visible {
+.masthead :is(button, a):focus-visible {
   outline-color: #72d8f3;
+}
+
+.masthead-repository-link {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  text-decoration: none;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.masthead-repository-link:hover {
+  background: rgba(244, 185, 64, 0.12);
+  transform: translateY(-1px);
+}
+
+.masthead-repository-link svg {
+  width: 30px;
+  height: 30px;
 }
 
 .language-switcher button {
@@ -2755,6 +2780,24 @@ a {
   text-underline-offset: 3px;
 }
 
+.help-repository-link {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 9px;
+  margin-top: 12px;
+  color: var(--terrain-dark);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.help-repository-link svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
 .help-close {
   min-height: 44px;
   margin-top: 16px;
@@ -3037,9 +3080,16 @@ a {
     padding: 0 10px;
   }
 
-  .masthead-art,
+  .masthead-art {
+    background-image: var(--masthead-art-mobile);
+    background-position: center;
+    filter: saturate(0.92) contrast(1.05) brightness(0.78);
+  }
+
   .masthead-scrim {
-    display: none;
+    background:
+      linear-gradient(90deg, rgba(7, 15, 25, 0.92) 0 35%, rgba(7, 15, 25, 0.38) 49%, rgba(7, 15, 25, 0.54) 58%, rgba(7, 15, 25, 0.88) 76%),
+      linear-gradient(0deg, rgba(7, 15, 25, 0.68), rgba(7, 15, 25, 0.12) 72%, rgba(7, 15, 25, 0.36));
   }
 
   .masthead-primary {
@@ -3077,6 +3127,11 @@ a {
 
   .language-switcher button {
     min-height: 44px;
+  }
+
+  .masthead-repository-link {
+    width: 44px;
+    height: 44px;
   }
 
   .planner-notices {

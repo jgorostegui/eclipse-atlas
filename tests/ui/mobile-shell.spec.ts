@@ -197,7 +197,7 @@ test("preserves the Explore stack across repeated tab switches", async ({
   await expect(search).toBeVisible();
 });
 
-test("does not download the desktop masthead artwork on mobile", async ({
+test("downloads only the lightweight masthead artwork on mobile", async ({
   page,
 }) => {
   const artworkRequests: string[] = [];
@@ -208,8 +208,15 @@ test("does not download the desktop masthead artwork on mobile", async ({
   });
 
   await page.goto(SORIA_URL);
-  await expect(page.locator(".masthead-art")).toBeHidden();
-  expect(artworkRequests).toEqual([]);
+  await expect(page.locator(".masthead-art")).toBeVisible();
+  const uniqueArtworkRequests = [...new Set(artworkRequests)];
+  expect(uniqueArtworkRequests).toHaveLength(1);
+  expect(uniqueArtworkRequests[0]).toContain(
+    "eclipse-atlas-header-mobile-960.webp",
+  );
+  expect(uniqueArtworkRequests[0]).not.toContain(
+    "eclipse-atlas-header-1600.webp",
+  );
 });
 
 test("keeps search results usable while the iPhone keyboard is open", async ({
@@ -300,6 +307,12 @@ test("opens Help from the bottom navigation and includes About", async ({
   await about.locator("summary").click();
   await expect(about).toContainText(
     "No ordena lugares ni mezcla evidencias distintas en una puntuación.",
+  );
+  await expect(
+    about.getByRole("link", { name: "Ver código en GitHub" }),
+  ).toHaveAttribute(
+    "href",
+    "https://github.com/jgorostegui/eclipse-atlas",
   );
 
   const accessibility = await new AxeBuilder({ page })

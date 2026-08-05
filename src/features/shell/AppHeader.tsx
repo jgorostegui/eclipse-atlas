@@ -1,7 +1,12 @@
+import type { CSSProperties } from "react";
 import type { EclipseEventId } from "../../domain/eclipse-events";
 import { LanguageSwitcher } from "../../i18n/LanguageSwitcher";
 import { useI18n } from "../../i18n/useI18n";
 import { EclipseEventSwitcher } from "../eclipse-events/EclipseEventSwitcher";
+import {
+  ECLIPSE_ATLAS_REPOSITORY_URL,
+  GitHubMark,
+} from "./GitHubMark";
 
 type AppHeaderProps = Readonly<{
   eventId: EclipseEventId;
@@ -16,15 +21,17 @@ export function AppHeader({
 }: AppHeaderProps) {
   const { t } = useI18n();
   const baseUrl = import.meta.env.BASE_URL;
+  const mastheadArtStyle = {
+    "--masthead-art-desktop": `url("${baseUrl}images/eclipse-atlas-header-1600.webp")`,
+    "--masthead-art-mobile": `url("${baseUrl}images/eclipse-atlas-header-mobile-960.webp")`,
+  } as CSSProperties;
 
   return (
     <header className="masthead">
       <div
         className="masthead-art"
         aria-hidden="true"
-        style={{
-          backgroundImage: `url("${baseUrl}images/eclipse-atlas-header-1600.webp")`,
-        }}
+        style={mastheadArtStyle}
       />
       <div className="masthead-scrim" aria-hidden="true" />
 
@@ -51,6 +58,16 @@ export function AppHeader({
       </div>
 
       <div className="masthead-actions">
+        <a
+          className="masthead-repository-link"
+          href={ECLIPSE_ATLAS_REPOSITORY_URL}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={t("repository.open")}
+          title={t("repository.open")}
+        >
+          <GitHubMark />
+        </a>
         <LanguageSwitcher />
       </div>
     </header>

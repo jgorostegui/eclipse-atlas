@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 import type { MessageKey, MessageValues } from "../../i18n/messages";
+import {
+  ECLIPSE_ATLAS_REPOSITORY_URL,
+  GitHubMark,
+} from "./GitHubMark";
 
 type Translate = (key: MessageKey, values?: MessageValues) => string;
 
@@ -118,6 +122,15 @@ export function HelpPanel({
           summary={t("help.about.summary")}
         >
           <p>{t("help.about.body")}</p>
+          <a
+            className="help-repository-link"
+            href={ECLIPSE_ATLAS_REPOSITORY_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <GitHubMark />
+            <span>{t("repository.viewSource")}</span>
+          </a>
         </HelpSection>
       </div>
 

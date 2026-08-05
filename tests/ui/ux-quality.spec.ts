@@ -189,6 +189,7 @@ test("supports the complete header flow from the keyboard", async ({ page }) => 
   const controls = [
     page.getByRole("button", { name: "Eclipse Atlas map" }),
     page.getByRole("button", { name: "Choose eclipse" }),
+    page.getByRole("link", { name: "Open Eclipse Atlas on GitHub" }),
     page.getByRole("button", { name: "EN", exact: true }),
     page.getByRole("button", { name: "ES", exact: true }),
   ];
@@ -423,6 +424,15 @@ test("keeps primary mobile controls large enough and honours reduced motion", as
 test("keeps the illustrated header visually stable", async ({ page }) => {
   await installDeterministicNetwork(page);
   await page.goto("/?state=1&lang=es&event=2026&layer=none");
+  const repositoryLink = page.getByRole("link", {
+    name: "Abrir Eclipse Atlas en GitHub",
+  });
+  await expect(repositoryLink).toBeVisible();
+  await expect(repositoryLink).toHaveAttribute(
+    "href",
+    "https://github.com/jgorostegui/eclipse-atlas",
+  );
+  await expect(repositoryLink).toHaveAttribute("target", "_blank");
   await expect(page.locator(".masthead-art")).toHaveCSS(
     "background-image",
     /eclipse-atlas-header-1600\.webp/,
@@ -447,7 +457,13 @@ test("keeps the illustrated header visually stable", async ({ page }) => {
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?state=1&lang=es&event=2026&layer=none");
-  await expect(page.locator(".masthead-art")).toBeHidden();
+  await expect(repositoryLink).toBeVisible();
+  await expect(repositoryLink).toHaveCSS("width", "44px");
+  await expect(repositoryLink).toHaveCSS("height", "44px");
+  await expect(page.locator(".masthead-art")).toHaveCSS(
+    "background-image",
+    /eclipse-atlas-header-mobile-960\.webp/,
+  );
   await expect(page.locator(".masthead")).toHaveScreenshot(
     "eclipse-atlas-header-mobile.webp",
     {
