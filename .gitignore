@@ -38,3 +38,7 @@ __*/
 **/__*/
 __*.md
 **/__*.md
+
+# Local generated artifacts
+/output/
+/tmp/
