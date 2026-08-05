@@ -36,6 +36,7 @@ const largeViewports = [
   { name: "common laptop", width: 1366, height: 768 },
   { name: "scaled laptop", width: 1536, height: 864 },
   { name: "full HD desktop", width: 1920, height: 1080 },
+  { name: "wide desktop", width: 2048, height: 1152 },
 ] as const;
 
 test("keeps selected-place controls coherent across representative phones", async ({
@@ -214,6 +215,7 @@ test("keeps map and inspector sound across tablets and desktops", async ({
             right: bounds.right,
             bottom: bounds.bottom,
             left: bounds.left,
+            width: bounds.width,
           };
         };
 
@@ -221,6 +223,9 @@ test("keeps map and inspector sound across tablets and desktops", async ({
           viewport: { width: window.innerWidth, height: window.innerHeight },
           scrollWidth: document.documentElement.scrollWidth,
           shell: rect(".planner-shell"),
+          workspace: rect(".planner-workspace"),
+          map: rect(".map-panel"),
+          rail: rect(".planner-rail"),
           header: rect(".detail-header"),
           identity: rect(".detail-header__identity"),
           actions: rect(".detail-header__actions"),
@@ -243,6 +248,23 @@ test("keeps map and inspector sound across tablets and desktops", async ({
         .toBeLessThanOrEqual(geometry.viewport.width);
       expect(geometry.shell.bottom, `${viewport.name}: shell height`)
         .toBeCloseTo(geometry.viewport.height, 0);
+      if (viewport.width > 900) {
+        const railRatio = geometry.rail.width / geometry.workspace.width;
+        expect(
+          railRatio,
+          `${viewport.name}: inspector takes too much horizontal space`,
+        ).toBeLessThanOrEqual(0.42);
+        expect(
+          geometry.map.width,
+          `${viewport.name}: map is not the primary surface`,
+        ).toBeGreaterThan(geometry.rail.width);
+        if (viewport.width >= 1280) {
+          expect(
+            railRatio,
+            `${viewport.name}: wide layout does not adapt the inspector`,
+          ).toBeLessThanOrEqual(0.345);
+        }
+      }
       expect(geometry.actions.right, `${viewport.name}: actions leave header`)
         .toBeLessThanOrEqual(geometry.header.right + 1);
       expect(geometry.clear.right, `${viewport.name}: clear leaves header`)

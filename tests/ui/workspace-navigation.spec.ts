@@ -102,6 +102,44 @@ test("resizes the desktop inspector with pointer-equivalent keyboard controls", 
   ).toBeCloseTo(initialCssWidth);
 });
 
+test("adapts the automatic inspector width to the workspace aspect ratio", async ({
+  page,
+}) => {
+  await page.goto(SORIA_URL);
+  const splitter = page.getByRole("separator", {
+    name: "Cambiar el ancho del panel de detalles",
+  });
+
+  await expect(splitter).toBeVisible();
+  const tallWorkspaceWidth = Number(
+    await splitter.getAttribute("aria-valuenow"),
+  );
+
+  await page.setViewportSize({ width: 1440, height: 700 });
+  await expect.poll(async () =>
+    Number(await splitter.getAttribute("aria-valuenow")),
+  ).toBeLessThan(tallWorkspaceWidth);
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await expect(splitter).toHaveAttribute(
+    "aria-valuenow",
+    String(tallWorkspaceWidth),
+  );
+
+  await splitter.press("ArrowLeft");
+  const customizedWidth = tallWorkspaceWidth + 16;
+  await expect(splitter).toHaveAttribute(
+    "aria-valuenow",
+    String(customizedWidth),
+  );
+
+  await page.setViewportSize({ width: 1440, height: 700 });
+  await expect(splitter).toHaveAttribute(
+    "aria-valuenow",
+    String(customizedWidth),
+  );
+});
+
 test("restores explorer focus with a fresh browser Back", async ({ page }) => {
   await page.goto("/?state=1&lang=es&event=2026&layer=none#places");
   const search = page.getByRole("searchbox", {

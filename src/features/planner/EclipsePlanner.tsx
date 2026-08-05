@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -93,7 +94,13 @@ import {
   type WorkspaceExploreView,
   type WorkspaceView,
 } from "./workspace-navigation";
-import { STACKED_LAYOUT_MEDIA_QUERY } from "./responsive";
+import {
+  STACKED_LAYOUT_MEDIA_QUERY,
+  clampDesktopRailWidth,
+  defaultDesktopRailWidth,
+  desktopRailWidthBounds,
+  type WorkspaceSize,
+} from "./responsive";
 import {
   SkyEvidence,
   type ForecastPresentation,
@@ -126,15 +133,6 @@ type NumberFormatter = (
   options?: Intl.NumberFormatOptions,
 ) => string;
 
-const DEFAULT_DETAIL_RAIL_WIDTH_RATIO = 0.33;
-const DEFAULT_STANDARD_RAIL_WIDTH = 448;
-const MINIMUM_RAIL_WIDTH = 384;
-const MINIMUM_DETAIL_RAIL_WIDTH = 420;
-const MAXIMUM_RAIL_WIDTH = 720;
-const MAXIMUM_RAIL_WIDTH_RATIO = 0.48;
-const MINIMUM_MAP_WIDTH = 420;
-const SPLITTER_WIDTH = 10;
-
 function supplementalStates(
   status: "idle" | "loading",
 ): SupplementalForecastStates {
@@ -145,64 +143,43 @@ function supplementalStates(
   };
 }
 
-function railWidthBounds(workspaceWidth: number, detailMode: boolean) {
-  const minimum = Math.min(
-    detailMode ? MINIMUM_DETAIL_RAIL_WIDTH : MINIMUM_RAIL_WIDTH,
-    Math.max(300, workspaceWidth * 0.42),
-  );
-  const maximum = Math.max(
-    minimum,
-    Math.min(
-      MAXIMUM_RAIL_WIDTH,
-      workspaceWidth * MAXIMUM_RAIL_WIDTH_RATIO,
-      workspaceWidth - MINIMUM_MAP_WIDTH - SPLITTER_WIDTH,
-    ),
-  );
-  return { minimum, maximum };
-}
-
-function clampRailWidth(
-  width: number,
-  workspaceWidth: number,
-  detailMode: boolean,
-) {
-  const { minimum, maximum } = railWidthBounds(workspaceWidth, detailMode);
-  return Math.min(maximum, Math.max(minimum, width));
-}
-
-function defaultRailWidth(workspaceWidth: number, detailMode: boolean) {
-  return clampRailWidth(
-    detailMode
-      ? workspaceWidth * DEFAULT_DETAIL_RAIL_WIDTH_RATIO
-      : DEFAULT_STANDARD_RAIL_WIDTH,
-    workspaceWidth,
-    detailMode,
-  );
+function workspaceSize(workspaceRef: RefObject<HTMLElement | null>): WorkspaceSize {
+  const bounds = workspaceRef.current?.getBoundingClientRect();
+  return {
+    width: bounds?.width ?? window.innerWidth,
+    height: bounds?.height ?? window.innerHeight,
+  };
 }
 
 function PlannerSplitter({
   workspaceRef,
+  workspace,
   width,
   detailMode,
   onChange,
+  onReset,
   t,
 }: {
   workspaceRef: RefObject<HTMLElement | null>;
+  workspace: WorkspaceSize;
   width: number;
   detailMode: boolean;
   onChange: (width: number) => void;
+  onReset: () => void;
   t: Translate;
 }) {
   const dragging = useRef(false);
-  const workspaceWidth = window.innerWidth;
-  const { minimum, maximum } = railWidthBounds(workspaceWidth, detailMode);
+  const { minimum, maximum } = desktopRailWidthBounds(
+    workspace,
+    detailMode,
+  );
   const setFromPointer = (event: PointerEvent<HTMLDivElement>) => {
     const bounds = workspaceRef.current?.getBoundingClientRect();
     if (!bounds) return;
     onChange(
-      clampRailWidth(
+      clampDesktopRailWidth(
         bounds.right - event.clientX,
-        bounds.width,
+        { width: bounds.width, height: bounds.height },
         detailMode,
       ),
     );
@@ -221,11 +198,13 @@ function PlannerSplitter({
     if (event.key === "Home") next = minimum;
     if (event.key === "End") next = maximum;
     if (event.key === "Enter") {
-      next = defaultRailWidth(workspaceWidth, detailMode);
+      event.preventDefault();
+      onReset();
+      return;
     }
     if (next === null) return;
     event.preventDefault();
-    onChange(clampRailWidth(next, workspaceWidth, detailMode));
+    onChange(clampDesktopRailWidth(next, workspace, detailMode));
   };
 
   return (
@@ -239,9 +218,7 @@ function PlannerSplitter({
       aria-valuenow={Math.round(width)}
       aria-valuetext={t("panel.width", { width: Math.round(width) })}
       tabIndex={0}
-      onDoubleClick={() =>
-        onChange(defaultRailWidth(workspaceWidth, detailMode))
-      }
+      onDoubleClick={onReset}
       onKeyDown={onKeyDown}
       onPointerDown={(event) => {
         dragging.current = true;
@@ -698,10 +675,24 @@ function ComparisonCard({
 export default function EclipsePlanner() {
   const { formatNumber, formatTime, locale, t } = useI18n();
   const plannerWorkspaceRef = useRef<HTMLElement>(null);
+  const [plannerWorkspaceSize, setPlannerWorkspaceSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const [railWidths, setRailWidths] = useState(() => ({
-    standard: defaultRailWidth(window.innerWidth, false),
-    detail: defaultRailWidth(window.innerWidth, true),
+    standard: defaultDesktopRailWidth(
+      { width: window.innerWidth, height: window.innerHeight },
+      false,
+    ),
+    detail: defaultDesktopRailWidth(
+      { width: window.innerWidth, height: window.innerHeight },
+      true,
+    ),
   }));
+  const [railWidthCustomized, setRailWidthCustomized] = useState({
+    standard: false,
+    detail: false,
+  });
   const [initialParse] = useState<PlannerUrlParseResult>(initialPlannerUrl);
   const [plannerState, setPlannerState] = useState<PlannerUrlStateV1>(
     initialParse.state,
@@ -854,19 +845,31 @@ export default function EclipsePlanner() {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const workspace = plannerWorkspaceRef.current;
+    if (!workspace) return;
     const resize = () => {
-      const workspaceWidth =
-        plannerWorkspaceRef.current?.getBoundingClientRect().width ??
-        window.innerWidth;
+      const bounds = workspace.getBoundingClientRect();
+      const size = { width: bounds.width, height: bounds.height };
+      setPlannerWorkspaceSize(size);
       setRailWidths((current) => ({
-        standard: clampRailWidth(current.standard, workspaceWidth, false),
-        detail: clampRailWidth(current.detail, workspaceWidth, true),
+        standard: railWidthCustomized.standard
+          ? clampDesktopRailWidth(current.standard, size, false)
+          : defaultDesktopRailWidth(size, false),
+        detail: railWidthCustomized.detail
+          ? clampDesktopRailWidth(current.detail, size, true)
+          : defaultDesktopRailWidth(size, true),
       }));
     };
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, []);
+    resize();
+    if (typeof ResizeObserver !== "function") {
+      window.addEventListener("resize", resize);
+      return () => window.removeEventListener("resize", resize);
+    }
+    const observer = new ResizeObserver(resize);
+    observer.observe(workspace);
+    return () => observer.disconnect();
+  }, [railWidthCustomized.detail, railWidthCustomized.standard]);
 
   useEffect(() => {
     workspaceNavigationRef.current = workspaceNavigation;
@@ -1847,9 +1850,26 @@ export default function EclipsePlanner() {
   const detailRailMode = railContent === "details";
   const railWidth = detailRailMode ? railWidths.detail : railWidths.standard;
   const setActiveRailWidth = (width: number) => {
+    const mode = detailRailMode ? "detail" : "standard";
+    setRailWidthCustomized((current) => ({
+      ...current,
+      [mode]: true,
+    }));
     setRailWidths((current) => ({
       ...current,
-      [detailRailMode ? "detail" : "standard"]: width,
+      [mode]: width,
+    }));
+  };
+  const resetActiveRailWidth = () => {
+    const mode = detailRailMode ? "detail" : "standard";
+    const size = workspaceSize(plannerWorkspaceRef);
+    setRailWidthCustomized((current) => ({
+      ...current,
+      [mode]: false,
+    }));
+    setRailWidths((current) => ({
+      ...current,
+      [mode]: defaultDesktopRailWidth(size, detailRailMode),
     }));
   };
   const detailDestination = detailReturnView(workspaceView);
@@ -1960,9 +1980,11 @@ export default function EclipsePlanner() {
         )}
         <PlannerSplitter
           workspaceRef={plannerWorkspaceRef}
+          workspace={plannerWorkspaceSize}
           width={railWidth}
           detailMode={detailRailMode}
           onChange={setActiveRailWidth}
+          onReset={resetActiveRailWidth}
           t={t}
         />
         <aside

@@ -91,6 +91,49 @@ test("shows national ERA5 climate and deterministic ECMWF forecast views", async
       (value) => /^\d+%$/.test(value),
     ),
   ).toBe(true);
+  const selectedForecastMarker = map.locator(
+    ".eclipse-atmosphere-pin.is-selected",
+  );
+  await expect(selectedForecastMarker).toHaveCount(1);
+  await expect(
+    map.locator(
+      ".eclipse-atmosphere-pin.is-selected + .eclipse-atmosphere-label",
+    ),
+  ).toHaveText("Soria");
+  const selectedForecastGeometry = await page.evaluate(() => {
+    const mapBounds = document
+      .querySelector<HTMLElement>(".map-canvas")
+      ?.getBoundingClientRect();
+    const markerBounds = document
+      .querySelector<HTMLElement>(".eclipse-atmosphere-pin.is-selected")
+      ?.getBoundingClientRect();
+    if (!mapBounds || !markerBounds) return null;
+    return {
+      map: {
+        top: mapBounds.top,
+        right: mapBounds.right,
+        bottom: mapBounds.bottom,
+        left: mapBounds.left,
+      },
+      markerCenter: {
+        x: markerBounds.left + markerBounds.width / 2,
+        y: markerBounds.top + markerBounds.height / 2,
+      },
+    };
+  });
+  expect(selectedForecastGeometry).not.toBeNull();
+  expect(selectedForecastGeometry!.markerCenter.x).toBeGreaterThanOrEqual(
+    selectedForecastGeometry!.map.left,
+  );
+  expect(selectedForecastGeometry!.markerCenter.x).toBeLessThanOrEqual(
+    selectedForecastGeometry!.map.right,
+  );
+  expect(selectedForecastGeometry!.markerCenter.y).toBeGreaterThanOrEqual(
+    selectedForecastGeometry!.map.top,
+  );
+  expect(selectedForecastGeometry!.markerCenter.y).toBeLessThanOrEqual(
+    selectedForecastGeometry!.map.bottom,
+  );
   expect(browserErrors).toEqual([]);
 });
 

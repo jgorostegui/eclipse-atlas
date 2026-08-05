@@ -2869,7 +2869,6 @@ a {
 
 .eclipse-atmosphere-pin-shell {
   display: grid !important;
-  position: relative;
   place-items: center;
 }
 
