@@ -21,6 +21,8 @@ separate.
   and solar altitude.
 - Select a saved reference, click the map, enter coordinates or use your current
   location.
+- Search a source-bound national catalogue of cities, named viewpoints, observatories
+  and planetariums without treating them as ranked or endorsed viewing sites.
 - Inspect local contact times, eclipse circumstances and the western terrain horizon.
 - See the Sun and Moon against an elevation profile calculated from IGN/CNIG data.
 - Compare up to three locations without reducing astronomy, terrain and weather to a
@@ -88,5 +90,9 @@ Report security issues according to [SECURITY.md](SECURITY.md).
 
 ## License
 
-Eclipse Atlas is available under the [MIT License](LICENSE). Runtime dependency notices
-are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Eclipse Atlas source code is available under the [MIT License](LICENSE). Public data keeps
+its source licence: the generated place catalogue contains GeoNames data under CC BY 4.0
+and OpenStreetMap-derived data under ODbL 1.0; it is not relicensed as MIT. Full data
+licences, attribution and transformation details are in [SOURCES.md](SOURCES.md) and
+[public/sources.json](public/sources.json). Runtime dependency notices are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

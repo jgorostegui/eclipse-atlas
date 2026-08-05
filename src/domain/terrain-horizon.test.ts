@@ -32,6 +32,11 @@ const solarDisc = {
   angularRadiusDegrees: 0.262958,
 };
 
+const BURGOS_VALIDATION_POINT = {
+  latitude: 42.3439,
+  longitude: -3.6969,
+} as const;
+
 const planAt = (latitude = 42.1758188, longitude = -1.5970062) =>
   createTerrainSamplePlan(latitude, longitude, {
     centreAzimuthDegrees: solarDisc.centreAzimuthDegrees,
@@ -72,11 +77,17 @@ describe("TerrainRGB primitives", () => {
   });
 
   it("addresses the provider's 512-pixel Web Mercator tiles", () => {
-    expect(terrainPixelAddress(42.3439, -3.6969, 11)).toEqual({
-      tileX: 1004,
-      tileY: 753,
-      pixelX: 85,
-      pixelY: 32,
+    expect(
+      terrainPixelAddress(
+        BURGOS_VALIDATION_POINT.latitude,
+        BURGOS_VALIDATION_POINT.longitude,
+        11,
+      ),
+    ).toEqual({
+      tileX: 1002,
+      tileY: 757,
+      pixelX: 495,
+      pixelY: 313,
     });
   });
 
@@ -129,7 +140,11 @@ describe("TerrainRGB primitives", () => {
   });
 
   it("rejects an opaque black no-data pixel before astronomy can consume it", () => {
-    const address = terrainPixelAddress(42.3439, -3.6969, 11);
+    const address = terrainPixelAddress(
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      11,
+    );
     const pixels = new Uint8ClampedArray(
       TERRAIN_TILE_SIZE * TERRAIN_TILE_SIZE * 4,
     );
@@ -145,7 +160,11 @@ describe("TerrainRGB primitives", () => {
   });
 
   it("rejects partially transparent pixels instead of treating them as terrain", () => {
-    const address = terrainPixelAddress(42.3439, -3.6969, 11);
+    const address = terrainPixelAddress(
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      11,
+    );
     const pixels = new Uint8ClampedArray(
       TERRAIN_TILE_SIZE * TERRAIN_TILE_SIZE * 4,
     );

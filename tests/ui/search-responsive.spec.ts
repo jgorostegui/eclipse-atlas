@@ -27,6 +27,10 @@ test("puts results first on focus even without a keyboard resize event", async (
       await page.setViewportSize(viewport);
       await page.goto(PLACES_URL);
 
+      await expect(page.locator(".place-list-heading b")).toHaveText(
+        "1086 lugares · 124 mostrados",
+      );
+
       const search = page.getByRole("searchbox", {
         name: "Buscar lugares del mapa",
       });
@@ -44,7 +48,7 @@ test("puts results first on focus even without a keyboard resize event", async (
         `${viewport.name}: a text input can trigger iOS focus zoom`,
       ).toBe(true);
       await search.focus();
-      await search.fill("Medi");
+      await search.fill("Bardenas Reales");
 
       await expect(page.locator(".planner-shell")).toHaveAttribute(
         "data-search-active",
@@ -149,10 +153,10 @@ test("keeps the selected result usable when the visual viewport also shrinks", a
   });
   await search.focus();
   await setVisualViewportHeight(page, 390);
-  await search.fill("Burgos neutral control");
+  await search.fill("Burgos");
 
   const result = page.locator(
-    '.place-list button[data-candidate-id="burgos-neutral-control"]',
+    '.place-list button[data-candidate-id="burgos"]',
   );
   await expect(result).toBeVisible();
   await expect(page.locator(".planner-shell")).toHaveCSS("height", "390px");
@@ -160,10 +164,42 @@ test("keeps the selected result usable when the visual viewport also shrinks", a
 
   await result.click();
   await expect(
-    page.getByRole("heading", { name: "Burgos neutral control", exact: true }),
+    page.getByRole("heading", { name: "Burgos", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".planner-shell")).not.toHaveAttribute(
     "data-search-active",
     "true",
   );
+});
+
+test("finds a national astronomy reference without presenting it as an official venue", async ({
+  page,
+}) => {
+  await installDeterministicNetwork(page);
+  const browserErrors = collectBrowserErrors(page);
+  await page.goto(PLACES_URL);
+
+  const search = page.getByRole("searchbox", {
+    name: "Buscar lugares del mapa",
+  });
+  await search.fill("Observatorio del Teide");
+
+  const result = page.locator(
+    '.place-list button[data-candidate-id="osm-observatory-node-652777215"]',
+  );
+  await expect(result).toHaveCount(1);
+  await expect(result).toContainText("lugar astronómico");
+  await result.click();
+
+  await expect(
+    page.getByRole("heading", { name: "Observatorio del Teide", exact: true }),
+  ).toBeVisible();
+  await page.locator(".technical-facts").scrollIntoViewIfNeeded();
+  await expect(
+    page.getByRole("link", { name: "Abrir fuente de coordenadas" }),
+  ).toHaveAttribute("href", "https://www.openstreetmap.org/node/652777215");
+  await expect(page).toHaveURL(
+    /selected=place%3Aosm-observatory-node-652777215/,
+  );
+  expect(browserErrors).toEqual([]);
 });

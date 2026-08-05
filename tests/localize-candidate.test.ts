@@ -10,13 +10,12 @@ describe("candidate localization", () => {
     ["approximate", "candidate.official.coordinateApproximate"],
     ["mapped", "candidate.official.coordinateMapped"],
     ["published", "candidate.official.coordinatePublished"],
+    ["reference", "candidate.official.coordinateReference"],
   ] as const)(
     "uses typed %s coordinate provenance instead of parsing display copy",
     (coordinateKind, expectedKey) => {
       const candidate = candidates.find(
-        (item) =>
-          item.category === "official-observation" &&
-          item.coordinate.kind === coordinateKind,
+        (item) => item.category === "official-observation",
       );
       expect(candidate).toBeDefined();
       if (!candidate) return;
@@ -26,6 +25,7 @@ describe("candidate localization", () => {
           ...candidate,
           coordinate: {
             ...candidate.coordinate,
+            kind: coordinateKind,
             label: "Display text that contains no provenance clues",
           },
         },

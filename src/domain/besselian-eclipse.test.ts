@@ -30,32 +30,32 @@ describe("2026 Besselian eclipse circumstances", () => {
     ).toBeCloseTo(EVENT_TIME_SCALE.deltaTSeconds, 8);
   });
 
-  it("keeps the Burgos local-circumstances regression stable", () => {
+  it("keeps the public Burgos validation regression stable", () => {
     const result = calculateBesselianEclipseCircumstances(
       42.3439,
       -3.6969,
-      596.4,
+      858.1,
     );
     expect(result).not.toBeNull();
     if (!result) return;
 
     expect(result.kind).toBe("total");
     expect(result.partialBegin.toISOString()).toBe(
-      "2026-08-12T17:32:22.497Z",
+      "2026-08-12T17:33:23.630Z",
     );
     expect(result.totalBegin?.toISOString()).toBe(
-      "2026-08-12T18:27:36.445Z",
+      "2026-08-12T18:28:26.330Z",
     );
     expect(result.maximum.toISOString()).toBe(
-      "2026-08-12T18:28:18.610Z",
+      "2026-08-12T18:29:18.226Z",
     );
     expect(result.totalEnd?.toISOString()).toBe(
-      "2026-08-12T18:29:00.573Z",
+      "2026-08-12T18:30:09.899Z",
     );
     expect(result.partialEnd.toISOString()).toBe(
-      "2026-08-12T19:20:48.183Z",
+      "2026-08-12T19:21:44.858Z",
     );
-    expect(result.totalityDurationSeconds).toBeCloseTo(84.1274, 3);
+    expect(result.totalityDurationSeconds).toBeCloseTo(103.569, 3);
     expect(result.magnitude).toBeGreaterThan(1);
   });
 

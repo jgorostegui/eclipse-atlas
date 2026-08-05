@@ -22,8 +22,14 @@ export function AppHeader({
   const { t } = useI18n();
   const baseUrl = import.meta.env.BASE_URL;
   const mastheadArtStyle = {
-    "--masthead-art-desktop": `url("${baseUrl}images/eclipse-atlas-header-1600.webp")`,
-    "--masthead-art-mobile": `url("${baseUrl}images/eclipse-atlas-header-mobile-960.webp")`,
+    "--masthead-art-desktop": `url("${new URL(
+      `${baseUrl}images/eclipse-atlas-header-1600.webp`,
+      window.location.href,
+    ).href}")`,
+    "--masthead-art-mobile": `url("${new URL(
+      `${baseUrl}images/eclipse-atlas-header-mobile-960.webp`,
+      window.location.href,
+    ).href}")`,
   } as CSSProperties;
 
   return (

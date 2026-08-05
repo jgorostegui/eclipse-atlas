@@ -67,7 +67,7 @@ const englishMessages = {
   "explore.closeSearch": "Close search",
   "explore.clearSearch": "Clear search",
   "explore.noResults": "No map place matches this search.",
-  "explore.pointCount": "{count} places",
+  "explore.pointCount": "{total} places · {shown} shown",
   "explore.mapViews": "Map view",
   "map.group.eclipse": "Eclipse",
   "map.group.sky": "Sky",
@@ -79,6 +79,7 @@ const englishMessages = {
   "explore.category.cityReference": "city reference",
   "explore.category.officialObservation": "official observation point",
   "explore.category.viewpoint": "candidate viewpoint",
+  "explore.category.astronomySite": "astronomy site",
   "explore.category.partialContext": "partial-eclipse city",
   "explore.category.localReference": "local reference",
   "explore.category.custom": "chosen coordinate",
@@ -129,6 +130,7 @@ const englishMessages = {
   "map.nearbyReferences": "nearby points",
   "map.clusterTitle":
     "{count} nearby points: {names}. Zoom in to separate them.",
+  "map.clusterMoreNames": "{names} and {count} more",
   "map.markerLegend": "Markers: totality · Sun altitude",
   "map.overlay.label": "View",
   "map.overlay.details": "Official national eclipse view details",
@@ -435,24 +437,6 @@ const englishMessages = {
     "The protected landscape has access controls; the organizer remains the authority for admission and parking.",
   "candidate.ferial.coordinate": "Approximate landscape feature",
   "candidate.ferial.operations": "Check the official El Ferial event page",
-  "candidate.burgosControl.name": "Burgos neutral control",
-  "candidate.burgosControl.description":
-    "A municipality-level reference for examining local eclipse geometry and western terrain, pending an exact field position.",
-  "candidate.burgosControl.limit1":
-    "The marker is the OpenStreetMap town centre, not a confirmed observation venue.",
-  "candidate.burgosControl.limit2":
-    "The municipality has announced a programme, but the exact viewing position must be verified before travel.",
-  "candidate.burgosControl.coordinate": "Approximate administrative centre",
-  "candidate.burgosControl.operations": "Read the municipal eclipse announcement",
-  "candidate.soriaTerrain.name": "Soria neutral control",
-  "candidate.soriaTerrain.description":
-    "A named mountain pass east of Burgos neutral control for comparing nearby higher ground and the western terrain horizon.",
-  "candidate.soriaTerrain.limit1":
-    "The marker is the named OpenStreetMap mountain-pass node, not a confirmed eclipse venue.",
-  "candidate.soriaTerrain.limit2":
-    "Land access, parking, safety, vegetation and buildings must be checked independently.",
-  "candidate.soriaTerrain.coordinate": "Named mountain-pass node",
-  "candidate.soriaTerrain.operations": "No eclipse operations verified",
   "candidate.official.networkDescription":
     "An official observation-network location linked to the organizer's current operational page.",
   "candidate.official.recommendedDescription":
@@ -465,9 +449,33 @@ const englishMessages = {
   "candidate.official.coordinateMapped": "Mapped venue reference",
   "candidate.official.coordinateApproximate":
     "Approximate municipality coordinate",
+  "candidate.official.coordinateReference":
+    "Municipality reference coordinate",
   "candidate.official.networkOperations": "Official observation network",
   "candidate.official.recommendedOperations":
     "Official recommended observation point",
+  "candidate.catalog.spainRegion": "Spanish territory",
+  "candidate.catalog.cityDescription":
+    "A populated-place reference for geographic discovery across the three supported eclipses.",
+  "candidate.catalog.cityLimit1":
+    "The marker is a populated-place coordinate, not an observation venue.",
+  "candidate.catalog.cityLimit2":
+    "Eclipse geometry, terrain, access and operations depend on the exact selected position.",
+  "candidate.catalog.cityCoordinate": "Populated-place reference coordinate",
+  "candidate.catalog.viewpointDescription":
+    "A named mapped viewpoint included as a place to investigate, not as an eclipse recommendation.",
+  "candidate.catalog.viewpointLimit1":
+    "The viewpoint has not been field-checked for any supported eclipse.",
+  "candidate.catalog.viewpointLimit2":
+    "Orientation, terrain clearance, access, capacity and operations remain unverified.",
+  "candidate.catalog.astronomyDescription":
+    "A named astronomical observatory or planetarium included as a geographic reference.",
+  "candidate.catalog.astronomyLimit1":
+    "An astronomy facility is not necessarily open to the public or suitable for solar observation.",
+  "candidate.catalog.astronomyLimit2":
+    "Opening, access, capacity, local obstacles and eclipse operations remain unverified.",
+  "candidate.catalog.mappedCoordinate": "Mapped OpenStreetMap feature",
+  "candidate.catalog.operations": "No eclipse operations verified",
   "candidate.custom.name": "Custom point {latitude}, {longitude}",
   "candidate.custom.short": "Custom point",
   "candidate.custom.shortCoordinates": "{latitude}, {longitude}",
@@ -549,7 +557,7 @@ const spanishMessages: Record<MessageKey, string> = {
   "explore.closeSearch": "Cerrar búsqueda",
   "explore.clearSearch": "Borrar búsqueda",
   "explore.noResults": "Ningún lugar del mapa coincide con la búsqueda.",
-  "explore.pointCount": "{count} lugares",
+  "explore.pointCount": "{total} lugares · {shown} mostrados",
   "explore.mapViews": "Vista del mapa",
   "map.group.eclipse": "Eclipse",
   "map.group.sky": "Cielo",
@@ -561,6 +569,7 @@ const spanishMessages: Record<MessageKey, string> = {
   "explore.category.cityReference": "referencia urbana",
   "explore.category.officialObservation": "punto oficial de observación",
   "explore.category.viewpoint": "mirador candidato",
+  "explore.category.astronomySite": "lugar astronómico",
   "explore.category.partialContext": "ciudad con eclipse parcial",
   "explore.category.localReference": "referencia local",
   "explore.category.custom": "coordenada elegida",
@@ -611,6 +620,7 @@ const spanishMessages: Record<MessageKey, string> = {
   "map.nearbyReferences": "puntos cercanos",
   "map.clusterTitle":
     "{count} puntos cercanos: {names}. Acerca el mapa para separarlos.",
+  "map.clusterMoreNames": "{names} y {count} más",
   "map.markerLegend": "Marcadores: totalidad · altura solar",
   "map.overlay.label": "Vista",
   "map.overlay.details": "Detalles de la vista nacional oficial del eclipse",
@@ -917,24 +927,6 @@ const spanishMessages: Record<MessageKey, string> = {
     "El espacio protegido tiene controles de acceso; el organizador es la autoridad sobre admisión y aparcamiento.",
   "candidate.ferial.coordinate": "Elemento paisajístico aproximado",
   "candidate.ferial.operations": "Consultar la página oficial de El Ferial",
-  "candidate.burgosControl.name": "Burgos neutral control",
-  "candidate.burgosControl.description":
-    "Una referencia municipal para examinar la geometría local del eclipse y el relieve occidental, pendiente de una posición exacta de campo.",
-  "candidate.burgosControl.limit1":
-    "El marcador es el centro urbano de OpenStreetMap, no un lugar confirmado de observación.",
-  "candidate.burgosControl.limit2":
-    "El municipio ha anunciado un programa, pero la posición exacta debe verificarse antes de viajar.",
-  "candidate.burgosControl.coordinate": "Centro administrativo aproximado",
-  "candidate.burgosControl.operations": "Leer el anuncio municipal del eclipse",
-  "candidate.soriaTerrain.name": "Soria neutral control",
-  "candidate.soriaTerrain.description":
-    "Un puerto de montaña al este de Burgos neutral control para comparar terreno cercano más alto y el horizonte occidental.",
-  "candidate.soriaTerrain.limit1":
-    "El marcador es el nodo de puerto de montaña de OpenStreetMap, no un lugar confirmado para el eclipse.",
-  "candidate.soriaTerrain.limit2":
-    "El acceso, aparcamiento, seguridad, vegetación y edificios deben comprobarse de forma independiente.",
-  "candidate.soriaTerrain.coordinate": "Nodo de puerto de montaña",
-  "candidate.soriaTerrain.operations": "Sin operativa del eclipse verificada",
   "candidate.official.networkDescription":
     "Un lugar de una red oficial de observación enlazado con la información operativa actual del organizador.",
   "candidate.official.recommendedDescription":
@@ -947,9 +939,33 @@ const spanishMessages: Record<MessageKey, string> = {
   "candidate.official.coordinateMapped": "Referencia cartográfica del lugar",
   "candidate.official.coordinateApproximate":
     "Coordenada municipal aproximada",
+  "candidate.official.coordinateReference":
+    "Coordenada de referencia del municipio",
   "candidate.official.networkOperations": "Red oficial de observación",
   "candidate.official.recommendedOperations":
     "Punto oficial de observación recomendado",
+  "candidate.catalog.spainRegion": "Territorio español",
+  "candidate.catalog.cityDescription":
+    "Una referencia de población para explorar geográficamente los tres eclipses disponibles.",
+  "candidate.catalog.cityLimit1":
+    "El marcador es una coordenada de población, no un lugar de observación.",
+  "candidate.catalog.cityLimit2":
+    "La geometría del eclipse, el terreno, el acceso y la operativa dependen de la posición exacta elegida.",
+  "candidate.catalog.cityCoordinate": "Coordenada de referencia de la población",
+  "candidate.catalog.viewpointDescription":
+    "Un mirador cartografiado con nombre que se incluye para investigarlo, no como recomendación para el eclipse.",
+  "candidate.catalog.viewpointLimit1":
+    "El mirador no se ha comprobado sobre el terreno para ninguno de los eclipses disponibles.",
+  "candidate.catalog.viewpointLimit2":
+    "La orientación, el despeje del terreno, el acceso, el aforo y la operativa siguen sin verificar.",
+  "candidate.catalog.astronomyDescription":
+    "Un observatorio astronómico o planetario con nombre incluido como referencia geográfica.",
+  "candidate.catalog.astronomyLimit1":
+    "Un equipamiento astronómico no tiene por qué estar abierto al público ni ser apto para observar el Sol.",
+  "candidate.catalog.astronomyLimit2":
+    "La apertura, el acceso, el aforo, los obstáculos locales y la operativa del eclipse siguen sin verificar.",
+  "candidate.catalog.mappedCoordinate": "Elemento cartografiado en OpenStreetMap",
+  "candidate.catalog.operations": "Sin operativa del eclipse verificada",
   "candidate.custom.name": "Punto personalizado {latitude}, {longitude}",
   "candidate.custom.short": "Punto personalizado",
   "candidate.custom.shortCoordinates": "{latitude}, {longitude}",

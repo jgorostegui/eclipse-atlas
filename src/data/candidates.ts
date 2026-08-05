@@ -7,6 +7,9 @@ import nationalPlanningPoints from "./national-planning-points.json" with {
 import officialObservationPoints from "./official-observation-points.json" with {
   type: "json",
 };
+import publicPlaceCatalog from "./public-place-catalog.json" with {
+  type: "json",
+};
 
 export const CUSTOM_COORDINATE_DECIMAL_PLACES = 6;
 
@@ -19,6 +22,7 @@ export function formatCustomCoordinate(value: number) {
 
 export type CandidateKind =
   | "administrative-centre"
+  | "astronomy-reference"
   | "landscape-reference"
   | "official-site"
   | "user-selected";
@@ -26,6 +30,8 @@ export type CandidateKind =
 export type CandidateCategory =
   | "totality-city"
   | "candidate-viewpoint"
+  | "city-reference"
+  | "astronomy-site"
   | "official-observation"
   | "partial-context"
   | "local-reference"
@@ -57,6 +63,7 @@ export type CandidateLocation = {
   kind: CandidateKind;
   category: CandidateCategory;
   defaultVisible: boolean;
+  mapVisibleByDefault?: boolean;
   atmosphereReference: boolean;
   description: string;
   limitations: string[];
@@ -142,70 +149,6 @@ const localCandidates: CandidateLocation[] = [
       sourceUrl:
         "https://eklipsenavarra.com/es/puntos-de-observaci%C3%B3n/bardenas-reales-el-ferial",
       reviewedAt: "2026-08-02",
-    },
-  },
-  {
-    id: "burgos-neutral-control",
-    name: "Burgos neutral control planning area",
-    shortName: "Burgos control",
-    municipality: "Burgos neutral control",
-    region: "Burgos",
-    latitude: candidateReferencePoints.references["burgos-neutral-control"].latitude,
-    longitude: candidateReferencePoints.references["burgos-neutral-control"].longitude,
-    kind: "administrative-centre",
-    category: "local-reference",
-    defaultVisible: false,
-    atmosphereReference: false,
-    description:
-      "A municipality-level reference for examining local eclipse geometry and western terrain, pending an exact field position.",
-    limitations: [
-      "The marker is the OpenStreetMap town centre, not a confirmed observation venue.",
-      "The municipality has announced a programme, but the exact viewing position must be verified before travel.",
-    ],
-    coordinate: {
-      kind: "approximate",
-      label: "Approximate administrative centre",
-      sourceName: "OpenStreetMap relation 340077",
-      sourceUrl: "https://www.openstreetmap.org/relation/340077",
-      retrievedAt: "2026-08-02",
-    },
-    operations: {
-      status: "municipal-programme",
-      label: "Read the municipal eclipse announcement",
-      sourceName: "Burgos neutral control City Council",
-      sourceUrl:
-        "https://www.example.invalid/noticias/burgos-neutral-control-se-prepara-para-el-historico-eclipse-total-de-sol-del-12-de-agosto",
-      reviewedAt: "2026-08-02",
-    },
-  },
-  {
-    id: "soria-neutral-control",
-    name: "Soria neutral control landscape reference",
-    shortName: "Soria neutral control",
-    municipality: "Burgos neutral control",
-    region: "Burgos",
-    latitude: candidateReferencePoints.references["soria-neutral-control"].latitude,
-    longitude: candidateReferencePoints.references["soria-neutral-control"].longitude,
-    kind: "landscape-reference",
-    category: "local-reference",
-    defaultVisible: false,
-    atmosphereReference: false,
-    description:
-      "A named mountain pass east of Burgos neutral control, useful for seeing how a nearby higher reference changes eclipse geometry and the western terrain horizon.",
-    limitations: [
-      "The marker is the named OpenStreetMap mountain-pass node, not a confirmed eclipse venue or field observation position.",
-      "Land access, parking, safety, vegetation and buildings must be checked independently.",
-    ],
-    coordinate: {
-      kind: "named",
-      label: "Named mountain-pass node",
-      sourceName: "OpenStreetMap node 11914361210",
-      sourceUrl: "https://www.openstreetmap.org/node/11914361210",
-      retrievedAt: "2026-08-02",
-    },
-    operations: {
-      status: "unverified",
-      label: "No eclipse operations verified",
     },
   },
 ];
@@ -587,10 +530,93 @@ function officialObservationCandidate(
   };
 }
 
+type PublicPlaceCatalogPoint = (typeof publicPlaceCatalog.points)[number];
+
+function publicPlaceCategory(value: string): CandidateCategory {
+  switch (value) {
+    case "city-reference":
+    case "candidate-viewpoint":
+    case "astronomy-site":
+      return value;
+    default:
+      throw new RangeError(`Unsupported public place category: ${value}`);
+  }
+}
+
+function publicPlaceCatalogCandidate(
+  point: PublicPlaceCatalogPoint,
+): CandidateLocation {
+  const category = publicPlaceCategory(point.category);
+  const isCity = category === "city-reference";
+  const isViewpoint = category === "candidate-viewpoint";
+  return {
+    id: point.id,
+    name: point.name,
+    shortName: point.shortName,
+    ...(isCity ? { municipality: point.name } : {}),
+    region: point.region,
+    latitude: point.latitude,
+    longitude: point.longitude,
+    kind: isCity
+      ? "administrative-centre"
+      : isViewpoint
+        ? "landscape-reference"
+        : "astronomy-reference",
+    category,
+    defaultVisible: false,
+    mapVisibleByDefault: true,
+    atmosphereReference: false,
+    description: isCity
+      ? "A populated-place reference included for geographic discovery across the three supported eclipses."
+      : isViewpoint
+        ? "A named mapped viewpoint included as a place to investigate, not as an eclipse recommendation."
+        : "A named astronomical observatory or planetarium included as a geographic reference.",
+    limitations: isCity
+      ? [
+          "The marker is a populated-place coordinate, not an observation venue.",
+          "Eclipse geometry, terrain, access and operations depend on the exact selected position.",
+        ]
+      : isViewpoint
+        ? [
+            "The mapped viewpoint has not been field-checked for any supported eclipse.",
+            "Orientation, terrain clearance, access, capacity and operations remain unverified.",
+          ]
+        : [
+            "An astronomy facility is not necessarily open to the public or suitable for solar observation.",
+            "Opening, access, capacity, local obstacles and event operations remain unverified.",
+          ],
+    coordinate: {
+      kind: point.source === "geonames" ? "reference" : "mapped",
+      label: point.source === "geonames" ? "City reference coordinate" : "Mapped feature",
+      sourceName:
+        point.source === "geonames"
+          ? `GeoNames feature ${point.sourceFeatureId}`
+          : `OpenStreetMap feature ${point.sourceFeatureId}`,
+      sourceUrl: point.sourceUrl,
+      retrievedAt:
+        point.source === "geonames"
+          ? "2026-08-02"
+          : publicPlaceCatalog.generatedAt,
+    },
+    operations: {
+      status: "unverified",
+      label: "No eclipse operations verified",
+    },
+  };
+}
+
+const retainedSourceUrls = new Set<string>(
+  nationalPlanningPoints.points.map(({ sourceUrl }) => sourceUrl),
+);
+const expandedPublicPlaceCandidates = publicPlaceCatalog.points
+  .filter(({ sourceUrl }) => !retainedSourceUrls.has(sourceUrl))
+  .map(publicPlaceCatalogCandidate);
+
 export const candidates: CandidateLocation[] = [
   ...nationalPlanningPoints.points.map(nationalCandidate),
   ...officialObservationPoints.points.map(officialObservationCandidate),
   ...officialNetworkCandidates,
+  ...expandedPublicPlaceCandidates,
   ...localCandidates,
 ];
 

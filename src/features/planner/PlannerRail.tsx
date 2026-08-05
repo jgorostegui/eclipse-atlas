@@ -29,8 +29,10 @@ const skyMapViews = [
 
 const categoryLabels: Record<CandidateCategory, MessageKey> = {
   "totality-city": "explore.category.totalityCity",
+  "city-reference": "explore.category.cityReference",
   "official-observation": "explore.category.officialObservation",
   "candidate-viewpoint": "explore.category.viewpoint",
+  "astronomy-site": "explore.category.astronomySite",
   "partial-context": "explore.category.partialContext",
   "local-reference": "explore.category.localReference",
   custom: "explore.category.custom",
@@ -102,6 +104,7 @@ export function LocationExplorer({
   onSearchActiveChange,
   eventId,
   t,
+  formatNumber,
 }: {
   hidden: boolean;
   searchActive: boolean;
@@ -113,6 +116,7 @@ export function LocationExplorer({
   onSearchActiveChange: (active: boolean) => void;
   eventId: EclipseEventId;
   t: Translate;
+  formatNumber: (value: number) => string;
 }) {
   const [query, setQuery] = useState("");
   const [latitude, setLatitude] = useState("");
@@ -122,18 +126,21 @@ export function LocationExplorer({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = query.trim().toLocaleLowerCase();
 
+  const cataloguePoints = useMemo(
+    () =>
+      points.filter(
+        ({ candidate }) => candidate.kind !== "user-selected",
+      ),
+    [points],
+  );
   const visiblePoints = useMemo(() => {
-    const catalogue = points.filter(
-      ({ candidate }) =>
-        candidate.kind !== "user-selected" &&
-        (normalizedQuery !== "" || candidate.defaultVisible),
-    );
-    return catalogue.filter(({ candidate }) => {
+    return cataloguePoints.filter(({ candidate }) => {
+      if (normalizedQuery === "" && !candidate.defaultVisible) return false;
       const haystack = `${candidate.name} ${candidate.shortName} ${candidate.region}`
         .toLocaleLowerCase();
       return normalizedQuery === "" || haystack.includes(normalizedQuery);
     });
-  }, [normalizedQuery, points]);
+  }, [cataloguePoints, normalizedQuery]);
 
   useEffect(() => {
     if (hidden || focusSelectedRequestKey === 0) return;
@@ -268,7 +275,12 @@ export function LocationExplorer({
       </div>
 
       <div className="place-list-heading">
-        <b>{t("explore.pointCount", { count: visiblePoints.length })}</b>
+        <b>
+          {t("explore.pointCount", {
+            total: formatNumber(cataloguePoints.length),
+            shown: formatNumber(visiblePoints.length),
+          })}
+        </b>
         <button type="button" onClick={useCurrentLocation}>
           {t("explore.useLocation")}
         </button>

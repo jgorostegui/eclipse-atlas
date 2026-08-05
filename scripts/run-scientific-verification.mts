@@ -185,7 +185,7 @@ const RELEASE_CRITERIA = JSON.parse(
   minimumValidationPointCount: number;
   minimumMdt05ComparisonCount: number;
   minimumNearbyHorizonPairCount: number;
-  requiredProductReferenceIds: string[];
+  requiredValidationStrata: string[];
   numericalThresholds: FixtureManifest["thresholds"];
   requiredEvidenceCounts: Record<string, number>;
 };

@@ -56,8 +56,11 @@ const OFFICIAL_OVERVIEW_MAX_ZOOM = 10;
 const UMBRA_PLAYBACK_DURATION_MILLISECONDS = 20_000;
 const UMBRA_MAX_FRAMES_PER_SECOND = 15;
 const REFERENCE_COLLISION_PIXELS = 48;
+const REFERENCE_TARGET_RADIUS_PIXELS = 22;
 const REFERENCE_CLUSTER_MAX_ZOOM = 10;
 const REFERENCE_LABEL_MIN_ZOOM = 9;
+const REFERENCE_CLUSTER_NAME_LIMIT = 4;
+const REFERENCE_VIEWPORT_FILTER_MIN_ZOOM = 7;
 
 export type MappedCandidate = {
   candidate: CandidateLocation;
@@ -485,6 +488,9 @@ export function EclipseMap({
     if (status !== "ready" || !L || !layer || !map) return;
     layer.clearLayers();
 
+    const atmosphereView = isAtmosphereMapView(overviewSelection);
+    const viewportBounds = map.getBounds().pad(0.25);
+    const viewportSize = map.getSize();
     const selectedPoint = points.find(
       (point) => point.candidate.id === selected?.candidate.id,
     );
@@ -494,7 +500,7 @@ export function EclipseMap({
           selectedPoint.candidate.longitude,
         ])
       : null;
-    const unselectedPoints = points.filter((point) => {
+    const isAwayFromSelected = (point: MappedCandidate) => {
       if (point.candidate.id === selected?.candidate.id) return false;
       if (!selectedProjection) return true;
       const projected = map.latLngToLayerPoint([
@@ -502,12 +508,59 @@ export function EclipseMap({
         point.candidate.longitude,
       ]);
       return projected.distanceTo(selectedProjection) >= REFERENCE_COLLISION_PIXELS;
+    };
+    const hasCompleteTargetInsideViewport = (point: MappedCandidate) => {
+      const projected = map.latLngToContainerPoint([
+        point.candidate.latitude,
+        point.candidate.longitude,
+      ]);
+      return (
+        projected.x >= REFERENCE_TARGET_RADIUS_PIXELS &&
+        projected.x <= viewportSize.x - REFERENCE_TARGET_RADIUS_PIXELS &&
+        projected.y >= REFERENCE_TARGET_RADIUS_PIXELS &&
+        projected.y <= viewportSize.y - REFERENCE_TARGET_RADIUS_PIXELS
+      );
+    };
+    const retainedPoints = points.filter(
+      (point) =>
+        point.candidate.defaultVisible &&
+        isAwayFromSelected(point) &&
+        (atmosphereView || hasCompleteTargetInsideViewport(point)),
+    );
+    const visibleExpandedPoints = atmosphereView
+      ? []
+      : points.filter(
+          (point) =>
+            !point.candidate.defaultVisible &&
+            isAwayFromSelected(point) &&
+            hasCompleteTargetInsideViewport(point) &&
+            (mapZoom < REFERENCE_VIEWPORT_FILTER_MIN_ZOOM ||
+              viewportBounds.contains([
+                point.candidate.latitude,
+                point.candidate.longitude,
+              ])),
+        );
+    const retainedProjections = retainedPoints.map((point) =>
+      map.latLngToLayerPoint([
+        point.candidate.latitude,
+        point.candidate.longitude,
+      ]),
+    );
+    const expandedPoints = visibleExpandedPoints.filter((point) => {
+      const projected = map.latLngToLayerPoint([
+        point.candidate.latitude,
+        point.candidate.longitude,
+      ]);
+      return retainedProjections.every(
+        (retainedProjection) =>
+          projected.distanceTo(retainedProjection) >=
+          REFERENCE_COLLISION_PIXELS,
+      );
     });
-    const markerGroups =
-      mapZoom <= REFERENCE_CLUSTER_MAX_ZOOM &&
-      !isAtmosphereMapView(overviewSelection)
+    const groupReferences = (references: MappedCandidate[]) =>
+      mapZoom <= REFERENCE_CLUSTER_MAX_ZOOM && !atmosphereView
         ? groupCollidingReferences(
-            unselectedPoints,
+            references,
             (point) => {
               const projected = map.latLngToLayerPoint([
                 point.candidate.latitude,
@@ -517,7 +570,14 @@ export function EclipseMap({
             },
             REFERENCE_COLLISION_PIXELS,
           )
-        : unselectedPoints.map((point) => [point]);
+        : references.map((point) => [point]);
+    // Retained planning references keep their established grouping and
+    // keyboard targets. The much larger discovery catalogue is grouped
+    // separately so it cannot absorb a retained marker into a dense cluster.
+    const markerGroups = [
+      ...groupReferences(retainedPoints),
+      ...groupReferences(expandedPoints),
+    ];
     if (selectedPoint) markerGroups.push([selectedPoint]);
 
     markerGroups.forEach((group) => {
@@ -528,7 +588,17 @@ export function EclipseMap({
         const longitude =
           group.reduce((sum, point) => sum + point.candidate.longitude, 0) /
           group.length;
-        const names = group.map((point) => point.candidate.shortName).join(", ");
+        const visibleNames = group
+          .slice(0, REFERENCE_CLUSTER_NAME_LIMIT)
+          .map((point) => point.candidate.shortName)
+          .join(", ");
+        const names =
+          group.length > REFERENCE_CLUSTER_NAME_LIMIT
+            ? t("map.clusterMoreNames", {
+                names: visibleNames,
+                count: group.length - REFERENCE_CLUSTER_NAME_LIMIT,
+              })
+            : visibleNames;
         const expansionZoom = Math.max(9, mapZoom + 2);
         const marker = L.marker([latitude, longitude], {
           icon: L.divIcon({
@@ -562,7 +632,7 @@ export function EclipseMap({
       const isSelected = candidate.id === selected?.candidate.id;
       const duration = eclipse?.totalityDurationSeconds;
       const showLabel = isSelected || mapZoom >= REFERENCE_LABEL_MIN_ZOOM;
-      if (isAtmosphereMapView(overviewSelection)) {
+      if (atmosphereView) {
         const cloudCover = atmosphereMarkerValue(
           overviewSelection,
           candidate.id,
@@ -652,6 +722,7 @@ export function EclipseMap({
     climateByCandidateId,
     forecastByCandidateId,
     formatNumber,
+    mapCenter,
     mapZoom,
     eventId,
     onSelect,

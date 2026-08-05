@@ -23,9 +23,12 @@ describe("national planning catalogue", () => {
       visible.filter((candidate) => candidate.atmosphereReference),
     ).toHaveLength(41);
     expect(
-      candidates.find((candidate) => candidate.id === "burgos-neutral-control")
-        ?.defaultVisible,
-    ).toBe(false);
+      candidates.filter(
+        (candidate) =>
+          candidate.mapVisibleByDefault ?? candidate.defaultVisible,
+      ),
+    ).toHaveLength(1_084);
+    expect(candidates).toHaveLength(1_086);
   });
 
   it("keeps identifiers unique and every published anchor traceable", () => {
@@ -55,6 +58,9 @@ describe("national planning catalogue", () => {
     expect(castillaYLeon.filter(({ shortName }) => shortName === "Burgos")).toHaveLength(2);
     expect(castillaYLeon.filter(({ shortName }) => shortName === "Tejada")).toHaveLength(2);
     expect(castillaYLeon.filter(({ shortName }) => shortName === "Tiedra")).toHaveLength(2);
+    expect(
+      official.filter(({ id }) => id.startsWith("navarra-")),
+    ).toHaveLength(4);
 
     for (const candidate of official) {
       expect(candidate.operations.sourceUrl).toMatch(/^https:\/\//);

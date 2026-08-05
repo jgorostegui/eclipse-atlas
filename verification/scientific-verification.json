@@ -1,40 +1,40 @@
 {
   "schemaVersion": 2,
   "reportVersion": "2.1.0",
-  "generatedAt": "2026-08-05T13:18:56.269Z",
+  "generatedAt": "2026-08-05T20:47:57.978Z",
   "event": {
     "date": "2026-08-12",
     "timeStandard": "UTC"
   },
   "environment": {
     "projectVersion": "0.1.0",
-    "gitCommit": "47bc3360d900f8f59947f27ac96b902bf0c7f949",
+    "gitCommit": "85550d3aa03cfe605f9c1d49bbe10a254edfeea4",
     "gitClean": false,
     "node": "v22.22.2",
     "npm": "10.9.7",
     "operatingSystem": "Linux 7.0.0-28-generic x64",
     "packageLockSha256": "b16483e47be4a4519ab92a9355a4fdd0fde7a0ca7d841f0fa0aa07bd0b8955d8",
-    "generatorSha256": "b787100fbcafb64c8f053a334427120d95c04c74dcf93024181b22ef6b1d2e52",
-    "acceptanceSha256": "0149419467bacefae801aa5c36110a6db60d019e9ce441af84032a2be361dd08",
+    "generatorSha256": "4c270c24aab1a2fc743bb989f5fbc0c6974a7aafe1c1329963407035db849eda",
+    "acceptanceSha256": "cd37311408983ee93de91007969670ad329ebb39193c2cb118498cf231159c78",
     "scientificInputSha256": {
-      "package.json": "bc8c9bc3f5fb0d540b2dda35a7c94839e0074d6563d11c0cc421fa162fa291a3",
+      "package.json": "826cffcdbc0cef08989f5e35adcd4a0801eb6ba3ba893a5bef8176498eec5a8b",
       "package-lock.json": "b16483e47be4a4519ab92a9355a4fdd0fde7a0ca7d841f0fa0aa07bd0b8955d8",
-      "scripts/scientific-verification.mjs": "c359617971960c9cf470ac182e237f1cb44dc9ca2afe11822d72fcddf8fb9933",
+      "scripts/scientific-verification.mjs": "4f5005bcb12b19d3738b0939253abe2c8565e52cc0c343b025a842d5aa26054d",
       "scripts/required-input-path.mts": "84763c4a75f3861c6ad0c9554d562fc709ef2926a2e4c51260f73ce7100b75de",
       "scripts/verification-reference-geometry.mjs": "96272ff750a7da9880ceef7a9a0f44a2cac7b6a86f337dc4589b23fb93e82108",
       "scripts/verification-reference-geometry.d.mts": "533211d54e06af6392397c7ee2dae676e37ec46924c208a9562b1bedbf55f79c",
       "tests/verification-reference-geometry.test.mjs": "5134a52cba5f5cc436cc00bb52709709db8455c0f4c4d53ad2880b9c21b25508",
-      "verification/acceptance.json": "0149419467bacefae801aa5c36110a6db60d019e9ce441af84032a2be361dd08",
-      "public/sources.json": "1975f034a630da530b6aa2bc62ead66cbf30fb86f08070d242ca214f2e509ae3",
+      "verification/acceptance.json": "cd37311408983ee93de91007969670ad329ebb39193c2cb118498cf231159c78",
+      "public/sources.json": "5b68f47fdf8fb41d9a4d9f01edd12ec0c76cb6a1e5145755d4c46acf09082c13",
       "src/domain/astronomy.ts": "cef4bc9fc4fbee981e9e6c52eab8bce44fa11fea39bc8b925cdeae812290e55e",
       "src/domain/besselian-eclipse.ts": "de9110f2d5ab772524127184ca205fddd4be331ae196c03989549e04fe9684cd",
-      "src/domain/besselian-eclipse.test.ts": "3be2372c4669b32aa90b06ef36e6e9f48e80896fddb7833319a33cfb135062d4",
+      "src/domain/besselian-eclipse.test.ts": "c65c0f463481787cea2b247440e0f57dae08ae1eb102f17e5d3ef0144cae8bca",
       "src/domain/eclipse.ts": "0e45726fef039b8ed9e97d15666d1ec47af3029c426bbc5644a4746154f76c75",
-      "src/domain/eclipse.test.ts": "19fa5f4f37f567b6f042796e83ccbfb248431e56c297d390b708c1babcd767ca",
+      "src/domain/eclipse.test.ts": "01bad6af67ca7e2f29e5040f1b9b251e44da695991c41cbcf4f7ba0f2f96da35",
       "src/domain/observer.ts": "26048dbfb43838a226bef3fc0e58c03e8760b80f86384b91ac657ebdc17859c5",
       "src/domain/terrain-coverage.ts": "911851d410b15b45e5f8e6b3c713b9b53ca901d2a8765b0280caf4d1fdee60ac",
       "src/domain/terrain-horizon.ts": "e42fde9312bfc6282d64af0789f3356a8fa274c852ab56fc320f64228220355f",
-      "src/domain/terrain-horizon.test.ts": "3a8cf1e7721bf3a6e6b4f404ef3531ae34cd92147c8c7c856d97a96316ea5d45",
+      "src/domain/terrain-horizon.test.ts": "1ed4d33c5ce2dd3aed83381623c6ba31572e125ba7a20707ea1ec4463b3d7bf3",
       "src/features/horizon/horizon-animation-model.ts": "40ac4658ce2105d9fd473c30b6e9e22919533a577b1181bcab77f83b62da9ca0",
       "src/features/horizon/horizon-animation-model.test.ts": "82d8b5b79b1a9d158fa5eda4389861e29fab85be049ff65fccc2c3445f191bf8",
       "src/features/horizon/horizon-scene-model.ts": "ce449d6fa6905932f2ab57679891cc05491dcf471b8e24836abf16e472312660",
@@ -63,7 +63,7 @@
   },
   "fixtures": {
     "fixtureVersion": "2.0.0",
-    "validationPointManifestSha256": "becd2636136fd364726a347e3378ecffcb10315e4d7c9d657b37acffe7a6be40",
+    "validationPointManifestSha256": "ed0599c965d0c21e6fcc7387b12d852a289a100cf67dce737f43a3fe06085801",
     "fixtureManifestSha256": "eaacdea0ae08075c878b60263011b047e5422e6f777a60d85e2a5c403710a963",
     "acquiredAt": "2026-08-03T01:14:19.778Z",
     "official": [
@@ -856,126 +856,6 @@
         "actualSha256": "3efc4bad9c11a6e2f318809b0ea144672c1ce55b49d01cdca8f588a0bf5656c5"
       },
       {
-        "fixtureId": "burgos-neutral-control-product-reference:0",
-        "bytes": 583980,
-        "expectedSha256": "19c12afe8ed72f3bffb19ea817dc68b6b4fb80ab3562bcd31ce7342e72df15ed",
-        "actualSha256": "19c12afe8ed72f3bffb19ea817dc68b6b4fb80ab3562bcd31ce7342e72df15ed"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:1",
-        "bytes": 581754,
-        "expectedSha256": "bac18451c0cca5844328ef75334a9b9a39d1b1df8ddb1f8361c347ff0b9cb785",
-        "actualSha256": "bac18451c0cca5844328ef75334a9b9a39d1b1df8ddb1f8361c347ff0b9cb785"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:2",
-        "bytes": 581754,
-        "expectedSha256": "a84b883415c07efba1063d37286891851a67d5dc80be562f0997005b3f57c02d",
-        "actualSha256": "a84b883415c07efba1063d37286891851a67d5dc80be562f0997005b3f57c02d"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:3",
-        "bytes": 579524,
-        "expectedSha256": "9369268376cd60d28406676583191ca33991119d2ce4b3884f0120b519cd5b95",
-        "actualSha256": "9369268376cd60d28406676583191ca33991119d2ce4b3884f0120b519cd5b95"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:4",
-        "bytes": 576850,
-        "expectedSha256": "2e1fe014ac940d19e1a0a6fac2d071d2bcd361b31eea51c5197a68c3273089e2",
-        "actualSha256": "2e1fe014ac940d19e1a0a6fac2d071d2bcd361b31eea51c5197a68c3273089e2"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:5",
-        "bytes": 576850,
-        "expectedSha256": "73a55fcc16c427f5c87d6e2762add2aa279330146d0695faa76bb6837e732ec7",
-        "actualSha256": "73a55fcc16c427f5c87d6e2762add2aa279330146d0695faa76bb6837e732ec7"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:6",
-        "bytes": 574614,
-        "expectedSha256": "dcf06752418299c880d908c0323c803c13408b4ac8dd8156fe8488cccf4ac3b5",
-        "actualSha256": "dcf06752418299c880d908c0323c803c13408b4ac8dd8156fe8488cccf4ac3b5"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:7",
-        "bytes": 571946,
-        "expectedSha256": "f14b9195b91d1c6cad46027ecfa24a93f18c39cd8b5d61cba9058625a0bc36d7",
-        "actualSha256": "f14b9195b91d1c6cad46027ecfa24a93f18c39cd8b5d61cba9058625a0bc36d7"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:8",
-        "bytes": 572374,
-        "expectedSha256": "ad7a4f1e5b06a1b8188b86cf4768d3c9238ae98c083b37291b81afd18a074f47",
-        "actualSha256": "ad7a4f1e5b06a1b8188b86cf4768d3c9238ae98c083b37291b81afd18a074f47"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:9",
-        "bytes": 569696,
-        "expectedSha256": "e90a65299950940dadada4b5cf44250f87d84b1f42bafb9c4ee601d5ac670e6e",
-        "actualSha256": "e90a65299950940dadada4b5cf44250f87d84b1f42bafb9c4ee601d5ac670e6e"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:10",
-        "bytes": 567026,
-        "expectedSha256": "5b03c89c13918e028d3f4607e6ee09c710281047b512d6bf208eb3bebe468d90",
-        "actualSha256": "5b03c89c13918e028d3f4607e6ee09c710281047b512d6bf208eb3bebe468d90"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:11",
-        "bytes": 564778,
-        "expectedSha256": "361a9e0c7755ea614aee7c4237c946a744720295505af3ac3928d9eeda481f55",
-        "actualSha256": "361a9e0c7755ea614aee7c4237c946a744720295505af3ac3928d9eeda481f55"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:12",
-        "bytes": 564778,
-        "expectedSha256": "4852d1c9eec065c76355c0ad5d7fcca2e132b162ad17dde65940d14ba17943a2",
-        "actualSha256": "4852d1c9eec065c76355c0ad5d7fcca2e132b162ad17dde65940d14ba17943a2"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:13",
-        "bytes": 562518,
-        "expectedSha256": "77048b2059d662c6d67a3610ae74f1848cd2d9465ad05225c73d6fc65d1436b6",
-        "actualSha256": "77048b2059d662c6d67a3610ae74f1848cd2d9465ad05225c73d6fc65d1436b6"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:14",
-        "bytes": 559844,
-        "expectedSha256": "56b9a989245f0340ac402ee1b55e87d681943ba6c1193615b81c151f5c2275eb",
-        "actualSha256": "56b9a989245f0340ac402ee1b55e87d681943ba6c1193615b81c151f5c2275eb"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:15",
-        "bytes": 559844,
-        "expectedSha256": "65ebf353ca957118f85b5e6f7936d06be911668a7144b708a3f9acd741cbb7d0",
-        "actualSha256": "65ebf353ca957118f85b5e6f7936d06be911668a7144b708a3f9acd741cbb7d0"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:16",
-        "bytes": 557586,
-        "expectedSha256": "c13131f6a66e515664078521e063f1f970a93a6543f883094afb5f43943af892",
-        "actualSha256": "c13131f6a66e515664078521e063f1f970a93a6543f883094afb5f43943af892"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:17",
-        "bytes": 554902,
-        "expectedSha256": "51eea9c3bd8bcdbd57bbc45c471db4e75eaf03246f4a8bc5d5438749e9572bee",
-        "actualSha256": "51eea9c3bd8bcdbd57bbc45c471db4e75eaf03246f4a8bc5d5438749e9572bee"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:18",
-        "bytes": 555316,
-        "expectedSha256": "671e7f720190ee1f70ee7fc9338da84518525b3dbd043b48e0f6f01fb639925d",
-        "actualSha256": "671e7f720190ee1f70ee7fc9338da84518525b3dbd043b48e0f6f01fb639925d"
-      },
-      {
-        "fixtureId": "burgos-neutral-control-product-reference:19",
-        "bytes": 552638,
-        "expectedSha256": "672b538293217a313ca06de89155840c6a89a1814d7a687ad87a9d526314b5ad",
-        "actualSha256": "672b538293217a313ca06de89155840c6a89a1814d7a687ad87a9d526314b5ad"
-      },
-      {
         "fixtureId": "urbasa-high-horizon:0",
         "bytes": 620674,
         "expectedSha256": "a35cc6c0fc39b24d01ec383dfb0aad04fc66223ddd5883c7293c862a7c35be65",
@@ -1096,121 +976,121 @@
         "actualSha256": "b4b9e63800f777683b05651a437454c65a83f1dea929d0f24b21c0d28dede271"
       },
       {
-        "fixtureId": "arguedas-product-reference:0",
+        "fixtureId": "arguedas-terrain-control:0",
         "bytes": 639378,
         "expectedSha256": "d98fffd4f97039d87580173fddb15fcd80468c7924c486dee030d038de6d8a1a",
         "actualSha256": "d98fffd4f97039d87580173fddb15fcd80468c7924c486dee030d038de6d8a1a"
       },
       {
-        "fixtureId": "arguedas-product-reference:1",
+        "fixtureId": "arguedas-terrain-control:1",
         "bytes": 636754,
         "expectedSha256": "136b191a11d8c7ece1e3af7ef4366e6c8229c055fc2c399750ef0ffb3ccdbf92",
         "actualSha256": "136b191a11d8c7ece1e3af7ef4366e6c8229c055fc2c399750ef0ffb3ccdbf92"
       },
       {
-        "fixtureId": "arguedas-product-reference:2",
+        "fixtureId": "arguedas-terrain-control:2",
         "bytes": 636754,
         "expectedSha256": "55bec247a2dec8d6f398f69f8d8938f2c11568ca9221e9672d2afef6ff96b988",
         "actualSha256": "55bec247a2dec8d6f398f69f8d8938f2c11568ca9221e9672d2afef6ff96b988"
       },
       {
-        "fixtureId": "arguedas-product-reference:3",
+        "fixtureId": "arguedas-terrain-control:3",
         "bytes": 634622,
         "expectedSha256": "a567b804e45f7cea055ffcf42be34d54306f35e4f315b750d1b355e35cb1f0bd",
         "actualSha256": "a567b804e45f7cea055ffcf42be34d54306f35e4f315b750d1b355e35cb1f0bd"
       },
       {
-        "fixtureId": "arguedas-product-reference:4",
+        "fixtureId": "arguedas-terrain-control:4",
         "bytes": 632004,
         "expectedSha256": "3b299157abb8755eac4976b87f392506ac5eafc3b7f4209c79ef5970e72cb53f",
         "actualSha256": "3b299157abb8755eac4976b87f392506ac5eafc3b7f4209c79ef5970e72cb53f"
       },
       {
-        "fixtureId": "arguedas-product-reference:5",
+        "fixtureId": "arguedas-terrain-control:5",
         "bytes": 632486,
         "expectedSha256": "1960a07d356b1e5605e4c3959d78bd9f973771adc769d6df135466a865547c70",
         "actualSha256": "1960a07d356b1e5605e4c3959d78bd9f973771adc769d6df135466a865547c70"
       },
       {
-        "fixtureId": "arguedas-product-reference:6",
+        "fixtureId": "arguedas-terrain-control:6",
         "bytes": 629858,
         "expectedSha256": "92f282ab51614c86eee1ce581549f1c1ee75d757a04f232c82821bd831173111",
         "actualSha256": "92f282ab51614c86eee1ce581549f1c1ee75d757a04f232c82821bd831173111"
       },
       {
-        "fixtureId": "arguedas-product-reference:7",
+        "fixtureId": "arguedas-terrain-control:7",
         "bytes": 627716,
         "expectedSha256": "49fc140bb0cee6fda119fce61d3c039457107d87c6fdef43371ac2c93e737f92",
         "actualSha256": "49fc140bb0cee6fda119fce61d3c039457107d87c6fdef43371ac2c93e737f92"
       },
       {
-        "fixtureId": "arguedas-product-reference:8",
+        "fixtureId": "arguedas-terrain-control:8",
         "bytes": 627716,
         "expectedSha256": "d04b1773bf4ede98bfc4429cbec4e9303df0a31c42c30f89d73d36d71a5b3543",
         "actualSha256": "d04b1773bf4ede98bfc4429cbec4e9303df0a31c42c30f89d73d36d71a5b3543"
       },
       {
-        "fixtureId": "arguedas-product-reference:9",
+        "fixtureId": "arguedas-terrain-control:9",
         "bytes": 625094,
         "expectedSha256": "3aa9010b25af72a834599e3ff0052932c42f64eac073c60c5dca36b0248882b2",
         "actualSha256": "3aa9010b25af72a834599e3ff0052932c42f64eac073c60c5dca36b0248882b2"
       },
       {
-        "fixtureId": "arguedas-product-reference:10",
+        "fixtureId": "arguedas-terrain-control:10",
         "bytes": 622938,
         "expectedSha256": "dcebc9a87e63831b27d612dbd421e1d90c30308ca5701637c90be0643329b1b6",
         "actualSha256": "dcebc9a87e63831b27d612dbd421e1d90c30308ca5701637c90be0643329b1b6"
       },
       {
-        "fixtureId": "arguedas-product-reference:11",
+        "fixtureId": "arguedas-terrain-control:11",
         "bytes": 622938,
         "expectedSha256": "cbc9efdc645ed4a68a8f1fce79612da2e31f230ea63ab74f138424922c08dac4",
         "actualSha256": "cbc9efdc645ed4a68a8f1fce79612da2e31f230ea63ab74f138424922c08dac4"
       },
       {
-        "fixtureId": "arguedas-product-reference:12",
+        "fixtureId": "arguedas-terrain-control:12",
         "bytes": 620786,
         "expectedSha256": "f689ed6ac4e77b799f82847e349a930acabfe0fed1b46fd960dfc7b81111e014",
         "actualSha256": "f689ed6ac4e77b799f82847e349a930acabfe0fed1b46fd960dfc7b81111e014"
       },
       {
-        "fixtureId": "arguedas-product-reference:13",
+        "fixtureId": "arguedas-terrain-control:13",
         "bytes": 618160,
         "expectedSha256": "5fe277f2a163c601bb293c00f8aaa1d096422dbf6afbbb49e085819aec8f8dbb",
         "actualSha256": "5fe277f2a163c601bb293c00f8aaa1d096422dbf6afbbb49e085819aec8f8dbb"
       },
       {
-        "fixtureId": "arguedas-product-reference:14",
+        "fixtureId": "arguedas-terrain-control:14",
         "bytes": 618630,
         "expectedSha256": "4685d10109d2886020dee25955dcb3ab5102c4fb0f6e2183ad8e131bf9b55d71",
         "actualSha256": "4685d10109d2886020dee25955dcb3ab5102c4fb0f6e2183ad8e131bf9b55d71"
       },
       {
-        "fixtureId": "arguedas-product-reference:15",
+        "fixtureId": "arguedas-terrain-control:15",
         "bytes": 615994,
         "expectedSha256": "2611747a1aca67f7bf3f3cff6a878b6bbd43f43f6f596110c60f6b6ec00e9f02",
         "actualSha256": "2611747a1aca67f7bf3f3cff6a878b6bbd43f43f6f596110c60f6b6ec00e9f02"
       },
       {
-        "fixtureId": "arguedas-product-reference:16",
+        "fixtureId": "arguedas-terrain-control:16",
         "bytes": 613832,
         "expectedSha256": "1b38cf4fbbcc4f34a68d4aae63aed3f4171797b532074da1c68cb9e568768818",
         "actualSha256": "1b38cf4fbbcc4f34a68d4aae63aed3f4171797b532074da1c68cb9e568768818"
       },
       {
-        "fixtureId": "arguedas-product-reference:17",
+        "fixtureId": "arguedas-terrain-control:17",
         "bytes": 613832,
         "expectedSha256": "ae142d23daaeb65b7af1beb6f1aa3318bcc106e167ba20948f42ec5072802f00",
         "actualSha256": "ae142d23daaeb65b7af1beb6f1aa3318bcc106e167ba20948f42ec5072802f00"
       },
       {
-        "fixtureId": "arguedas-product-reference:18",
+        "fixtureId": "arguedas-terrain-control:18",
         "bytes": 611202,
         "expectedSha256": "ddaebbe984e82e3e8ba38ca075b4de0c55ed976e86d24e5d695f3ef5ec5562dc",
         "actualSha256": "ddaebbe984e82e3e8ba38ca075b4de0c55ed976e86d24e5d695f3ef5ec5562dc"
       },
       {
-        "fixtureId": "arguedas-product-reference:19",
+        "fixtureId": "arguedas-terrain-control:19",
         "bytes": 609026,
         "expectedSha256": "7ec2d7b46c7c657ccf7d81e593e9e1a0b3b1e7abb4ee6d06af3dac4dea6df702",
         "actualSha256": "7ec2d7b46c7c657ccf7d81e593e9e1a0b3b1e7abb4ee6d06af3dac4dea6df702"
@@ -1459,7 +1339,7 @@
   },
   "validationSample": {
     "frozenAt": "2026-08-03T00:00:00.000Z",
-    "rule": "The original 32 geographic and eclipse-path strata remain unchanged. Two targeted coastal horizon points were added after a reported nearby-location discrepancy and frozen without changing the pre-existing numerical thresholds. They are validation coordinates, not viewing venues.",
+    "rule": "Thirty-one public geographic and eclipse-path controls are frozen across path position, terrain, elevation and coastal or inland strata. Two targeted coastal horizon points were added after a reported nearby-location discrepancy without changing the pre-existing numerical thresholds. They are validation coordinates, not viewing venues.",
     "coordinateReferenceSystem": "WGS 84 (EPSG:4326)",
     "requestEnvelopeSemantics": "Configured TerrainRGB request envelopes, not a Spanish political boundary.",
     "configuredRequestEnvelopes": [
@@ -1628,15 +1508,6 @@
           "solarAzimuthDeltaDegrees": 0
         },
         {
-          "pointId": "burgos-neutral-control-product-reference",
-          "terrainElevationMetres": 585,
-          "classificationChanged": false,
-          "maximumTimeDeltaSeconds": 0.185,
-          "totalityDurationDeltaSeconds": -0.783,
-          "solarAltitudeDeltaDegrees": -0.001,
-          "solarAzimuthDeltaDegrees": 0
-        },
-        {
           "pointId": "miranda-de-ebro-inland",
           "terrainElevationMetres": 461.2,
           "classificationChanged": false,
@@ -1700,7 +1571,7 @@
           "solarAzimuthDeltaDegrees": 0
         },
         {
-          "pointId": "arguedas-product-reference",
+          "pointId": "arguedas-terrain-control",
           "terrainElevationMetres": 262.6,
           "classificationChanged": false,
           "maximumTimeDeltaSeconds": 0.085,
@@ -1709,7 +1580,7 @@
           "solarAzimuthDeltaDegrees": 0
         },
         {
-          "pointId": "el-ferial-product-reference",
+          "pointId": "el-ferial-low-elevation",
           "terrainElevationMetres": 383,
           "classificationChanged": false,
           "maximumTimeDeltaSeconds": 0.124,
@@ -1907,17 +1778,17 @@
     },
     "coordinateAlignment": "Product values use the official raster cell centre; the official per-cell observer elevation is not available.",
     "summary": {
-      "classificationMatches": 34,
-      "comparisonCount": 34,
+      "classificationMatches": 33,
+      "comparisonCount": 33,
       "maximumAbsoluteContactResidualSeconds": 1.501,
       "maximumAbsoluteMaximumResidualSeconds": 0.662,
       "maximumAbsoluteTotalityDurationResidualSeconds": 2.025,
       "maximumAbsoluteSolarAltitudeResidualDegrees": 0.004205,
       "maximumAbsoluteSolarAzimuthResidualDegrees": 0.003984,
       "maximumAbsoluteObscurationResidual": 0.00012,
-      "maximumContactResidualCorrelationWithLatitude": 0.23438,
-      "maximumContactResidualCorrelationWithLongitude": -0.022629,
-      "maximumContactResidualCorrelationWithProductElevation": -0.165641
+      "maximumContactResidualCorrelationWithLatitude": 0.234967,
+      "maximumContactResidualCorrelationWithLongitude": -0.022343,
+      "maximumContactResidualCorrelationWithProductElevation": -0.166461
     },
     "comparisons": [
       {
@@ -2785,78 +2656,6 @@
         }
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "displayTimeZone": "Europe/Madrid",
-        "solarAltitudeReference": "apparent-refraction-adjusted-solar-centre",
-        "contactHorizonReference": "ideal-horizontal-plane",
-        "contactTerrainObstructionEvaluated": false,
-        "contactVisibilityCriterion": "unrounded apparent solar-centre altitude > 0 degrees",
-        "requestedCoordinate": {
-          "latitude": 42.3439,
-          "longitude": -3.6969
-        },
-        "comparisonCoordinate": {
-          "latitude": 42.3439,
-          "longitude": -3.6969,
-          "coordinateAlignedWithOfficialCellCentre": true
-        },
-        "observerElevation": {
-          "groundMetres": 594.9,
-          "viewpointHeightAboveGroundMetres": 1.5,
-          "effectiveObserverMetres": 596.4,
-          "source": "IGN/CNIG TerrainRGB zoom 11",
-          "officialMetres": null,
-          "officialModel": "GMTED2010, 30 arc-second elevation used by the official ephemeris raster; exact per-cell elevation is not included as a band"
-        },
-        "officialRasterCell": {
-          "column": 1986,
-          "row": 1041,
-          "cellCentreLatitude": 42.3439,
-          "cellCentreLongitude": -3.6969,
-          "inputToCellCentreMetres": 468.11
-        },
-        "classification": {
-          "product": "total",
-          "official": "total"
-        },
-        "product": {
-          "partialBegin": "2026-08-12T17:32:22.497Z",
-          "totalBegin": "2026-08-12T18:27:36.445Z",
-          "maximum": "2026-08-12T18:28:18.610Z",
-          "totalEnd": "2026-08-12T18:29:00.573Z",
-          "partialEnd": "2026-08-12T19:20:48.183Z",
-          "totalityDurationSeconds": 84.128,
-          "obscuration": 1,
-          "solarAltitudeDegrees": 8.443,
-          "solarAzimuthDegrees": 282.479,
-          "solarAngularRadiusDegrees": 0.26296
-        },
-        "official": {
-          "partialBegin": "2026-08-12T17:32:22.719Z",
-          "totalBegin": "2026-08-12T18:27:37.019Z",
-          "maximum": "2026-08-12T18:28:18.946Z",
-          "totalEnd": "2026-08-12T18:29:00.632Z",
-          "partialEnd": "2026-08-12T19:20:48.582Z",
-          "totalityDurationSeconds": 83.613,
-          "obscuration": 1,
-          "solarAltitudeDegrees": 8.441240310668945,
-          "solarAzimuthDegrees": 282.47998046875
-        },
-        "residuals": {
-          "seconds": {
-            "c1": -0.222,
-            "c2": -0.574,
-            "maximum": -0.336,
-            "c3": -0.059,
-            "c4": -0.399
-          },
-          "totalityDurationSeconds": 0.515,
-          "obscuration": 0,
-          "solarAltitudeDegrees": 0.00176,
-          "solarAzimuthDegrees": -0.00098
-        }
-      },
-      {
         "pointId": "miranda-de-ebro-inland",
         "displayTimeZone": "Europe/Madrid",
         "solarAltitudeReference": "apparent-refraction-adjusted-solar-centre",
@@ -3361,7 +3160,7 @@
         }
       },
       {
-        "pointId": "arguedas-product-reference",
+        "pointId": "arguedas-terrain-control",
         "displayTimeZone": "Europe/Madrid",
         "solarAltitudeReference": "apparent-refraction-adjusted-solar-centre",
         "contactHorizonReference": "ideal-horizontal-plane",
@@ -3433,7 +3232,7 @@
         }
       },
       {
-        "pointId": "el-ferial-product-reference",
+        "pointId": "el-ferial-low-elevation",
         "displayTimeZone": "Europe/Madrid",
         "solarAltitudeReference": "apparent-refraction-adjusted-solar-centre",
         "contactHorizonReference": "ideal-horizontal-plane",
@@ -4592,24 +4391,6 @@
         "elevationMetres": 858.1
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "latitude": 42.3439,
-        "longitude": -3.6969,
-        "address": {
-          "tileX": 1004,
-          "tileY": 753,
-          "pixelX": 85,
-          "pixelY": 32
-        },
-        "rgba": [
-          1,
-          157,
-          122,
-          255
-        ],
-        "elevationMetres": 585
-      },
-      {
         "pointId": "miranda-de-ebro-inland",
         "latitude": 42.6865,
         "longitude": -2.9469,
@@ -4736,7 +4517,7 @@
         "elevationMetres": 261.5
       },
       {
-        "pointId": "arguedas-product-reference",
+        "pointId": "arguedas-terrain-control",
         "latitude": 42.1758188,
         "longitude": -1.5970062,
         "address": {
@@ -4754,7 +4535,7 @@
         "elevationMetres": 262.6
       },
       {
-        "pointId": "el-ferial-product-reference",
+        "pointId": "el-ferial-low-elevation",
         "latitude": 42.2891948,
         "longitude": -1.5762507,
         "address": {
@@ -4990,543 +4771,543 @@
     ],
     "tileBoundaryTransitions": [
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 2.4,
-        "afterDistanceKilometres": 2.45,
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 11.4,
+        "afterDistanceKilometres": 11.5,
         "before": {
-          "tileX": 1004,
-          "tileY": 753,
-          "pixelX": 0,
-          "pixelY": 36
-        },
-        "after": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 36
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 16.5,
-        "afterDistanceKilometres": 16.75,
-        "before": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 8,
-          "pixelY": 59
-        },
-        "after": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 511,
-          "pixelY": 59
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 31,
-        "afterDistanceKilometres": 31.5,
-        "before": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 2,
-          "pixelY": 83
-        },
-        "after": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 496,
-          "pixelY": 84
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 45,
-        "afterDistanceKilometres": 45.5,
-        "before": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 14,
-          "pixelY": 108
-        },
-        "after": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 508,
-          "pixelY": 109
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 59.5,
-        "afterDistanceKilometres": 60,
-        "before": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 8,
-          "pixelY": 135
-        },
-        "after": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 502,
-          "pixelY": 136
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 74,
-        "afterDistanceKilometres": 75,
-        "before": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 2,
-          "pixelY": 162
-        },
-        "after": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 478,
-          "pixelY": 164
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.47998046875,
-        "beforeDistanceKilometres": 88,
-        "afterDistanceKilometres": 89,
-        "before": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 14,
-          "pixelY": 190
-        },
-        "after": {
-          "tileX": 997,
-          "tileY": 753,
-          "pixelX": 490,
-          "pixelY": 192
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 2.4,
-        "afterDistanceKilometres": 2.45,
-        "before": {
-          "tileX": 1004,
-          "tileY": 753,
-          "pixelX": 0,
-          "pixelY": 35
-        },
-        "after": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 35
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 16.5,
-        "afterDistanceKilometres": 16.75,
-        "before": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 8,
-          "pixelY": 53
-        },
-        "after": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 511,
-          "pixelY": 54
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 31,
-        "afterDistanceKilometres": 31.5,
-        "before": {
-          "tileX": 1002,
-          "tileY": 753,
+          "tileX": 1011,
+          "tileY": 754,
           "pixelX": 1,
-          "pixelY": 73
+          "pixelY": 41
         },
         "after": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 495,
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 509,
+          "pixelY": 41
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 25.75,
+        "afterDistanceKilometres": 26,
+        "before": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 57
+        },
+        "after": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 504,
+          "pixelY": 58
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 40,
+        "afterDistanceKilometres": 40.5,
+        "before": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 4,
           "pixelY": 74
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 45,
-        "afterDistanceKilometres": 45.5,
-        "before": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 13,
-          "pixelY": 94
         },
         "after": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 507,
-          "pixelY": 95
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 499,
+          "pixelY": 75
         }
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 59.5,
-        "afterDistanceKilometres": 60,
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 54,
+        "afterDistanceKilometres": 54.5,
         "before": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 7,
-          "pixelY": 116
-        },
-        "after": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 501,
-          "pixelY": 117
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 74,
-        "afterDistanceKilometres": 75,
-        "before": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 1,
-          "pixelY": 139
-        },
-        "after": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 477,
-          "pixelY": 141
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 267.97998046875,
-        "beforeDistanceKilometres": 88,
-        "afterDistanceKilometres": 89,
-        "before": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 13,
-          "pixelY": 163
-        },
-        "after": {
-          "tileX": 997,
-          "tileY": 753,
-          "pixelX": 489,
-          "pixelY": 165
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 2.4,
-        "afterDistanceKilometres": 2.45,
-        "before": {
-          "tileX": 1004,
-          "tileY": 753,
-          "pixelX": 0,
-          "pixelY": 34
-        },
-        "after": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 34
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 16.5,
-        "afterDistanceKilometres": 16.75,
-        "before": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 7,
-          "pixelY": 48
-        },
-        "after": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 48
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 31,
-        "afterDistanceKilometres": 31.5,
-        "before": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 1,
-          "pixelY": 64
-        },
-        "after": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 495,
-          "pixelY": 64
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 45,
-        "afterDistanceKilometres": 45.5,
-        "before": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 12,
-          "pixelY": 80
-        },
-        "after": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 506,
-          "pixelY": 80
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 59.5,
-        "afterDistanceKilometres": 60,
-        "before": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 6,
-          "pixelY": 98
-        },
-        "after": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 500,
-          "pixelY": 98
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 74,
-        "afterDistanceKilometres": 75,
-        "before": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 0,
-          "pixelY": 116
-        },
-        "after": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 476,
-          "pixelY": 118
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.47998046875,
-        "beforeDistanceKilometres": 88,
-        "afterDistanceKilometres": 89,
-        "before": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 11,
-          "pixelY": 136
-        },
-        "after": {
-          "tileX": 997,
-          "tileY": 753,
-          "pixelX": 488,
-          "pixelY": 137
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 2.4,
-        "afterDistanceKilometres": 2.45,
-        "before": {
-          "tileX": 1004,
-          "tileY": 753,
-          "pixelX": 0,
-          "pixelY": 33
-        },
-        "after": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 33
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 16.5,
-        "afterDistanceKilometres": 16.75,
-        "before": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 7,
-          "pixelY": 43
-        },
-        "after": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 510,
-          "pixelY": 43
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 31,
-        "afterDistanceKilometres": 31.5,
-        "before": {
-          "tileX": 1002,
-          "tileY": 753,
-          "pixelX": 1,
-          "pixelY": 54
-        },
-        "after": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 495,
-          "pixelY": 54
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 45,
-        "afterDistanceKilometres": 45.5,
-        "before": {
-          "tileX": 1001,
-          "tileY": 753,
-          "pixelX": 12,
-          "pixelY": 66
-        },
-        "after": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 506,
-          "pixelY": 66
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 59.5,
-        "afterDistanceKilometres": 60,
-        "before": {
-          "tileX": 1000,
-          "tileY": 753,
-          "pixelX": 5,
-          "pixelY": 79
-        },
-        "after": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 500,
-          "pixelY": 79
-        }
-      },
-      {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 73,
-        "afterDistanceKilometres": 74,
-        "before": {
-          "tileX": 999,
-          "tileY": 753,
-          "pixelX": 35,
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 17,
           "pixelY": 92
         },
         "after": {
-          "tileX": 998,
-          "tileY": 753,
+          "tileX": 1007,
+          "tileY": 754,
           "pixelX": 511,
           "pixelY": 93
         }
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 268.97998046875,
-        "beforeDistanceKilometres": 88,
-        "afterDistanceKilometres": 89,
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 68,
+        "afterDistanceKilometres": 69,
         "before": {
-          "tileX": 998,
-          "tileY": 753,
-          "pixelX": 10,
-          "pixelY": 108
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 30,
+          "pixelY": 111
         },
         "after": {
-          "tileX": 997,
-          "tileY": 753,
-          "pixelX": 487,
-          "pixelY": 109
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 506,
+          "pixelY": 112
         }
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 269.47998046875,
-        "beforeDistanceKilometres": 2.4,
-        "afterDistanceKilometres": 2.45,
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 83,
+        "afterDistanceKilometres": 84,
         "before": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 7,
+          "pixelY": 132
+        },
+        "after": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 483,
+          "pixelY": 133
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.364013671875,
+        "beforeDistanceKilometres": 97,
+        "afterDistanceKilometres": 98,
+        "before": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 20,
+          "pixelY": 153
+        },
+        "after": {
           "tileX": 1004,
-          "tileY": 753,
+          "tileY": 754,
+          "pixelX": 496,
+          "pixelY": 154
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 11.4,
+        "afterDistanceKilometres": 11.5,
+        "before": {
+          "tileX": 1011,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 38
+        },
+        "after": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 509,
+          "pixelY": 38
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 25.75,
+        "afterDistanceKilometres": 26,
+        "before": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 49
+        },
+        "after": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 504,
+          "pixelY": 50
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 40,
+        "afterDistanceKilometres": 40.5,
+        "before": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 4,
+          "pixelY": 62
+        },
+        "after": {
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 498,
+          "pixelY": 62
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 54,
+        "afterDistanceKilometres": 54.5,
+        "before": {
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 16,
+          "pixelY": 75
+        },
+        "after": {
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 511,
+          "pixelY": 76
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 68,
+        "afterDistanceKilometres": 69,
+        "before": {
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 29,
+          "pixelY": 89
+        },
+        "after": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 505,
+          "pixelY": 91
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 83,
+        "afterDistanceKilometres": 84,
+        "before": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 6,
+          "pixelY": 106
+        },
+        "after": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 482,
+          "pixelY": 107
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 268.864013671875,
+        "beforeDistanceKilometres": 97,
+        "afterDistanceKilometres": 98,
+        "before": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 18,
+          "pixelY": 122
+        },
+        "after": {
+          "tileX": 1004,
+          "tileY": 754,
+          "pixelX": 495,
+          "pixelY": 124
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 11.4,
+        "afterDistanceKilometres": 11.5,
+        "before": {
+          "tileX": 1011,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 34
+        },
+        "after": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 509,
+          "pixelY": 34
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 25.75,
+        "afterDistanceKilometres": 26,
+        "before": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 0,
+          "pixelY": 41
+        },
+        "after": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 504,
+          "pixelY": 41
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 40,
+        "afterDistanceKilometres": 40.5,
+        "before": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 4,
+          "pixelY": 49
+        },
+        "after": {
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 498,
+          "pixelY": 50
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 54,
+        "afterDistanceKilometres": 54.5,
+        "before": {
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 16,
+          "pixelY": 58
+        },
+        "after": {
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 510,
+          "pixelY": 59
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 68,
+        "afterDistanceKilometres": 69,
+        "before": {
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 28,
+          "pixelY": 68
+        },
+        "after": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 505,
+          "pixelY": 69
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 83,
+        "afterDistanceKilometres": 84,
+        "before": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 5,
+          "pixelY": 80
+        },
+        "after": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 481,
+          "pixelY": 81
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.364013671875,
+        "beforeDistanceKilometres": 97,
+        "afterDistanceKilometres": 98,
+        "before": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 18,
+          "pixelY": 92
+        },
+        "after": {
+          "tileX": 1004,
+          "tileY": 754,
+          "pixelX": 494,
+          "pixelY": 93
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 11.4,
+        "afterDistanceKilometres": 11.5,
+        "before": {
+          "tileX": 1011,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 31
+        },
+        "after": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 509,
+          "pixelY": 31
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 25.75,
+        "afterDistanceKilometres": 26,
+        "before": {
+          "tileX": 1010,
+          "tileY": 754,
           "pixelX": 0,
           "pixelY": 33
         },
         "after": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 510,
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 503,
           "pixelY": 33
         }
       },
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "azimuthDegrees": 269.47998046875,
-        "beforeDistanceKilometres": 16.5,
-        "afterDistanceKilometres": 16.75,
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 40,
+        "afterDistanceKilometres": 40.5,
         "before": {
-          "tileX": 1003,
-          "tileY": 753,
-          "pixelX": 7,
-          "pixelY": 38
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 4,
+          "pixelY": 37
         },
         "after": {
-          "tileX": 1002,
-          "tileY": 753,
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 498,
+          "pixelY": 37
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 54,
+        "afterDistanceKilometres": 54.5,
+        "before": {
+          "tileX": 1008,
+          "tileY": 754,
+          "pixelX": 16,
+          "pixelY": 42
+        },
+        "after": {
+          "tileX": 1007,
+          "tileY": 754,
           "pixelX": 510,
-          "pixelY": 38
+          "pixelY": 42
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 68,
+        "afterDistanceKilometres": 69,
+        "before": {
+          "tileX": 1007,
+          "tileY": 754,
+          "pixelX": 28,
+          "pixelY": 47
+        },
+        "after": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 504,
+          "pixelY": 48
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 83,
+        "afterDistanceKilometres": 84,
+        "before": {
+          "tileX": 1006,
+          "tileY": 754,
+          "pixelX": 5,
+          "pixelY": 54
+        },
+        "after": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 481,
+          "pixelY": 55
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 269.864013671875,
+        "beforeDistanceKilometres": 97,
+        "afterDistanceKilometres": 98,
+        "before": {
+          "tileX": 1005,
+          "tileY": 754,
+          "pixelX": 17,
+          "pixelY": 62
+        },
+        "after": {
+          "tileX": 1004,
+          "tileY": 754,
+          "pixelX": 493,
+          "pixelY": 63
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 270.364013671875,
+        "beforeDistanceKilometres": 11.4,
+        "afterDistanceKilometres": 11.5,
+        "before": {
+          "tileX": 1011,
+          "tileY": 754,
+          "pixelX": 1,
+          "pixelY": 27
+        },
+        "after": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 509,
+          "pixelY": 27
+        }
+      },
+      {
+        "pointId": "urbasa-high-horizon",
+        "azimuthDegrees": 270.364013671875,
+        "beforeDistanceKilometres": 25.75,
+        "afterDistanceKilometres": 26,
+        "before": {
+          "tileX": 1010,
+          "tileY": 754,
+          "pixelX": 0,
+          "pixelY": 25
+        },
+        "after": {
+          "tileX": 1009,
+          "tileY": 754,
+          "pixelX": 503,
+          "pixelY": 25
         }
       }
     ],
@@ -5568,34 +5349,6 @@
     },
     "comparisons": [
       {
-        "pointId": "burgos-neutral-control-product-reference",
-        "terrainClassIntent": "rolling",
-        "azimuthDegrees": 282.47998046875,
-        "terrainRgb": {
-          "groundElevationMetres": 585,
-          "viewpointHeightAboveGroundMetres": 1.5,
-          "observerElevationMetres": 586.5,
-          "horizonAltitudeDegrees": 0.9717012749001916,
-          "limitingDistanceKilometres": 10.7,
-          "samplesPerRay": 360
-        },
-        "mdt05": {
-          "groundElevationMetres": 585,
-          "viewpointHeightAboveGroundMetres": 1.5,
-          "observerElevationMetres": 586.5,
-          "horizonAltitudeDegrees": 1.026002,
-          "limitingDistanceKilometres": 10.805,
-          "scheduledHorizonDegrees": 1.021213,
-          "scheduledLimitingDistanceKilometres": 10.8,
-          "samplingSensitivityDegrees": -0.004789
-        },
-        "residuals": {
-          "groundElevationMetres": 0,
-          "observerElevationMetres": 0,
-          "horizonDegrees": -0.054301
-        }
-      },
-      {
         "pointId": "urbasa-high-horizon",
         "terrainClassIntent": "mountainous",
         "azimuthDegrees": 283.364013671875,
@@ -5624,7 +5377,7 @@
         }
       },
       {
-        "pointId": "arguedas-product-reference",
+        "pointId": "arguedas-terrain-control",
         "terrainClassIntent": "flat-to-rolling",
         "azimuthDegrees": 283.93994140625,
         "terrainRgb": {

@@ -5,7 +5,7 @@ import {
 } from "./support/network-fixtures";
 
 const BURGOS_DETAILS_URL =
-  "/?state=1&lang=es&selected=place%3Aburgos-neutral-control&compare=place%3Asoria&layer=none#details";
+  "/?state=1&lang=es&selected=place%3Aburgos&compare=place%3Asoria&layer=none#details";
 
 const phoneViewports = [
   { name: "iPhone SE", width: 320, height: 568 },
@@ -162,7 +162,7 @@ test("keeps selected-place controls coherent across representative phones", asyn
           "iPhone 17 Pro Max: navigation hides the horizon instrument",
         ).toBeGreaterThanOrEqual(7.5);
         await expect(page.locator(".planner-shell")).toHaveScreenshot(
-          `burgos-neutral-iphone-17-pro-max-${browserName}.png`,
+          `burgos-iphone-17-pro-max-${browserName}.png`,
           {
             animations: "disabled",
             caret: "hide",
@@ -294,7 +294,7 @@ test("keeps map and inspector sound across tablets and desktops", async ({
 
       if (viewport.name === "common laptop") {
         await expect(page.locator(".planner-shell")).toHaveScreenshot(
-          `burgos-neutral-common-laptop-${browserName}.png`,
+          `burgos-common-laptop-${browserName}.png`,
           {
             animations: "disabled",
             caret: "hide",

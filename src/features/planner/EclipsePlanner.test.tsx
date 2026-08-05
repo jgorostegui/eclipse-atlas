@@ -30,10 +30,10 @@ const ACCEPTANCE_SCENARIO = {
   },
   saved: {
     soria: "place:soria",
-    burgosControl: "place:burgos-neutral-control",
+    burgos: "place:burgos",
     bardenas: "place:el-ferial",
     arguedas: "place:arguedas",
-    soriaTerrain: "place:soria-neutral-control",
+    aCoruna: "place:a-coruna",
     adanero: "place:jcyl-05001-adanero",
     ceuta: "place:ceuta",
   },
@@ -60,7 +60,7 @@ function mixedComparisonUrl() {
   return plannerUrl([
     `selected=${ACCEPTANCE_SCENARIO.saved.soria}`,
     `compare=${ACCEPTANCE_SCENARIO.saved.soria}`,
-    `compare=${ACCEPTANCE_SCENARIO.saved.burgosControl}`,
+    `compare=${ACCEPTANCE_SCENARIO.saved.burgos}`,
     `compare=${ACCEPTANCE_SCENARIO.saved.bardenas}`,
     "layer=none",
   ]);
@@ -264,7 +264,7 @@ describe("EclipsePlanner acceptance", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText(/Choose a place or click anywhere on the map/i)).toBeTruthy();
-    expect(screen.getByText("124 places")).toBeTruthy();
+    expect(screen.getByText("1,086 places · 124 shown")).toBeTruthy();
     expect(screen.getByRole("searchbox", { name: /Search the map places/i })).toBeTruthy();
     expect(
       within(desktopTools).getByRole("button", { name: "Totality duration" }),
@@ -288,7 +288,7 @@ describe("EclipsePlanner acceptance", () => {
     await user.click(search);
     expect(shell?.dataset.searchActive).toBe("true");
 
-    await user.type(search, "Medi");
+    await user.type(search, "Burg");
     await user.click(screen.getByRole("button", { name: "Clear search" }));
     expect(search.value).toBe("");
     expect(document.activeElement).toBe(search);
@@ -317,7 +317,7 @@ describe("EclipsePlanner acceptance", () => {
     ).toBeTruthy();
     expect(
       screen.getByRole("article", {
-        name: /Comparison details for Burgos neutral control/i,
+        name: /Comparison details for Burgos/i,
       }),
     ).toBeTruthy();
     expect(
@@ -489,7 +489,7 @@ describe("EclipsePlanner acceptance", () => {
   it("blocks a fourth comparison until one point is removed", async () => {
     const url = mixedComparisonUrl().replace(
       `selected=${encodeURIComponent(ACCEPTANCE_SCENARIO.saved.soria)}`,
-      `selected=${encodeURIComponent(ACCEPTANCE_SCENARIO.saved.soriaTerrain)}`,
+      `selected=${encodeURIComponent(ACCEPTANCE_SCENARIO.saved.aCoruna)}`,
     );
     window.history.replaceState(null, "", url);
     const user = userEvent.setup();
@@ -501,15 +501,15 @@ describe("EclipsePlanner acceptance", () => {
     ).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Compare 3" }));
     expect(
-      screen.queryByRole("article", { name: /Comparison details for Soria neutral control/i }),
+      screen.queryByRole("article", { name: /Comparison details for A Coruña/i }),
     ).toBeNull();
 
-    const burgosControlCard = screen.getByRole("article", {
-      name: /Comparison details for Burgos neutral control/i,
+    const burgosCard = screen.getByRole("article", {
+      name: /Comparison details for Burgos/i,
     });
     await user.click(
-      within(burgosControlCard).getByRole("button", {
-        name: /Remove Burgos neutral control from the comparison/i,
+      within(burgosCard).getByRole("button", {
+        name: /Remove Burgos from the comparison/i,
       }),
     );
     expect(screen.getByRole("button", { name: "Compare 2" })).toBeTruthy();
@@ -519,17 +519,17 @@ describe("EclipsePlanner acceptance", () => {
       ).getByRole("button", { name: "Explore" }),
     );
     expect(
-      screen.getByRole("heading", { name: "Soria neutral control" }),
+      screen.getByRole("heading", { name: "A Coruña" }),
     ).toBeTruthy();
     await user.click(
       screen.getByRole("button", { name: "Back to places" }),
     );
     await user.type(
       screen.getByRole("searchbox", { name: "Search the map places" }),
-      "Soria",
+      "A Coruña",
     );
     const selectedPlace = document.querySelector<HTMLButtonElement>(
-      '.place-list button[data-candidate-id="soria-neutral-control"]',
+      '.place-list button[data-candidate-id="a-coruna"]',
     );
     if (!selectedPlace) throw new Error("Expected selected place in explorer.");
     await user.click(selectedPlace);
@@ -537,7 +537,7 @@ describe("EclipsePlanner acceptance", () => {
     expect(screen.getByRole("button", { name: "Compare 3" })).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Compare 3" }));
     expect(
-      screen.getByRole("article", { name: /Comparison details for Soria neutral control/i }),
+      screen.getByRole("article", { name: /Comparison details for A Coruña/i }),
     ).toBeTruthy();
   });
 
@@ -546,14 +546,14 @@ describe("EclipsePlanner acceptance", () => {
       null,
       "",
       plannerUrl([
-        `selected=${ACCEPTANCE_SCENARIO.saved.burgosControl}`,
+        `selected=${ACCEPTANCE_SCENARIO.saved.burgos}`,
         "layer=none",
       ]),
     );
     const user = userEvent.setup();
     renderLab();
     expect(
-      screen.getByRole("heading", { name: /^Burgos neutral control$/i }),
+      screen.getByRole("heading", { name: /^Burgos$/i }),
     ).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Select Arguedas" }));
@@ -573,7 +573,7 @@ describe("EclipsePlanner acceptance", () => {
     window.history.back();
     expect(
       await screen.findByRole("heading", {
-        name: /^Burgos neutral control$/i,
+        name: /^Burgos$/i,
       }),
     ).toBeTruthy();
 
@@ -721,7 +721,7 @@ describe("EclipsePlanner acceptance", () => {
     );
     expect(liveUrl.searchParams.getAll("compare")).toEqual([
       ACCEPTANCE_SCENARIO.saved.soria,
-      ACCEPTANCE_SCENARIO.saved.burgosControl,
+      ACCEPTANCE_SCENARIO.saved.burgos,
       ACCEPTANCE_SCENARIO.saved.bardenas,
     ]);
     expect(liveUrl.searchParams.get("layer")).toBe("none");

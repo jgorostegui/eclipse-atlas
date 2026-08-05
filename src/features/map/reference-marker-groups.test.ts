@@ -58,4 +58,22 @@ describe("groupCollidingReferences", () => {
       groupCollidingReferences([reference("first", 0, 0)], (point) => point, 0),
     ).toThrow(RangeError);
   });
+
+  it("projects a large dispersed catalogue once per reference", () => {
+    const references = Array.from({ length: 2_000 }, (_, index) =>
+      reference(String(index), index * 60, index % 2),
+    );
+    let projectionCalls = 0;
+    const groups = groupCollidingReferences(
+      references,
+      (point) => {
+        projectionCalls += 1;
+        return point;
+      },
+      48,
+    );
+
+    expect(groups).toHaveLength(references.length);
+    expect(projectionCalls).toBe(references.length);
+  });
 });

@@ -21,6 +21,7 @@
     "verification:generate": "node --experimental-strip-types scripts/run-scientific-verification.mts",
     "verification:check": "node scripts/scientific-verification.mjs",
     "climate:generate": "node --experimental-strip-types scripts/generate-cloud-climate.mts",
+    "places:generate": "node --experimental-strip-types scripts/generate-public-place-catalog.mts",
     "overlays:generate": "node --experimental-strip-types scripts/generate-official-overview.mts",
     "overlays:generate:events": "node --experimental-strip-types scripts/generate-official-event-overviews.mts",
     "test": "npm run build && npm run test:unit && npm run test:repository",

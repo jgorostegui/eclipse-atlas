@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-04T00:00:00.000Z",
+  "generatedAt": "2026-08-05T20:00:00.000Z",
   "sources": [
     {
       "id": "astronomy-engine-2.1.19",
@@ -264,43 +264,47 @@
       "name": "GeoNames Spain geographical names snapshot",
       "producer": "GeoNames",
       "url": "https://download.geonames.org/export/dump/ES.zip",
-      "role": "Coordinates and stable feature identifiers for the national city-anchor catalogue.",
+      "role": "Coordinates and stable feature identifiers for the national populated-place catalogue.",
       "status": "in-use",
       "retrievedAt": "2026-08-02",
       "version": "ES.zip last modified 2026-08-02T02:04:18Z; SHA-256 3d364dcde86afbfed94f62cf598ae724647bab2dfbd3d18004d84cf73c36aac6.",
       "coverage": "Spain, including peninsula, Balearic Islands, Canary Islands, Ceuta and Melilla.",
-      "resolution": "Point coordinates for named populated-place features; not venue coordinates.",
+      "resolution": "Point coordinates for 562 feature-class P records with a published population of at least 20,000; not venue coordinates.",
       "license": {
         "name": "Creative Commons Attribution 4.0",
         "url": "https://creativecommons.org/licenses/by/4.0/"
       },
       "attribution": "Place coordinates: GeoNames, licensed under CC BY 4.0.",
-      "transformation": "Selected populated-place records were reduced to feature ID, name, representative coordinate and region in a versioned JSON catalogue. Source decimal precision is retained.",
+      "transformation": "The generator selects every Spain feature-class P row with a published population of at least 20,000, reduces it to feature ID, name, representative coordinate, region and source population, and retains source decimal precision. The extracted ES.txt input has SHA-256 a1354c6fd3a48fd54ec714f00ebefabff77919466a740888cad7a1f8b079957f.",
       "limitations": [
         "A populated-place coordinate is a geographic anchor, not a viewing site.",
+        "GeoNames population values can be stale or use different settlement semantics and are only a transparent catalogue cut, not a city ranking.",
         "GeoNames coordinates do not establish local horizon, access, capacity or operations."
       ]
     },
     {
       "id": "openstreetmap-candidate-coordinates",
-      "name": "OpenStreetMap local references and viewpoint candidates",
+      "name": "OpenStreetMap viewpoints, astronomy places and local references",
       "producer": "OpenStreetMap contributors",
       "url": "https://www.openstreetmap.org/copyright",
-      "role": "Coordinates for retained local references, independently selected viewpoint candidates and independently resolved official-programme venue references.",
+      "role": "Coordinates for a national named-viewpoint and astronomy-place catalogue, retained local references and independently resolved official-programme venue references.",
       "status": "in-use",
-      "retrievedAt": "2026-08-03",
-      "version": "Local objects and a viewpoint discovery snapshot reviewed 2026-08-03; viewpoint snapshot timestamp 2026-08-02T21:06:21Z.",
-      "coverage": "Arguedas, Embalse del Ferial, Burgos neutral control and Soria neutral control local references; eight tourism=viewpoint features; four Navarra official-programme references; and four Aragón official-programme references.",
-      "resolution": "Named feature points or centroids; explicitly not official viewing-enclosure coordinates.",
+      "retrievedAt": "2026-08-05",
+      "version": "Viewpoint snapshot 2026-08-02T21:06:21Z, SHA-256 d0cf461b7a1748e5d479ec26777ca8eb5215dee7b79db2755a33d6a0daea4a23; astronomy snapshot 2026-08-05T19:17:31Z, SHA-256 f9999db7035373c498c0b07c82a1faf536162c824430e363736d460632466e5f; Spain relation 1311341 boundary SHA-256 aaeee5fbaff7ec8d3902f9ea06895147c7982f4aa8bf172ad08a7e711675e9d9.",
+      "coverage": "346 named tourism=viewpoint features and 93 named astronomical observatory or planetarium features inside the OSM Spain boundary; retained local references; four Navarra venue references; and four Aragón programme references.",
+      "resolution": "Named node coordinates or representative way and relation centres; explicitly not surveyed observation-enclosure coordinates.",
       "license": {
         "name": "Open Data Commons Open Database License 1.0",
         "url": "https://opendatacommons.org/licenses/odbl/1-0/"
       },
       "attribution": "© OpenStreetMap contributors.",
-      "transformation": "Local Nominatim results, viewpoint records and independently mapped official-programme features were reduced to named feature identifiers and representative latitude/longitude values. A southwest-to-northwest direction tag was used only as a coarse viewpoint discovery filter. Official programme status always comes from a separately catalogued public-authority page. Precision and source links are preserved.",
+      "transformation": "A deterministic generator retains named tourism=viewpoint features whose representative point falls inside OSM Spain relation 1311341. A separate query retains named planetariums, explicit astronomical observatories and features whose names identify astronomical use, while excluding weather, geophysical, atmospheric, forestry and wildlife observatories. Rows are reduced to OSM type, ID, name, representative coordinate, category and source URL. Official programme status always comes from a separately catalogued public-authority page.",
       "limitations": [
-        "These coordinates are planning references, not organizer-approved viewing positions.",
-        "A direction tag does not establish the exact eclipse azimuth or a clear terrain horizon.",
+        "These coordinates are geographic references, not organizer-approved viewing positions.",
+        "A viewpoint or astronomy tag does not establish the eclipse azimuth, terrain clearance, public opening or solar-observation suitability.",
+        "The first OSM snapshot records timestamps and hashes but not the exact acquisition request text or rectangular envelope; a versioned request is required before refresh.",
+        "Several OSM objects can represent one physical astronomy facility, so the object count is not a count of distinct venues.",
+        "The catalogue reflects the captured OSM snapshots and is not a complete inventory of Spanish viewpoints or astronomy facilities.",
         "Local access, ownership, field obstructions and operations remain unverified."
       ]
     },
@@ -537,39 +541,19 @@
       "url": "https://eklipsenavarra.com/es/puntos-de-observacion",
       "role": "Outbound links for users to verify current admission and operational information.",
       "status": "linked-only",
-      "retrievedAt": "2026-08-03",
-      "version": "Live web pages reviewed 2026-08-03.",
-      "coverage": "The official Navarra network directory plus the Arguedas/Virgen del Yugo, Bardenas Aguilares, Bardenas El Ferial and Sendaviva pages linked from map points.",
-      "resolution": "Human-readable operational records; no structured dataset is copied.",
+      "retrievedAt": "2026-08-05",
+      "version": "Live network directory and four individually linked point pages reviewed 2026-08-05.",
+      "coverage": "Four independently mapped references with individual links to current Government of Navarra operational pages.",
+      "resolution": "Human-readable operational links only; no structured network catalogue is copied.",
       "license": {
         "name": "No open structured-data licence confirmed"
       },
       "attribution": "Operational information remains on the official Eklipse Navarra website.",
-      "transformation": "The application stores official outbound URLs, a review date and independently resolved OpenStreetMap venue references. The official operational GeoJSON, ticket status, price, services and capacity are not republished.",
+      "transformation": "Four existing OpenStreetMap references retain individual outbound operational links. The complete network membership, operational map payload, exact enclosure geometry, ticket status, price, services and capacity are not republished.",
       "limitations": [
+        "An independently mapped feature still requires confirmation against the organizer's current enclosure and entrance information.",
         "Operational information can change without notice.",
         "Users must verify the official page immediately before travel or purchase."
-      ]
-    },
-    {
-      "id": "burgos-neutral-control-programme",
-      "name": "Burgos neutral control municipal eclipse announcement",
-      "producer": "Burgos neutral control City Council",
-      "url": "https://www.example.invalid/noticias/burgos-neutral-control-se-prepara-para-el-historico-eclipse-total-de-sol-del-12-de-agosto",
-      "role": "Outbound link confirming a municipal programme without asserting an exact viewing venue.",
-      "status": "linked-only",
-      "retrievedAt": "2026-08-02",
-      "version": "Municipal announcement reviewed 2026-08-02.",
-      "coverage": "Burgos neutral control municipality.",
-      "resolution": "Municipality-level programme information.",
-      "license": {
-        "name": "No open structured-data licence confirmed"
-      },
-      "attribution": "Programme information: Burgos neutral control City Council.",
-      "transformation": "The application links to the municipal announcement and labels the map coordinate as an approximate town centre.",
-      "limitations": [
-        "The announcement is not treated as a reusable venue dataset.",
-        "The exact viewing position remains unverified in the application."
       ]
     },
     {

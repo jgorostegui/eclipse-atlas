@@ -43,7 +43,7 @@ describe("planner URL state v1", () => {
         "?state=1&lang=es" +
           "&selected=place:soria" +
           "&compare=place:soria" +
-          "&compare=place:burgos-neutral-control" +
+          "&compare=place:burgos" +
           "&compare=place:el-ferial" +
           "&layer=solar-altitude-at-maximum",
       ),
@@ -59,7 +59,7 @@ describe("planner URL state v1", () => {
         selected: place("soria"),
         compared: [
           place("soria"),
-          place("burgos-neutral-control"),
+          place("burgos"),
           place("el-ferial"),
         ],
         layer: "solar-altitude-at-maximum",
@@ -231,15 +231,15 @@ describe("planner URL state v1", () => {
           "&compare=place:arguedas" +
           "&compare=place:missing" +
           "&compare=place:arguedas" +
-          "&compare=place:burgos-neutral-control" +
+          "&compare=place:burgos" +
           "&compare=place:el-ferial" +
-          "&compare=place:soria-neutral-control",
+          "&compare=place:a-coruna",
       ),
     );
 
     expect(result.state.compared).toEqual([
       place("arguedas"),
-      place("burgos-neutral-control"),
+      place("burgos"),
       place("el-ferial"),
     ]);
     expect(result.issues).toEqual([
@@ -258,7 +258,7 @@ describe("planner URL state v1", () => {
       {
         code: "comparison-limit-exceeded",
         parameter: "compare",
-        value: "place:soria-neutral-control",
+        value: "place:a-coruna",
         index: 5,
       },
     ]);
@@ -333,7 +333,7 @@ describe("planner URL state v1", () => {
         selected: geo(41.76360049, -2.46490049),
         compared: [
           geo(41.76360049, -2.46490049),
-          place("burgos-neutral-control"),
+          place("burgos"),
           place("el-ferial"),
         ],
         layer: "solar-altitude-at-maximum",
@@ -352,7 +352,7 @@ describe("planner URL state v1", () => {
     ]);
     expect(serialized.searchParams.getAll("compare")).toEqual([
       "geo:41.763600,-2.464900",
-      "place:burgos-neutral-control",
+      "place:burgos",
       "place:el-ferial",
     ]);
     expect(serialized.searchParams.getAll("layer")).toEqual([
@@ -366,7 +366,7 @@ describe("planner URL state v1", () => {
       selected: geo(41.7636, -2.4649),
       compared: [
         geo(41.7636, -2.4649),
-        place("burgos-neutral-control"),
+        place("burgos"),
         place("el-ferial"),
       ],
       layer: "solar-altitude-at-maximum",
@@ -429,9 +429,9 @@ describe("planner URL state v1", () => {
         state({
           compared: [
             place("arguedas"),
-            place("burgos-neutral-control"),
+            place("burgos"),
             place("el-ferial"),
-            place("soria-neutral-control"),
+            place("a-coruna"),
           ],
         }),
       ),

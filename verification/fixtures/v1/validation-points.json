@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "fixtureVersion": "1.0.0",
   "selectionFrozenAt": "2026-08-02T04:15:00.000Z",
-  "selectionRule": "Points were selected from geographic and eclipse-path strata before product residuals were calculated. They are validation coordinates, not viewing venues.",
+  "selectionRule": "Points were selected from public geographic and eclipse-path strata before numerical residuals were calculated. They are validation coordinates, not viewing venues.",
   "coordinateReferenceSystem": "WGS 84 (EPSG:4326)",
   "points": [
     {
@@ -90,17 +90,6 @@
       "strata": ["Burgos", "centre-line-intent", "inside-totality", "plateau"]
     },
     {
-      "id": "burgos-neutral-control-product-reference",
-      "name": "Burgos neutral control product reference",
-      "latitude": 42.3439,
-      "longitude": -3.6969,
-      "strata": ["Burgos", "product-candidate", "inside-totality", "rolling"],
-      "horizonValidation": {
-        "terrainClassIntent": "rolling",
-        "referenceAzimuthDegrees": 282.47998046875
-      }
-    },
-    {
       "id": "miranda-de-ebro-inland",
       "name": "Miranda de Ebro validation point",
       "latitude": 42.6865,
@@ -154,22 +143,22 @@
       "strata": ["Navarra", "southern-sector", "inside-totality", "low-elevation-intent"]
     },
     {
-      "id": "arguedas-product-reference",
-      "name": "Arguedas product reference",
+      "id": "arguedas-terrain-control",
+      "name": "Arguedas terrain validation point",
       "latitude": 42.1758188,
       "longitude": -1.5970062,
-      "strata": ["Navarra", "product-candidate", "inside-totality", "low-elevation-intent"],
+      "strata": ["Navarra", "Ebro-valley", "inside-totality", "low-elevation-intent"],
       "horizonValidation": {
         "terrainClassIntent": "flat-to-rolling",
         "referenceAzimuthDegrees": 283.93994140625
       }
     },
     {
-      "id": "el-ferial-product-reference",
-      "name": "El Ferial product reference",
+      "id": "el-ferial-low-elevation",
+      "name": "El Ferial validation point",
       "latitude": 42.2891948,
       "longitude": -1.5762507,
-      "strata": ["Navarra", "product-candidate", "inside-totality", "low-elevation-intent"]
+      "strata": ["Navarra", "Ebro-valley", "inside-totality", "low-elevation-intent"]
     },
     {
       "id": "zaragoza-eastern-inland",

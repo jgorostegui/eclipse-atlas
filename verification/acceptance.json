@@ -3,12 +3,17 @@
   "minimumValidationPointCount": 30,
   "minimumMdt05ComparisonCount": 3,
   "minimumNearbyHorizonPairCount": 1,
-  "requiredProductReferenceIds": [
-    "soria",
-    "arguedas",
-    "el-ferial",
-    "burgos-neutral-control",
-    "soria-neutral-control"
+  "requiredValidationStrata": [
+    "inside-totality",
+    "outside-totality",
+    "coastal",
+    "inland",
+    "plateau",
+    "rolling",
+    "mountainous",
+    "high-elevation-intent",
+    "low-elevation-intent",
+    "short-totality"
   ],
   "numericalThresholds": {
     "contactTimeAbsoluteSeconds": 2,

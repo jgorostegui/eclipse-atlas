@@ -11,7 +11,7 @@ describe("EclipseTimeline", () => {
   it("keeps total-eclipse contacts and sunset without repeating summary metrics", () => {
     window.history.replaceState(null, "", "/?lang=en");
     const eclipse = calculateEclipseCircumstances(42.3439, -3.6969, {
-      groundElevationMetres: 585,
+      groundElevationMetres: 858.1,
       viewpointHeightAboveGroundMetres: PLANNING_VIEWPOINT_HEIGHT_METRES,
     });
     expect(eclipse).not.toBeNull();

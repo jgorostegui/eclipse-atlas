@@ -28,6 +28,15 @@ export function groupCollidingReferences<T>(
   }
 
   const projected = references.map(project);
+  const bucketKey = (x: number, y: number) =>
+    `${Math.floor(x / collisionDistancePixels)}:${Math.floor(y / collisionDistancePixels)}`;
+  const buckets = new Map<string, number[]>();
+  projected.forEach(({ x, y }, index) => {
+    const key = bucketKey(x, y);
+    const bucket = buckets.get(key) ?? [];
+    bucket.push(index);
+    buckets.set(key, bucket);
+  });
   const visited = new Set<number>();
   const groups: T[][] = [];
 
@@ -46,7 +55,24 @@ export function groupCollidingReferences<T>(
       if (!current || !currentProjection) continue;
       group.push(current);
 
-      projected.forEach((candidateProjection, candidateIndex) => {
+      const cellX = Math.floor(
+        currentProjection.x / collisionDistancePixels,
+      );
+      const cellY = Math.floor(
+        currentProjection.y / collisionDistancePixels,
+      );
+      const nearbyIndexes: number[] = [];
+      for (let xOffset = -1; xOffset <= 1; xOffset += 1) {
+        for (let yOffset = -1; yOffset <= 1; yOffset += 1) {
+          nearbyIndexes.push(
+            ...(buckets.get(`${cellX + xOffset}:${cellY + yOffset}`) ?? []),
+          );
+        }
+      }
+      nearbyIndexes.sort((left, right) => left - right);
+      nearbyIndexes.forEach((candidateIndex) => {
+        const candidateProjection = projected[candidateIndex];
+        if (!candidateProjection) return;
         if (
           !visited.has(candidateIndex) &&
           overlaps(

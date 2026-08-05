@@ -28,6 +28,10 @@ test("loads a deep link from a static deployment subpath", async ({ page }) => {
       name: "Eclipse data for the selected point",
     }),
   ).toContainText("100%");
+  await expect(page.locator(".masthead-art")).toHaveCSS(
+    "background-image",
+    /\/eclipse\/images\/eclipse-atlas-header-1600\.webp/,
+  );
   expect(failedLocalResources).toEqual([]);
   expect(browserErrors).toEqual([]);
 });

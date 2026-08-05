@@ -12,7 +12,7 @@ import { HorizonAnimation } from "./HorizonAnimation";
 const latitude = 42.3439;
 const longitude = -3.6969;
 const eclipseResult = calculateEclipseCircumstances(latitude, longitude, {
-  groundElevationMetres: 585,
+  groundElevationMetres: 858.1,
   viewpointHeightAboveGroundMetres: 1.5,
 });
 if (!eclipseResult) throw new Error("The Burgos eclipse fixture must be visible.");
@@ -26,9 +26,9 @@ if (!partialResult || partialResult.kind !== "partial") {
 }
 
 const horizon = {
-  groundElevationMetres: 585,
+  groundElevationMetres: 858.1,
   viewpointHeightAboveGroundMetres: 1.5,
-  observerElevationMetres: 586.5,
+  observerElevationMetres: 859.6,
   profile: [
     { azimuthDegrees: 267.5, horizonAltitudeDegrees: 0.4, limitingDistanceKilometres: 8 },
     { azimuthDegrees: 282.5, horizonAltitudeDegrees: 1, limitingDistanceKilometres: 11 },

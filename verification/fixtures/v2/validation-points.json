@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "fixtureVersion": "2.0.0",
   "selectionFrozenAt": "2026-08-03T00:00:00.000Z",
-  "selectionRule": "The original 32 geographic and eclipse-path strata remain unchanged. Two targeted coastal horizon points were added after a reported nearby-location discrepancy and frozen without changing the pre-existing numerical thresholds. They are validation coordinates, not viewing venues.",
+  "selectionRule": "Thirty-one public geographic and eclipse-path controls are frozen across path position, terrain, elevation and coastal or inland strata. Two targeted coastal horizon points were added after a reported nearby-location discrepancy without changing the pre-existing numerical thresholds. They are validation coordinates, not viewing venues.",
   "coordinateReferenceSystem": "WGS 84 (EPSG:4326)",
   "nearbyHorizonPairs": [
     {
@@ -99,17 +99,6 @@
       "strata": ["Burgos", "centre-line-intent", "inside-totality", "plateau"]
     },
     {
-      "id": "burgos-neutral-control-product-reference",
-      "name": "Burgos neutral control product reference",
-      "latitude": 42.3439,
-      "longitude": -3.6969,
-      "strata": ["Burgos", "product-candidate", "inside-totality", "rolling"],
-      "horizonValidation": {
-        "terrainClassIntent": "rolling",
-        "referenceAzimuthDegrees": 282.47998046875
-      }
-    },
-    {
       "id": "miranda-de-ebro-inland",
       "name": "Miranda de Ebro validation point",
       "latitude": 42.6865,
@@ -163,22 +152,22 @@
       "strata": ["Navarra", "southern-sector", "inside-totality", "low-elevation-intent"]
     },
     {
-      "id": "arguedas-product-reference",
-      "name": "Arguedas product reference",
+      "id": "arguedas-terrain-control",
+      "name": "Arguedas terrain validation point",
       "latitude": 42.1758188,
       "longitude": -1.5970062,
-      "strata": ["Navarra", "product-candidate", "inside-totality", "low-elevation-intent"],
+      "strata": ["Navarra", "Ebro-valley", "inside-totality", "low-elevation-intent"],
       "horizonValidation": {
         "terrainClassIntent": "flat-to-rolling",
         "referenceAzimuthDegrees": 283.93994140625
       }
     },
     {
-      "id": "el-ferial-product-reference",
-      "name": "El Ferial product reference",
+      "id": "el-ferial-low-elevation",
+      "name": "El Ferial validation point",
       "latitude": 42.2891948,
       "longitude": -1.5762507,
-      "strata": ["Navarra", "product-candidate", "inside-totality", "low-elevation-intent"]
+      "strata": ["Navarra", "Ebro-valley", "inside-totality", "low-elevation-intent"]
     },
     {
       "id": "zaragoza-eastern-inland",
@@ -284,13 +273,13 @@
         "inside-totality",
         "coastal",
         "nearby-pair",
-        "product-reference"
+        "osm-control"
       ],
       "coordinateSource": {
         "producer": "OpenStreetMap contributors",
         "url": "https://www.openstreetmap.org/node/8902027588",
         "retrievedAt": "2026-08-02",
-        "precision": "Seven decimal degrees retained from the frozen product catalogue"
+        "precision": "Seven decimal degrees retained from the frozen OpenStreetMap reference"
       },
       "horizonValidation": {
         "terrainClassIntent": "coastal",

@@ -201,32 +201,58 @@ primary map workflow does not reproduce safety guidance or render a safety banne
 
 ### Map-place coordinates
 
-The national reference layer contains 41 independently sourced anchors: 23 cities that the
+The generated public place catalogue contains 1,001 independently sourced references. It
+selects all 562 GeoNames Spain populated-place records with a published population of at
+least 20,000, 346 named OpenStreetMap viewpoints inside the OSM Spain boundary, and 93
+named OpenStreetMap objects identified as astronomical observatories or planetariums.
+Several objects can describe one facility. The population cut is only a transparent
+way to make city discovery finite. It is not a claim about municipal importance or eclipse
+suitability. Every row retains its GeoNames or OpenStreetMap feature identifier and source
+URL.
+
+The OpenStreetMap input was captured independently from a rectangular request envelope.
+The generator then applies the detailed OSM Spain boundary so that Portuguese and French
+features in that envelope are rejected. Weather, geophysical, atmospheric, forestry and
+wildlife observatories are excluded from the astronomy class. A named viewpoint or
+astronomy facility is still only a mapped geographic reference. Its orientation, public
+opening, solar-observation policy, terrain clearance and local access remain unknown until
+checked separately.
+
+The earlier national layer remains as a 41-point evidence subset: 23 cities that the
 [IGN/OAN eclipse overview](https://eclipses.ign.es/eclipse-total-sol-de-12-de-agosto-2026.html)
 identifies as crossed by totality, eight OpenStreetMap viewpoint candidates with coarse
-southwest-to-northwest direction metadata, and ten major partial-eclipse context cities.
-City coordinates come from the frozen GeoNames Spain snapshot identified by SHA-256 in
-[public/sources.json](public/sources.json); each record retains its GeoNames feature ID.
-The viewpoint features retain their OpenStreetMap IDs and are not copied from a
-third-party eclipse-planning catalogue. These 41 references, and only these references, have the
-checksum-bound ERA5 climate summaries; official programme markers do not silently inherit
-weather values from a nearby reference.
+western-sector direction metadata, and ten major partial-eclipse context cities. These 41
+references, and only these references, have checksum-bound ERA5 climate summaries. The
+larger city, viewpoint and astronomy catalogue does not silently inherit weather from a
+nearby point.
 
-The map also displays all 75 rows from the official Junta de Castilla y León observation-
-point spreadsheet. Its checksum, public-sector reuse conditions, attribution and three
-duplicate-label anomalies are recorded in [public/sources.json](public/sources.json) and
-the owned JSON snapshot. No row is silently deduplicated. Four current Navarra programme
-references and four current Aragón programme references use independently identified
-OpenStreetMap features; two Aragón locations are explicitly municipality references rather
-than enclosure coordinates.
+The map groups the expanded catalogue at national and regional zooms, limits detailed
+markers to the current viewport, and keeps every reference searchable by name. This is a
+display and performance policy, not a ranking. No eclipse score, terrain verdict or
+popularity order is stored in the catalogue.
 
-These markers are geographic anchors, not endorsed venues or a ranking. Direction tags
-are only a discovery filter and do not establish terrain clearance, buildings,
-vegetation, access or operations. Four earlier local OpenStreetMap references remain
-searchable and URL-compatible but do not shape the clean national view. A map click or
-coordinate form creates a user point without transmitting it to this project. Its
-normalized coordinates can be retained in a versioned share URL together with the
-selected comparison; no first-party server or durable shared store receives them.
+`npm run places:generate` rebuilds the owned JSON artifact from externally retained
+GeoNames, Overpass and OSM boundary inputs configured through the environment variables
+named by the generator. The exact acquisition request text and rectangular envelope were
+not retained with this first OSM snapshot, so the hashes bind the inputs but do not by
+themselves reproduce their acquisition; a versioned request is required for the next
+refresh. The generator validates source shape, political-boundary membership, minimum
+counts, unique identifiers and coordinate ranges, and records every raw-input checksum in
+the artifact.
+
+The official-programme class remains separate. It contains all 75 rows from the Junta de
+Castilla y León spreadsheet, four independently mapped references with individual
+Government of Navarra operational links, and four Government of Aragón programme
+references. The Castilla y León checksum, public-sector reuse conditions and three
+duplicate-label anomalies are recorded in [public/sources.json](public/sources.json).
+The complete Navarra network is linked as an external directory because no open licence
+for redistributing its structured catalogue has been confirmed.
+
+These markers are approximate planning references, not endorsed venues. Earlier local
+OpenStreetMap references remain searchable and URL-compatible but do not shape the national
+view. A map click or coordinate form creates a user point without transmitting it
+to this project. Its normalized coordinates can be retained in a versioned share URL with
+the selected comparison; no first-party server or durable shared store receives them.
 
 The scientific fixture additionally retains the single six-decimal coordinate published
 by Turismo Asturias for Playa de Los Quebrantos. It is used only to test nearby coastal
@@ -235,11 +261,13 @@ ranked map point.
 
 ### Operational information
 
-Government of Navarra, Government of Aragón and Burgos neutral control pages are linked only for
-operations. The application does not republish ticket price, availability, capacity,
-services or parking. It also exposes fourteen regional public-authority directories as
-outbound links rather than copying structured catalogs whose reuse rights are unconfirmed.
-Users must verify the linked organizer immediately before travel or purchase.
+Government of Navarra and Government of Aragón pages are linked only for operations. The
+Navarra directory remains external; four independently mapped references retain individual
+outbound pages without republishing the complete network, ticket price, availability,
+capacity, services, parking or operational map payloads. The application also exposes fourteen regional
+public-authority directories as outbound links rather than copying structured catalogues
+whose reuse rights are unconfirmed. Users must verify the linked organizer immediately
+before travel or purchase.
 
 ### Basemap
 

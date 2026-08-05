@@ -231,7 +231,7 @@ test("keeps search results usable while the iPhone keyboard is open", async ({
   });
   await search.focus();
   await setVisualViewportHeight(page, 390);
-  await search.fill("Burgos neutral control");
+  await search.fill("Burgos");
 
   await expect(page.locator(".planner-shell")).toHaveAttribute(
     "data-search-active",
@@ -243,7 +243,7 @@ test("keeps search results usable while the iPhone keyboard is open", async ({
   await expect(page.locator(".place-filters")).toHaveCount(0);
   await expect(page.locator(".place-list-heading")).toBeHidden();
   const result = page.locator(
-    '.place-list button[data-candidate-id="burgos-neutral-control"]',
+    '.place-list button[data-candidate-id="burgos"]',
   );
   await expect(result).toBeVisible();
 
@@ -265,7 +265,7 @@ test("keeps search results usable while the iPhone keyboard is open", async ({
   await result.click();
   await setVisualViewportHeight(page, 699);
   await expect(
-    page.getByRole("heading", { name: "Burgos neutral control", exact: true }),
+    page.getByRole("heading", { name: "Burgos", exact: true }),
   ).toBeVisible();
   await expect(page.locator(".masthead")).toBeVisible();
   await expect(page.locator(".mobile-navigation")).toBeVisible();

@@ -28,20 +28,6 @@ const candidateKeys = {
     coordinate: "candidate.ferial.coordinate",
     operations: "candidate.ferial.operations",
   },
-  "burgos-neutral-control": {
-    name: "candidate.burgosControl.name",
-    description: "candidate.burgosControl.description",
-    limitations: ["candidate.burgosControl.limit1", "candidate.burgosControl.limit2"],
-    coordinate: "candidate.burgosControl.coordinate",
-    operations: "candidate.burgosControl.operations",
-  },
-  "soria-neutral-control": {
-    name: "candidate.soriaTerrain.name",
-    description: "candidate.soriaTerrain.description",
-    limitations: ["candidate.soriaTerrain.limit1", "candidate.soriaTerrain.limit2"],
-    coordinate: "candidate.soriaTerrain.coordinate",
-    operations: "candidate.soriaTerrain.operations",
-  },
 } as const satisfies Record<
   string,
   {
@@ -85,11 +71,14 @@ export function localizeCandidate(
 
   if (candidate.category === "official-observation") {
     const network = candidate.operations.status === "official-network";
-    const coordinateKey = candidate.coordinate.kind === "approximate"
-      ? "candidate.official.coordinateApproximate"
-      : candidate.coordinate.kind === "published"
-        ? "candidate.official.coordinatePublished"
-        : "candidate.official.coordinateMapped";
+    const coordinateKey =
+      candidate.coordinate.kind === "approximate"
+        ? "candidate.official.coordinateApproximate"
+        : candidate.coordinate.kind === "published"
+          ? "candidate.official.coordinatePublished"
+          : candidate.coordinate.kind === "reference"
+            ? "candidate.official.coordinateReference"
+            : "candidate.official.coordinateMapped";
     return {
       ...candidate,
       description: t(
@@ -112,6 +101,61 @@ export function localizeCandidate(
             ? "candidate.official.networkOperations"
             : "candidate.official.recommendedOperations",
         ),
+      },
+    };
+  }
+
+  const catalogKeys: {
+    description: MessageKey;
+    limitations: readonly [MessageKey, MessageKey];
+    coordinate: MessageKey;
+  } | null =
+    candidate.category === "city-reference" ||
+    candidate.category === "totality-city" ||
+    candidate.category === "partial-context"
+      ? {
+          description: "candidate.catalog.cityDescription",
+          limitations: [
+            "candidate.catalog.cityLimit1",
+            "candidate.catalog.cityLimit2",
+          ],
+          coordinate: "candidate.catalog.cityCoordinate",
+        }
+      : candidate.category === "candidate-viewpoint"
+        ? {
+            description: "candidate.catalog.viewpointDescription",
+            limitations: [
+              "candidate.catalog.viewpointLimit1",
+              "candidate.catalog.viewpointLimit2",
+            ],
+            coordinate: "candidate.catalog.mappedCoordinate",
+          }
+        : candidate.category === "astronomy-site"
+          ? {
+              description: "candidate.catalog.astronomyDescription",
+              limitations: [
+                "candidate.catalog.astronomyLimit1",
+                "candidate.catalog.astronomyLimit2",
+              ],
+              coordinate: "candidate.catalog.mappedCoordinate",
+            }
+          : null;
+  if (catalogKeys) {
+    return {
+      ...candidate,
+      region:
+        candidate.region === "Spain"
+          ? t("candidate.catalog.spainRegion")
+          : candidate.region,
+      description: t(catalogKeys.description),
+      limitations: catalogKeys.limitations.map((key) => t(key)),
+      coordinate: {
+        ...candidate.coordinate,
+        label: t(catalogKeys.coordinate),
+      },
+      operations: {
+        ...candidate.operations,
+        label: t("candidate.catalog.operations"),
       },
     };
   }

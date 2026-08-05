@@ -1836,7 +1836,10 @@ export default function EclipsePlanner() {
     if (isAtmosphereMapView(plannerState.layer)) {
       return candidate.atmosphereReference || explicitlyRequested;
     }
-    return candidate.defaultVisible || explicitlyRequested;
+    return (
+      (candidate.mapVisibleByDefault ?? candidate.defaultVisible) ||
+      explicitlyRequested
+    );
   });
   const railContent =
     workspaceView.kind === "help"
@@ -2464,6 +2467,7 @@ export default function EclipsePlanner() {
             onSearchActiveChange={setSearchActive}
             eventId={eventId}
             t={t}
+            formatNumber={formatNumber}
           />
 
           <footer className="planner-footer">

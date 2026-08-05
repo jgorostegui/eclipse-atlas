@@ -14,6 +14,12 @@ const elevation = (groundElevationMetres: number) => ({
   viewpointHeightAboveGroundMetres: PLANNING_VIEWPOINT_HEIGHT_METRES,
 });
 
+const BURGOS_VALIDATION_POINT = {
+  latitude: 42.3439,
+  longitude: -3.6969,
+  groundElevationMetres: 858.1,
+} as const;
+
 describe("calculateEclipseCircumstances", () => {
   it("calculates the later Spanish eclipses through the same point workflow", () => {
     const ceuta2027 = calculateEclipseCircumstances(
@@ -42,41 +48,34 @@ describe("calculateEclipseCircumstances", () => {
     expect(sevilla2028?.contacts.c3?.aboveApparentHorizon).toBe(true);
     expect(sevilla2028?.sunAltitudeDegrees).toBeGreaterThan(0);
   });
-  it("calculates the target eclipse for the four planning references", () => {
-    const arguedas = calculateEclipseCircumstances(
-      42.1758188,
-      -1.5970062,
-      elevation(262.6),
+  it("calculates the target eclipse across public geographic references", () => {
+    const aCoruna = calculateEclipseCircumstances(
+      43.3623,
+      -8.4115,
+      elevation(21),
     );
-    const elFerial = calculateEclipseCircumstances(
-      42.2891948,
-      -1.5762507,
-      elevation(383),
+    const burgos = calculateEclipseCircumstances(
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      elevation(BURGOS_VALIDATION_POINT.groundElevationMetres),
     );
-    const burgosControl = calculateEclipseCircumstances(
-      42.3439,
-      -3.6969,
-      elevation(585),
-    );
-    const soriaTerrain = calculateEclipseCircumstances(
+    const soria = calculateEclipseCircumstances(
       41.7636,
       -2.4649,
-      elevation(796),
+      elevation(1063),
     );
 
-    expect(arguedas?.kind).toBe("total");
-    expect(elFerial?.kind).toBe("total");
-    expect(burgosControl?.kind).toBe("total");
-    expect(soriaTerrain?.kind).toBe("total");
-    expect(arguedas?.totalityDurationSeconds).toBeCloseTo(73.217, 2);
-    expect(elFerial?.totalityDurationSeconds).toBeCloseTo(64.197, 2);
-    expect(burgosControl?.totalityDurationSeconds).toBeCloseTo(83.902, 2);
-    expect(burgosControl?.sunAltitudeDegrees).toBeGreaterThan(
-      arguedas?.sunAltitudeDegrees ?? Number.POSITIVE_INFINITY,
-    );
-    for (const result of [arguedas, elFerial, burgosControl, soriaTerrain]) {
+    expect(aCoruna?.kind).toBe("total");
+    expect(burgos?.kind).toBe("total");
+    expect(soria?.kind).toBe("total");
+    expect(burgos?.totalityDurationSeconds).toBeCloseTo(103.568, 2);
+    for (const result of [aCoruna, burgos, soria]) {
       expect(result?.contacts.c2?.aboveApparentHorizon).toBe(true);
       expect(result?.contacts.c3?.aboveApparentHorizon).toBe(true);
+    }
+    expect(aCoruna?.contacts.c4.aboveApparentHorizon).toBe(true);
+    expect(aCoruna?.contacts.c4.apparentSolarCentreAltitudeDegrees).toBeGreaterThan(0);
+    for (const result of [burgos, soria]) {
       expect(result?.contacts.c4.aboveApparentHorizon).toBe(false);
       expect(
         result?.contacts.c4.apparentSolarCentreAltitudeDegrees,
@@ -101,14 +100,14 @@ describe("calculateEclipseCircumstances", () => {
 
   it("uses an explicit planning viewpoint height and solar angular radius", () => {
     const result = calculateEclipseCircumstances(
-      42.3439,
-      -3.6969,
-      elevation(585),
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      elevation(BURGOS_VALIDATION_POINT.groundElevationMetres),
     );
 
-    expect(result?.groundElevationMetres).toBe(585);
+    expect(result?.groundElevationMetres).toBe(858.1);
     expect(result?.viewpointHeightAboveGroundMetres).toBe(1.5);
-    expect(result?.observerElevationMetres).toBe(586.5);
+    expect(result?.observerElevationMetres).toBe(859.6);
     expect(result?.solarAngularRadiusDegrees).toBeCloseTo(0.262958, 5);
     expect(result?.magnitude).toBeGreaterThan(1);
     expect(result?.idealHorizonSunset?.toISOString()).toMatch(
@@ -122,16 +121,16 @@ describe("calculateEclipseCircumstances", () => {
 
   it("builds a topocentric Sun and Moon track without recalculating the eclipse", () => {
     const result = calculateEclipseCircumstances(
-      42.3439,
-      -3.6969,
-      elevation(585),
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      elevation(BURGOS_VALIDATION_POINT.groundElevationMetres),
     );
     expect(result).not.toBeNull();
     if (!result) return;
 
     const track = calculateEclipseAnimationTrack(
-      42.3439,
-      -3.6969,
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
       result,
       61,
     );
@@ -172,30 +171,35 @@ describe("calculateEclipseCircumstances", () => {
 
   it("rejects unreasonable animation sample counts", () => {
     const result = calculateEclipseCircumstances(
-      42.3439,
-      -3.6969,
-      elevation(585),
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      elevation(BURGOS_VALIDATION_POINT.groundElevationMetres),
     );
     expect(result).not.toBeNull();
     if (!result) return;
     expect(() =>
-      calculateEclipseAnimationTrack(42.3439, -3.6969, result, 1),
+      calculateEclipseAnimationTrack(
+        BURGOS_VALIDATION_POINT.latitude,
+        BURGOS_VALIDATION_POINT.longitude,
+        result,
+        1,
+      ),
     ).toThrow(RangeError);
   });
 
   it("builds a focused central-phase track with exact endpoints", () => {
     const result = calculateEclipseCircumstances(
-      42.3439,
-      -3.6969,
-      elevation(585),
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
+      elevation(BURGOS_VALIDATION_POINT.groundElevationMetres),
     );
     expect(result?.totalBegin).not.toBeNull();
     expect(result?.totalEnd).not.toBeNull();
     if (!result?.totalBegin || !result.totalEnd) return;
 
     const track = calculateEclipseAnimationWindowTrack(
-      42.3439,
-      -3.6969,
+      BURGOS_VALIDATION_POINT.latitude,
+      BURGOS_VALIDATION_POINT.longitude,
       result,
       result.totalBegin,
       result.totalEnd,
@@ -206,8 +210,8 @@ describe("calculateEclipseCircumstances", () => {
     expect(track.at(-1)?.time).toEqual(result.totalEnd);
     expect(() =>
       calculateEclipseAnimationWindowTrack(
-        42.3439,
-        -3.6969,
+        BURGOS_VALIDATION_POINT.latitude,
+        BURGOS_VALIDATION_POINT.longitude,
         result,
         result.partialBegin,
         new Date(result.partialEnd.getTime() + 1),

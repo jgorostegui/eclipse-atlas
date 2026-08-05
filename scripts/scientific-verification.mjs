@@ -246,7 +246,7 @@ export function evaluateRecommendationReadiness(evidence, acceptance) {
   const requirements = {
     reproducibleFrozenBuild: evidence.reproducibleFrozenBuild,
     validationSample: evidence.validationSample,
-    productReferenceCoverage: evidence.productReferenceCoverage,
+    validationStrataCoverage: evidence.validationStrataCoverage,
     astronomyNumericalThresholds: evidence.astronomyNumericalThresholds,
     astronomyExactInputAlignment: evidence.astronomyExactInputAlignment,
     secondIndependentEphemeris:
@@ -415,12 +415,11 @@ export async function evaluateScientificReport(report) {
     }
   }
 
-  const [acceptance, fixtureManifest, validationPoints, productReferences] =
+  const [acceptance, fixtureManifest, validationPoints] =
     await Promise.all([
       readJson("verification/acceptance.json"),
       readJson("verification/fixtures/v2/fixture-manifest.json"),
       readJson("verification/fixtures/v2/validation-points.json"),
-      readJson("src/data/candidate-reference-points.json"),
     ]);
   if (acceptance.schemaVersion !== 1) {
     throw new Error("Scientific acceptance schema is invalid.");
@@ -493,19 +492,15 @@ export async function evaluateScientificReport(report) {
     points.every(
       (point) => Array.isArray(point.strata) && point.strata.length > 0,
     );
-  const referenceCoordinates = acceptance.requiredProductReferenceIds.map(
-    (id) => {
-      const reference = productReferences.references?.[id];
-      if (!reference) throw new Error(`Missing product reference ${id}.`);
-      return reference;
-    },
-  );
-  const productReferenceCoverage = referenceCoordinates.every((reference) =>
-    points.some(
-      (point) =>
-        point.latitude === reference.latitude &&
-        point.longitude === reference.longitude,
-    ),
+  const coveredStrata = new Set(points.flatMap((point) => point.strata));
+  const validationStrataCoverage = requireArray(
+    acceptance.requiredValidationStrata,
+    "acceptance.requiredValidationStrata",
+  ).every(
+    (stratum) =>
+      typeof stratum === "string" &&
+      stratum.length > 0 &&
+      coveredStrata.has(stratum),
   );
 
   const astronomyComparisons = requireArray(
@@ -1031,7 +1026,7 @@ export async function evaluateScientificReport(report) {
       report.environment.gitClean === true &&
       commandOutput("git", ["status", "--porcelain=v1"]) === "",
     validationSample,
-    productReferenceCoverage,
+    validationStrataCoverage,
     astronomyNumericalThresholds,
     astronomyExactInputAlignment,
     independentAstronomySourceCount:

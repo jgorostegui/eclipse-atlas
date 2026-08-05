@@ -13,14 +13,6 @@
     "el-ferial": {
       "latitude": 42.2891948,
       "longitude": -1.5762507
-    },
-    "burgos-neutral-control": {
-      "latitude": 42.3439,
-      "longitude": -3.6969
-    },
-    "soria-neutral-control": {
-      "latitude": 41.7636,
-      "longitude": -2.4649
     }
   }
 }

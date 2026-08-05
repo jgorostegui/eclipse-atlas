@@ -1017,6 +1017,13 @@ a {
   transform: rotate(45deg);
 }
 
+.place-list__symbol--astronomy-site {
+  background: #5f4b8b;
+  border-radius: 50% 50% 2px 50%;
+  box-shadow: 0 0 0 1px #392b59;
+  transform: rotate(45deg);
+}
+
 .place-list__symbol--official-observation {
   background: #fff;
   border: 3px solid var(--solar);
@@ -2996,6 +3003,12 @@ a {
 .eclipse-place-pin--candidate-viewpoint > span {
   background: var(--terrain);
   border-radius: 3px;
+  transform: rotate(45deg);
+}
+
+.eclipse-place-pin--astronomy-site > span {
+  background: #5f4b8b;
+  border-radius: 50% 50% 3px 50%;
   transform: rotate(45deg);
 }
 

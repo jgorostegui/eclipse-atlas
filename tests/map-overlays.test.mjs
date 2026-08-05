@@ -120,7 +120,7 @@ test("publishes checksum-bound official regional overview artifacts", async () =
     { name: "Seville", latitude: 37.3891, longitude: -5.9845 },
   ];
   const insideTotality = [
-    { name: "Burgos neutral control", latitude: 42.3439, longitude: -3.6969 },
+    { name: "Burgos", latitude: 42.3439, longitude: -3.6969 },
     { name: "Soria", latitude: 41.7636, longitude: -2.4649 },
     { name: "Arguedas", latitude: 42.177, longitude: -1.598 },
   ];
