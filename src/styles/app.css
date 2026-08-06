@@ -140,8 +140,28 @@ a {
   overflow: hidden;
   background-image: var(--masthead-art-desktop);
   background-position: center 7%;
-  background-size: cover;
+  background-repeat: no-repeat;
+  background-size: min(1600px, 100vw) auto;
   filter: saturate(0.88) contrast(1.04) brightness(0.72);
+}
+
+@media (min-width: 1601px) {
+  .masthead-art {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent calc(50% - 800px),
+      #000 calc(50% - 700px),
+      #000 calc(50% + 700px),
+      transparent calc(50% + 800px)
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent calc(50% - 800px),
+      #000 calc(50% - 700px),
+      #000 calc(50% + 700px),
+      transparent calc(50% + 800px)
+    );
+  }
 }
 
 .masthead-scrim {
@@ -3096,6 +3116,7 @@ a {
   .masthead-art {
     background-image: var(--masthead-art-mobile);
     background-position: center;
+    background-size: cover;
     filter: saturate(0.92) contrast(1.05) brightness(0.78);
   }
 

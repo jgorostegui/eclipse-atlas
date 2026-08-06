@@ -155,7 +155,6 @@ function PlannerSplitter({
   workspaceRef,
   workspace,
   width,
-  detailMode,
   onChange,
   onReset,
   t,
@@ -163,16 +162,12 @@ function PlannerSplitter({
   workspaceRef: RefObject<HTMLElement | null>;
   workspace: WorkspaceSize;
   width: number;
-  detailMode: boolean;
   onChange: (width: number) => void;
   onReset: () => void;
   t: Translate;
 }) {
   const dragging = useRef(false);
-  const { minimum, maximum } = desktopRailWidthBounds(
-    workspace,
-    detailMode,
-  );
+  const { minimum, maximum } = desktopRailWidthBounds(workspace);
   const setFromPointer = (event: PointerEvent<HTMLDivElement>) => {
     const bounds = workspaceRef.current?.getBoundingClientRect();
     if (!bounds) return;
@@ -180,7 +175,6 @@ function PlannerSplitter({
       clampDesktopRailWidth(
         bounds.right - event.clientX,
         { width: bounds.width, height: bounds.height },
-        detailMode,
       ),
     );
   };
@@ -204,7 +198,7 @@ function PlannerSplitter({
     }
     if (next === null) return;
     event.preventDefault();
-    onChange(clampDesktopRailWidth(next, workspace, detailMode));
+    onChange(clampDesktopRailWidth(next, workspace));
   };
 
   return (
@@ -679,20 +673,13 @@ export default function EclipsePlanner() {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [railWidths, setRailWidths] = useState(() => ({
-    standard: defaultDesktopRailWidth(
-      { width: window.innerWidth, height: window.innerHeight },
-      false,
-    ),
-    detail: defaultDesktopRailWidth(
-      { width: window.innerWidth, height: window.innerHeight },
-      true,
-    ),
-  }));
-  const [railWidthCustomized, setRailWidthCustomized] = useState({
-    standard: false,
-    detail: false,
-  });
+  const [railWidth, setRailWidth] = useState(() =>
+    defaultDesktopRailWidth({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }),
+  );
+  const [railWidthCustomized, setRailWidthCustomized] = useState(false);
   const [initialParse] = useState<PlannerUrlParseResult>(initialPlannerUrl);
   const [plannerState, setPlannerState] = useState<PlannerUrlStateV1>(
     initialParse.state,
@@ -852,14 +839,11 @@ export default function EclipsePlanner() {
       const bounds = workspace.getBoundingClientRect();
       const size = { width: bounds.width, height: bounds.height };
       setPlannerWorkspaceSize(size);
-      setRailWidths((current) => ({
-        standard: railWidthCustomized.standard
-          ? clampDesktopRailWidth(current.standard, size, false)
-          : defaultDesktopRailWidth(size, false),
-        detail: railWidthCustomized.detail
-          ? clampDesktopRailWidth(current.detail, size, true)
-          : defaultDesktopRailWidth(size, true),
-      }));
+      setRailWidth((current) =>
+        railWidthCustomized
+          ? clampDesktopRailWidth(current, size)
+          : defaultDesktopRailWidth(size),
+      );
     };
     resize();
     if (typeof ResizeObserver !== "function") {
@@ -869,7 +853,7 @@ export default function EclipsePlanner() {
     const observer = new ResizeObserver(resize);
     observer.observe(workspace);
     return () => observer.disconnect();
-  }, [railWidthCustomized.detail, railWidthCustomized.standard]);
+  }, [railWidthCustomized]);
 
   useEffect(() => {
     workspaceNavigationRef.current = workspaceNavigation;
@@ -1850,30 +1834,14 @@ export default function EclipsePlanner() {
             (workspaceView.kind === "map" && selected)
           ? "details"
           : "places";
-  const detailRailMode = railContent === "details";
-  const railWidth = detailRailMode ? railWidths.detail : railWidths.standard;
   const setActiveRailWidth = (width: number) => {
-    const mode = detailRailMode ? "detail" : "standard";
-    setRailWidthCustomized((current) => ({
-      ...current,
-      [mode]: true,
-    }));
-    setRailWidths((current) => ({
-      ...current,
-      [mode]: width,
-    }));
+    setRailWidthCustomized(true);
+    setRailWidth(width);
   };
   const resetActiveRailWidth = () => {
-    const mode = detailRailMode ? "detail" : "standard";
     const size = workspaceSize(plannerWorkspaceRef);
-    setRailWidthCustomized((current) => ({
-      ...current,
-      [mode]: false,
-    }));
-    setRailWidths((current) => ({
-      ...current,
-      [mode]: defaultDesktopRailWidth(size, detailRailMode),
-    }));
+    setRailWidthCustomized(false);
+    setRailWidth(defaultDesktopRailWidth(size));
   };
   const detailDestination = detailReturnView(workspaceView);
   const detailBackLabel: MessageKey =
@@ -1985,7 +1953,6 @@ export default function EclipsePlanner() {
           workspaceRef={plannerWorkspaceRef}
           workspace={plannerWorkspaceSize}
           width={railWidth}
-          detailMode={detailRailMode}
           onChange={setActiveRailWidth}
           onReset={resetActiveRailWidth}
           t={t}

@@ -102,38 +102,53 @@ test("resizes the desktop inspector with pointer-equivalent keyboard controls", 
   ).toBeCloseTo(initialCssWidth);
 });
 
-test("adapts the automatic inspector width to the workspace aspect ratio", async ({
+test("keeps one inspector width while opening and closing details", async ({
   page,
 }) => {
-  await page.goto(SORIA_URL);
+  await page.setViewportSize({ width: 2351, height: 1269 });
+  await page.goto("/?state=1&lang=es&event=2026&layer=none#places");
   const splitter = page.getByRole("separator", {
     name: "Cambiar el ancho del panel de detalles",
   });
 
   await expect(splitter).toBeVisible();
-  const tallWorkspaceWidth = Number(
+  const defaultWidth = Number(
     await splitter.getAttribute("aria-valuenow"),
   );
+  expect(defaultWidth / 2351).toBeCloseTo(0.33, 3);
 
-  await page.setViewportSize({ width: 1440, height: 700 });
-  await expect.poll(async () =>
-    Number(await splitter.getAttribute("aria-valuenow")),
-  ).toBeLessThan(tallWorkspaceWidth);
-
-  await page.setViewportSize({ width: 1440, height: 1000 });
+  const search = page.getByRole("searchbox", {
+    name: "Buscar lugares del mapa",
+  });
+  await search.fill("Burgos");
+  const burgos = page.locator(
+    '.place-list button[data-candidate-id="burgos"]',
+  );
+  await burgos.click();
+  await expect(page).toHaveURL(/#details$/);
   await expect(splitter).toHaveAttribute(
     "aria-valuenow",
-    String(tallWorkspaceWidth),
+    String(defaultWidth),
   );
 
-  await splitter.press("ArrowLeft");
-  const customizedWidth = tallWorkspaceWidth + 16;
+  await page
+    .getByRole("button", { name: "Volver a lugares", exact: true })
+    .click();
+  await expect(page).toHaveURL(/#places$/);
+  await expect(splitter).toHaveAttribute(
+    "aria-valuenow",
+    String(defaultWidth),
+  );
+
+  await splitter.press("ArrowRight");
+  const customizedWidth = defaultWidth - 16;
   await expect(splitter).toHaveAttribute(
     "aria-valuenow",
     String(customizedWidth),
   );
 
-  await page.setViewportSize({ width: 1440, height: 700 });
+  await burgos.click();
+  await expect(page).toHaveURL(/#details$/);
   await expect(splitter).toHaveAttribute(
     "aria-valuenow",
     String(customizedWidth),
@@ -306,15 +321,19 @@ test("clears a desktop selection without changing the local map camera", async (
   await expect(mapCanvas).toHaveAttribute("data-map-zoom", "9");
   const centerBefore = await mapCanvas.getAttribute("data-map-center");
   const zoomBefore = await mapCanvas.getAttribute("data-map-zoom");
+  const shell = page.locator(".planner-shell");
+  const railWidthBefore = await shell.evaluate((element) =>
+    getComputedStyle(element).getPropertyValue("--planner-rail-width"),
+  );
 
   await page
     .getByRole("button", { name: "Quitar selección", exact: true })
     .click();
 
   await expect(page).not.toHaveURL(/selected=/);
-  await expect(page.locator(".planner-shell")).toHaveCSS(
+  await expect(shell).toHaveCSS(
     "--planner-rail-width",
-    "448px",
+    railWidthBefore,
   );
   await page.evaluate(
     () =>

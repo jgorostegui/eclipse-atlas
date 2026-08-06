@@ -455,6 +455,25 @@ test("keeps the illustrated header visually stable", async ({ page }) => {
     },
   );
 
+  await page.setViewportSize({ width: 2351, height: 1269 });
+  await page.goto("/?state=1&lang=es&event=2026&layer=none");
+  await expect(page.locator(".masthead-art")).toHaveCSS(
+    "background-size",
+    "1600px",
+  );
+  await expect(page.locator(".masthead-art")).toHaveCSS(
+    "background-repeat",
+    "no-repeat",
+  );
+  await expect(page.locator(".masthead")).toHaveScreenshot(
+    "eclipse-atlas-header-ultrawide.webp",
+    {
+      animations: "disabled",
+      caret: "hide",
+      maxDiffPixelRatio: 0.005,
+    },
+  );
+
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?state=1&lang=es&event=2026&layer=none");
   await expect(repositoryLink).toBeVisible();

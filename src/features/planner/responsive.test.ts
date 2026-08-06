@@ -11,11 +11,10 @@ describe("desktop inspector sizing", () => {
     { name: "common laptop", width: 1366, height: 656 },
     { name: "full HD desktop", width: 1920, height: 968 },
     { name: "wide desktop", width: 2048, height: 1040 },
+    { name: "maintainer ultrawide capture", width: 2351, height: 1157 },
+    { name: "WQHD ultrawide", width: 3440, height: 1328 },
   ])("keeps the map primary on a $name", ({ width, height }) => {
-    const inspectorWidth = defaultDesktopRailWidth(
-      { width, height },
-      true,
-    );
+    const inspectorWidth = defaultDesktopRailWidth({ width, height });
 
     expect(inspectorWidth).toBeGreaterThanOrEqual(
       Math.min(420, width * 0.42),
@@ -24,26 +23,40 @@ describe("desktop inspector sizing", () => {
     expect(width - inspectorWidth - 10).toBeGreaterThan(inspectorWidth);
   });
 
-  it("uses the available aspect ratio instead of a fixed percentage", () => {
+  it.each([
+    { name: "wide desktop", width: 2048, height: 1040 },
+    { name: "maintainer ultrawide capture", width: 2351, height: 1157 },
+    { name: "WQHD ultrawide", width: 3440, height: 1328 },
+  ])("keeps the inspector fluid on a $name", ({ width, height }) => {
+    const inspectorWidth = defaultDesktopRailWidth({ width, height });
+
+    expect(inspectorWidth / width).toBeCloseTo(0.33, 6);
+  });
+
+  it("does not change the automatic width when only workspace height changes", () => {
     const tall = defaultDesktopRailWidth(
       { width: 1920, height: 1200 },
-      true,
     );
     const wide = defaultDesktopRailWidth(
       { width: 1920, height: 760 },
-      true,
     );
 
-    expect(tall).toBeGreaterThan(wide);
-    expect(wide).toBeGreaterThanOrEqual(420);
+    expect(tall).toBe(wide);
+    expect(tall / 1920).toBeCloseTo(0.33, 6);
   });
 
-  it("bounds manual resizing without allowing the inspector to take half the workspace", () => {
-    const workspace = { width: 1366, height: 656 };
-    const bounds = desktopRailWidthBounds(workspace, true);
+  it.each([
+    { name: "common laptop", width: 1366, height: 656 },
+    { name: "WQHD ultrawide", width: 3440, height: 1328 },
+  ])(
+    "bounds manual resizing on a $name without allowing the inspector to take half the workspace",
+    ({ width, height }) => {
+      const workspace = { width, height };
+      const bounds = desktopRailWidthBounds(workspace);
 
-    expect(clampDesktopRailWidth(0, workspace, true)).toBe(bounds.minimum);
-    expect(clampDesktopRailWidth(2000, workspace, true)).toBe(bounds.maximum);
-    expect(bounds.maximum / workspace.width).toBeCloseTo(0.42, 6);
-  });
+      expect(clampDesktopRailWidth(0, workspace)).toBe(bounds.minimum);
+      expect(clampDesktopRailWidth(2000, workspace)).toBe(bounds.maximum);
+      expect(bounds.maximum / workspace.width).toBeCloseTo(0.42, 6);
+    },
+  );
 });

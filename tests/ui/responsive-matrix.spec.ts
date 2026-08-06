@@ -37,6 +37,8 @@ const largeViewports = [
   { name: "scaled laptop", width: 1536, height: 864 },
   { name: "full HD desktop", width: 1920, height: 1080 },
   { name: "wide desktop", width: 2048, height: 1152 },
+  { name: "maintainer ultrawide capture", width: 2351, height: 1269 },
+  { name: "WQHD ultrawide", width: 3440, height: 1440 },
 ] as const;
 
 test("keeps selected-place controls coherent across representative phones", async ({
@@ -264,6 +266,12 @@ test("keeps map and inspector sound across tablets and desktops", async ({
             `${viewport.name}: wide layout does not adapt the inspector`,
           ).toBeLessThanOrEqual(0.345);
         }
+        if (viewport.width >= 1920) {
+          expect(
+            railRatio,
+            `${viewport.name}: ultrawide inspector does not use its default third`,
+          ).toBeGreaterThanOrEqual(0.329);
+        }
       }
       expect(geometry.actions.right, `${viewport.name}: actions leave header`)
         .toBeLessThanOrEqual(geometry.header.right + 1);
@@ -295,6 +303,17 @@ test("keeps map and inspector sound across tablets and desktops", async ({
       if (viewport.name === "common laptop") {
         await expect(page.locator(".planner-shell")).toHaveScreenshot(
           `burgos-common-laptop-${browserName}.png`,
+          {
+            animations: "disabled",
+            caret: "hide",
+            maxDiffPixelRatio: 0.04,
+          },
+        );
+      }
+
+      if (viewport.name === "maintainer ultrawide capture") {
+        await expect(page.locator(".planner-shell")).toHaveScreenshot(
+          `burgos-maintainer-ultrawide-${browserName}.png`,
           {
             animations: "disabled",
             caret: "hide",
