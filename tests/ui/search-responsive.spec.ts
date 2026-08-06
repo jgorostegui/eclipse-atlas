@@ -28,7 +28,7 @@ test("puts results first on focus even without a keyboard resize event", async (
       await page.goto(PLACES_URL);
 
       await expect(page.locator(".place-list-heading b")).toHaveText(
-        "1086 lugares · 124 mostrados",
+        "1088 lugares · 124 mostrados",
       );
 
       const search = page.getByRole("searchbox", {

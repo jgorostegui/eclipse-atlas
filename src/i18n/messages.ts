@@ -437,6 +437,24 @@ const englishMessages = {
     "The protected landscape has access controls; the organizer remains the authority for admission and parking.",
   "candidate.ferial.coordinate": "Approximate landscape feature",
   "candidate.ferial.operations": "Check the official El Ferial event page",
+  "candidate.medina.name": "Medina de Pomar",
+  "candidate.medina.description":
+    "A municipality-level reference for examining local eclipse geometry and western terrain, pending an exact field position.",
+  "candidate.medina.limit1":
+    "The marker is the OpenStreetMap town centre, not an observation venue.",
+  "candidate.medina.limit2":
+    "Access, capacity, nearby obstacles and eclipse operations remain unverified.",
+  "candidate.medina.coordinate": "Approximate administrative centre",
+  "candidate.medina.operations": "No eclipse operations verified",
+  "candidate.rosales.name": "Alto de Rosales",
+  "candidate.rosales.description":
+    "An elevated mountain-pass reference near Medina de Pomar for comparing eclipse geometry and the western horizon, pending an exact field position.",
+  "candidate.rosales.limit1":
+    "The marker is the OpenStreetMap mountain-pass node, not a prepared observation venue.",
+  "candidate.rosales.limit2":
+    "Access, parking, capacity, nearby terrain obstacles and eclipse operations remain unverified.",
+  "candidate.rosales.coordinate": "Mapped mountain pass",
+  "candidate.rosales.operations": "No eclipse operations verified",
   "candidate.official.networkDescription":
     "An official observation-network location linked to the organizer's current operational page.",
   "candidate.official.recommendedDescription":
@@ -927,6 +945,24 @@ const spanishMessages: Record<MessageKey, string> = {
     "El espacio protegido tiene controles de acceso; el organizador es la autoridad sobre admisión y aparcamiento.",
   "candidate.ferial.coordinate": "Elemento paisajístico aproximado",
   "candidate.ferial.operations": "Consultar la página oficial de El Ferial",
+  "candidate.medina.name": "Medina de Pomar",
+  "candidate.medina.description":
+    "Una referencia municipal para examinar la geometría local del eclipse y el relieve occidental, pendiente de una posición exacta de campo.",
+  "candidate.medina.limit1":
+    "El marcador es el centro urbano de OpenStreetMap, no un lugar de observación.",
+  "candidate.medina.limit2":
+    "El acceso, el aforo, los obstáculos cercanos y la operativa del eclipse siguen sin verificar.",
+  "candidate.medina.coordinate": "Centro administrativo aproximado",
+  "candidate.medina.operations": "Sin operativa del eclipse verificada",
+  "candidate.rosales.name": "Alto de Rosales",
+  "candidate.rosales.description":
+    "Una referencia en un puerto de montaña cerca de Medina de Pomar para comparar la geometría del eclipse y el horizonte occidental, pendiente de una posición exacta de campo.",
+  "candidate.rosales.limit1":
+    "El marcador es el nodo del puerto de montaña de OpenStreetMap, no un lugar de observación preparado.",
+  "candidate.rosales.limit2":
+    "El acceso, el aparcamiento, el aforo, los obstáculos del relieve cercano y la operativa del eclipse siguen sin verificar.",
+  "candidate.rosales.coordinate": "Puerto de montaña cartografiado",
+  "candidate.rosales.operations": "Sin operativa del eclipse verificada",
   "candidate.official.networkDescription":
     "Un lugar de una red oficial de observación enlazado con la información operativa actual del organizador.",
   "candidate.official.recommendedDescription":

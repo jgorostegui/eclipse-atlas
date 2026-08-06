@@ -28,6 +28,20 @@ const candidateKeys = {
     coordinate: "candidate.ferial.coordinate",
     operations: "candidate.ferial.operations",
   },
+  "medina-de-pomar": {
+    name: "candidate.medina.name",
+    description: "candidate.medina.description",
+    limitations: ["candidate.medina.limit1", "candidate.medina.limit2"],
+    coordinate: "candidate.medina.coordinate",
+    operations: "candidate.medina.operations",
+  },
+  "alto-de-rosales": {
+    name: "candidate.rosales.name",
+    description: "candidate.rosales.description",
+    limitations: ["candidate.rosales.limit1", "candidate.rosales.limit2"],
+    coordinate: "candidate.rosales.coordinate",
+    operations: "candidate.rosales.operations",
+  },
 } as const satisfies Record<
   string,
   {

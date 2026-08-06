@@ -151,6 +151,66 @@ const localCandidates: CandidateLocation[] = [
       reviewedAt: "2026-08-02",
     },
   },
+  {
+    id: "medina-de-pomar",
+    name: "Medina de Pomar planning reference",
+    shortName: "Medina de Pomar",
+    municipality: "Medina de Pomar",
+    region: "Burgos",
+    latitude: candidateReferencePoints.references["medina-de-pomar"].latitude,
+    longitude: candidateReferencePoints.references["medina-de-pomar"].longitude,
+    kind: "administrative-centre",
+    category: "local-reference",
+    defaultVisible: false,
+    atmosphereReference: false,
+    description:
+      "A municipality-level reference for examining local eclipse geometry and western terrain, pending an exact field position.",
+    limitations: [
+      "The marker is the OpenStreetMap town centre, not an observation venue.",
+      "Access, capacity, nearby obstacles and eclipse operations remain unverified.",
+    ],
+    coordinate: {
+      kind: "approximate",
+      label: "Approximate administrative centre",
+      sourceName: "OpenStreetMap relation 340077",
+      sourceUrl: "https://www.openstreetmap.org/relation/340077",
+      retrievedAt: "2026-08-02",
+    },
+    operations: {
+      status: "unverified",
+      label: "No eclipse operations verified",
+    },
+  },
+  {
+    id: "alto-de-rosales",
+    name: "Alto de Rosales viewpoint reference",
+    shortName: "Alto de Rosales",
+    municipality: "Medina de Pomar",
+    region: "Burgos",
+    latitude: candidateReferencePoints.references["alto-de-rosales"].latitude,
+    longitude: candidateReferencePoints.references["alto-de-rosales"].longitude,
+    kind: "landscape-reference",
+    category: "local-reference",
+    defaultVisible: false,
+    atmosphereReference: false,
+    description:
+      "An elevated mountain-pass reference near Medina de Pomar for comparing eclipse geometry and the western horizon, pending an exact field position.",
+    limitations: [
+      "The marker is the OpenStreetMap mountain-pass node, not a prepared observation venue.",
+      "Access, parking, capacity, nearby terrain obstacles and eclipse operations remain unverified.",
+    ],
+    coordinate: {
+      kind: "mapped",
+      label: "Mapped mountain pass",
+      sourceName: "OpenStreetMap node 11914361210",
+      sourceUrl: "https://www.openstreetmap.org/node/11914361210",
+      retrievedAt: "2026-08-06",
+    },
+    operations: {
+      status: "unverified",
+      label: "No eclipse operations verified",
+    },
+  },
 ];
 
 const officialNetworkCandidates: CandidateLocation[] = [

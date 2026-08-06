@@ -28,7 +28,7 @@ describe("national planning catalogue", () => {
           candidate.mapVisibleByDefault ?? candidate.defaultVisible,
       ),
     ).toHaveLength(1_084);
-    expect(candidates).toHaveLength(1_086);
+    expect(candidates).toHaveLength(1_088);
   });
 
   it("keeps identifiers unique and every published anchor traceable", () => {

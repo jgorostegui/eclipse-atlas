@@ -264,7 +264,7 @@ describe("EclipsePlanner acceptance", () => {
       }),
     ).toBeTruthy();
     expect(screen.getByText(/Choose a place or click anywhere on the map/i)).toBeTruthy();
-    expect(screen.getByText("1,086 places · 124 shown")).toBeTruthy();
+    expect(screen.getByText("1,088 places · 124 shown")).toBeTruthy();
     expect(screen.getByRole("searchbox", { name: /Search the map places/i })).toBeTruthy();
     expect(
       within(desktopTools).getByRole("button", { name: "Totality duration" }),

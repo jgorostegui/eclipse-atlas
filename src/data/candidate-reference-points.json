@@ -13,6 +13,14 @@
     "el-ferial": {
       "latitude": 42.2891948,
       "longitude": -1.5762507
+    },
+    "medina-de-pomar": {
+      "latitude": 42.9322092,
+      "longitude": -3.4861165
+    },
+    "alto-de-rosales": {
+      "latitude": 42.9357676,
+      "longitude": -3.4426788
     }
   }
 }
