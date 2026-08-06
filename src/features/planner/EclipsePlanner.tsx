@@ -1133,23 +1133,12 @@ export default function EclipsePlanner() {
   const selectedId = plannerState.selected
     ? referenceCandidateId(plannerState.selected)
     : null;
-  const detailEvidenceKey = selectedId ? `${eventId}:${selectedId}` : null;
-  const [detailEvidenceState, setDetailEvidenceState] = useState<{
-    key: string | null;
-    view: SelectedPlaceEvidenceView;
-  }>({
-    key: detailEvidenceKey,
-    view: "horizon",
-  });
-  const detailEvidenceView =
-    detailEvidenceState.key === detailEvidenceKey
-      ? detailEvidenceState.view
-      : "horizon";
+  // Sticky evidence lens: it persists as the selected place changes and only
+  // moves when the reader picks a tab. Session-only, so a reload resets it.
+  const [detailEvidenceView, setDetailEvidenceView] =
+    useState<SelectedPlaceEvidenceView>("horizon");
   const selectDetailEvidence = (view: SelectedPlaceEvidenceView) => {
-    setDetailEvidenceState({
-      key: detailEvidenceKey,
-      view,
-    });
+    setDetailEvidenceView(view);
   };
   const compareIds = useMemo(
     () => plannerState.compared.map(referenceCandidateId),
