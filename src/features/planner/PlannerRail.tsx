@@ -3,7 +3,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type FormEvent,
+  type KeyboardEvent,
 } from "react";
 import type { CandidateCategory } from "../../data/candidates";
 import type { EclipseEventId } from "../../domain/eclipse-events";
@@ -11,6 +11,7 @@ import type { MapViewSelection } from "../../data/map-view";
 import { officialObservationDirectories } from "../../data/official-observation-directories";
 import type { MessageKey, MessageValues } from "../../i18n/messages";
 import type { MappedCandidate } from "../map/EclipseMap";
+import { parseCoordinateSearch } from "./coordinate-search";
 import { matchesStackedLayout } from "./responsive";
 
 type Translate = (key: MessageKey, values?: MessageValues) => string;
@@ -119,12 +120,14 @@ export function LocationExplorer({
   formatNumber: (value: number) => string;
 }) {
   const [query, setQuery] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
   const [error, setError] = useState<string | null>(null);
   const explorerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = query.trim().toLocaleLowerCase();
+  const coordinateMatch = useMemo(
+    () => parseCoordinateSearch(query),
+    [query],
+  );
 
   const cataloguePoints = useMemo(
     () =>
@@ -189,25 +192,19 @@ export function LocationExplorer({
     onSelect(id);
   };
 
-  const submitCoordinates = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const parsedLatitude = Number(latitude);
-    const parsedLongitude = Number(longitude);
-    if (
-      latitude.trim() === "" ||
-      longitude.trim() === "" ||
-      !Number.isFinite(parsedLatitude) ||
-      !Number.isFinite(parsedLongitude) ||
-      parsedLatitude < -90 ||
-      parsedLatitude > 90 ||
-      parsedLongitude < -180 ||
-      parsedLongitude > 180
-    ) {
-      setError(t("coordinates.invalid"));
-      return;
-    }
+  const goToCoordinateMatch = () => {
+    if (!coordinateMatch) return;
     setError(null);
-    onCoordinates(parsedLatitude, parsedLongitude);
+    onSearchActiveChange(false);
+    searchInputRef.current?.blur();
+    onCoordinates(coordinateMatch.latitude, coordinateMatch.longitude);
+  };
+
+  const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && coordinateMatch) {
+      event.preventDefault();
+      goToCoordinateMatch();
+    }
   };
 
   const useCurrentLocation = () => {
@@ -261,6 +258,7 @@ export function LocationExplorer({
             aria-controls="place-search-results"
             onFocus={activateSearch}
             onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={handleSearchKeyDown}
           />
         </label>
         <button
@@ -286,7 +284,30 @@ export function LocationExplorer({
         </button>
       </div>
 
+      {error && (
+        <p className="explorer-alert" role="alert">
+          {error}
+        </p>
+      )}
+
       <div className="place-list" id="place-search-results">
+        {coordinateMatch && (
+          <button
+            type="button"
+            className="place-list__coordinate"
+            onClick={goToCoordinateMatch}
+          >
+            <span
+              className="place-list__symbol place-list__symbol--custom"
+              aria-hidden="true"
+            />
+            <span>
+              <b>{t("explore.goToCoordinates")}</b>
+              <small>{`${coordinateMatch.latitude}, ${coordinateMatch.longitude}`}</small>
+            </span>
+            <em>{t("explore.category.custom")}</em>
+          </button>
+        )}
         {visiblePoints.map(({ candidate }) => (
           <button
             key={candidate.id}
@@ -312,7 +333,9 @@ export function LocationExplorer({
             </em>
           </button>
         ))}
-        {visiblePoints.length === 0 && <p>{t("explore.noResults")}</p>}
+        {visiblePoints.length === 0 && !coordinateMatch && (
+          <p>{t("explore.noResults")}</p>
+        )}
       </div>
 
       <details className="official-directories">
@@ -332,30 +355,6 @@ export function LocationExplorer({
           ))}
         </div>
       </details>
-
-      <form className="rail-coordinate-form" onSubmit={submitCoordinates}>
-        <b>{t("explore.coordinates")}</b>
-        <label>
-          <span>{t("coordinates.latitude")}</span>
-          <input
-            inputMode="decimal"
-            value={latitude}
-            placeholder={t("coordinates.latitudeExample")}
-            onChange={(event) => setLatitude(event.target.value)}
-          />
-        </label>
-        <label>
-          <span>{t("coordinates.longitude")}</span>
-          <input
-            inputMode="decimal"
-            value={longitude}
-            placeholder={t("coordinates.longitudeExample")}
-            onChange={(event) => setLongitude(event.target.value)}
-          />
-        </label>
-        <button type="submit">{t("coordinates.analyse")}</button>
-        {error && <p role="alert">{error}</p>}
-      </form>
     </div>
   );
 }

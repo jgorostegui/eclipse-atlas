@@ -1126,57 +1126,18 @@ a {
   font-size: 11px;
 }
 
-.rail-coordinate-form {
-  display: grid;
+.explorer-alert {
   flex: 0 0 auto;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  padding: 14px 18px 16px;
+  margin: 0;
+  padding: 10px 18px;
+  color: var(--danger);
+  font-size: 12px;
   background: var(--surface-soft);
   border-top: 1px solid var(--line);
 }
 
-.rail-coordinate-form > b {
-  grid-column: 1 / -1;
-  font-size: 13px;
-}
-
-.rail-coordinate-form label {
-  display: grid;
-  gap: 4px;
-  color: var(--muted);
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.rail-coordinate-form input {
-  width: 100%;
-  min-height: 42px;
-  padding: 7px 9px;
-  background: #fff;
-  border: 1px solid var(--line-strong);
-  border-radius: 5px;
+.place-list__coordinate small {
   font-family: var(--font-mono);
-  font-size: 12px;
-}
-
-.rail-coordinate-form button {
-  min-height: 42px;
-  grid-column: 1 / -1;
-  cursor: pointer;
-  color: #fff;
-  background: var(--ink);
-  border: 0;
-  border-radius: 5px;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.rail-coordinate-form p {
-  grid-column: 1 / -1;
-  margin: 0;
-  color: var(--danger);
-  font-size: 12px;
 }
 
 .detail-navigation {
@@ -3259,14 +3220,11 @@ a {
 
   .rail-map-views button,
   .place-list-heading button,
-  .rail-coordinate-form input,
-  .rail-coordinate-form button,
   .compare-toggle {
     min-height: 44px;
   }
 
-  .place-search__field input,
-  .rail-coordinate-form input {
+  .place-search__field input {
     font-size: 16px;
   }
 
@@ -3641,10 +3599,6 @@ a {
     padding-inline: 14px;
   }
 
-  .rail-coordinate-form {
-    padding-inline: 14px;
-  }
-
   .detail-summary {
     grid-template-columns: 1fr;
   }
@@ -4011,8 +3965,7 @@ a {
 
   .planner-shell[data-search-active="true"] .explorer-heading,
   .planner-shell[data-search-active="true"] .place-list-heading,
-  .planner-shell[data-search-active="true"] .official-directories,
-  .planner-shell[data-search-active="true"] .rail-coordinate-form {
+  .planner-shell[data-search-active="true"] .official-directories {
     display: none;
   }
 

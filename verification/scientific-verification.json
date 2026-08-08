@@ -1,25 +1,24 @@
 {
   "schemaVersion": 2,
   "reportVersion": "2.1.0",
-  "generatedAt": "2026-08-05T20:47:57.978Z",
+  "generatedAt": "2026-08-08T13:47:51.426Z",
   "event": {
     "date": "2026-08-12",
     "timeStandard": "UTC"
   },
   "environment": {
     "projectVersion": "0.1.0",
-    "gitCommit": "85550d3aa03cfe605f9c1d49bbe10a254edfeea4",
+    "gitCommit": "f68b6f820523c2650b7c9430f5ba096411ed2075",
     "gitClean": false,
     "node": "v22.22.2",
     "npm": "10.9.7",
     "operatingSystem": "Linux 7.0.0-28-generic x64",
-    "packageLockSha256": "b16483e47be4a4519ab92a9355a4fdd0fde7a0ca7d841f0fa0aa07bd0b8955d8",
-    "generatorSha256": "4c270c24aab1a2fc743bb989f5fbc0c6974a7aafe1c1329963407035db849eda",
+    "packageLockSha256": "96dc3900ab4a1d366742187b870325fdbbdcf8eafb7d29b1eff3eb6b46abe609",
+    "scienceDependencySha256": "f1992fba6b88636c2286b2ff6b56d98621bc3ba6120a86dcb9c390404556e58f",
+    "generatorSha256": "5ae73406bd94ed7fe56222536eea52b77e9c07053091f64c5939d7030de745fb",
     "acceptanceSha256": "cd37311408983ee93de91007969670ad329ebb39193c2cb118498cf231159c78",
     "scientificInputSha256": {
-      "package.json": "826cffcdbc0cef08989f5e35adcd4a0801eb6ba3ba893a5bef8176498eec5a8b",
-      "package-lock.json": "b16483e47be4a4519ab92a9355a4fdd0fde7a0ca7d841f0fa0aa07bd0b8955d8",
-      "scripts/scientific-verification.mjs": "4f5005bcb12b19d3738b0939253abe2c8565e52cc0c343b025a842d5aa26054d",
+      "scripts/scientific-verification.mjs": "4a5910c6f7e0f955e5f3f2fbd1ae46d9fc6b06e70b7f7869dd29b05b09014582",
       "scripts/required-input-path.mts": "84763c4a75f3861c6ad0c9554d562fc709ef2926a2e4c51260f73ce7100b75de",
       "scripts/verification-reference-geometry.mjs": "96272ff750a7da9880ceef7a9a0f44a2cac7b6a86f337dc4589b23fb93e82108",
       "scripts/verification-reference-geometry.d.mts": "533211d54e06af6392397c7ee2dae676e37ec46924c208a9562b1bedbf55f79c",

@@ -16,6 +16,7 @@ import {
   TERRAIN_REQUEST_ENVELOPES,
 } from "../src/domain/terrain-coverage.ts";
 import {
+  computeScienceDependencyDigest,
   evaluateScientificReport,
   SCIENTIFIC_INPUT_PATHS,
 } from "./scientific-verification.mjs";
@@ -1123,6 +1124,7 @@ const validationPointManifestBuffer = await readFile(
       npm: commandOutput("npm", ["--version"]),
       operatingSystem: os.type() + " " + os.release() + " " + os.arch(),
       packageLockSha256: sha256(dependencyLock),
+      scienceDependencySha256: computeScienceDependencyDigest(dependencyLockJson),
       generatorSha256: sha256(verificationHarness),
       acceptanceSha256:
         scientificInputSha256["verification/acceptance.json"],

@@ -1,5 +1,14 @@
 export const SCIENTIFIC_INPUT_PATHS: readonly string[];
 
+export const SCIENCE_DEPENDENCY_ROOTS: readonly string[];
+
+export function computeScienceDependencyDigest(
+  lock: unknown,
+  roots?: readonly string[],
+): string;
+
+export function scienceDependencyDigest(): Promise<string>;
+
 export type ScientificVerificationResult = {
   reportIntegrity: "valid";
   recommendationReadiness: {

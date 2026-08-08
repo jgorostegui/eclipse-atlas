@@ -55,7 +55,7 @@
 - Make units explicit, especially on compact map markers and scientific metrics. Avoid labels that could be mistaken for scores.
 - Prefer operational copy that explains what is known, unknown, or required over promotional or motivational slogans.
 - Preserve keyboard navigation, visible focus, WCAG AA text contrast, readable map attribution, and mobile primary targets of at least 44 px.
-- Verify significant interface changes at desktop and at a 390 x 844 mobile viewport with no horizontal overflow.
+- Every interface change MUST work on both desktop and mobile. Verify each one at a desktop width and at a 390 x 844 mobile viewport, with no horizontal overflow and primary targets of at least 44 px on mobile. A feature that only works on one form factor is not done.
 
 ## Verification commands
 

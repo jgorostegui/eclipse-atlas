@@ -10,8 +10,6 @@ export const REPORT_PATH = "verification/scientific-verification.json";
 export const CHECKSUM_PATH = "verification/scientific-verification.sha256";
 
 export const SCIENTIFIC_INPUT_PATHS = [
-  "package.json",
-  "package-lock.json",
   "scripts/scientific-verification.mjs",
   "scripts/required-input-path.mts",
   "scripts/verification-reference-geometry.mjs",
@@ -34,6 +32,18 @@ export const SCIENTIFIC_INPUT_PATHS = [
   "src/features/horizon/horizon-scene-model.test.ts",
   "src/features/horizon/HorizonAnimation.tsx",
   "src/features/horizon/HorizonCanvasView.tsx",
+];
+
+// Dependencies whose behaviour can change the report's numbers: astronomy-engine
+// drives every ephemeris result, geotiff reads the official raster and MDT05
+// segments, and pngjs decodes the TerrainRGB tiles. The report is bound to the
+// resolved versions of these packages and everything reachable from them, not
+// to the whole lockfile, so patching unrelated build or dev tooling does not
+// force a scientific regeneration.
+export const SCIENCE_DEPENDENCY_ROOTS = [
+  "astronomy-engine",
+  "geotiff",
+  "pngjs",
 ];
 
 const evidenceCategories = [
@@ -102,6 +112,74 @@ const EXPECTED_BESSELIAN_MODEL = {
 
 function sha256(contents) {
   return createHash("sha256").update(contents).digest("hex");
+}
+
+// A package-lock v2/v3 key such as "node_modules/a/node_modules/b" identifies
+// the package "b". The top-level "" root and any workspace links are ignored.
+function lockEntryName(lockPath) {
+  const marker = "node_modules/";
+  const index = lockPath.lastIndexOf(marker);
+  return index === -1 ? lockPath : lockPath.slice(index + marker.length);
+}
+
+// Hashes the resolved version and integrity of every package that can affect the
+// scientific result: the science roots plus their transitive dependency closure,
+// taken over package names so it over-approximates rather than risk missing a
+// relevant transitive change. Build- and dev-only trees (bundler, linter, test
+// runner, and their dependencies such as nanoid via postcss) are excluded by
+// construction, so routine security patches to that tooling leave the digest,
+// and therefore the frozen report, untouched.
+export function computeScienceDependencyDigest(
+  lock,
+  roots = SCIENCE_DEPENDENCY_ROOTS,
+) {
+  const packages = lock?.packages;
+  if (!packages || typeof packages !== "object") {
+    throw new Error(
+      "package-lock.json has no packages map; a lockfileVersion 2 or 3 file is required.",
+    );
+  }
+  const entriesByName = new Map();
+  for (const [lockPath, meta] of Object.entries(packages)) {
+    if (!lockPath.startsWith("node_modules/")) continue;
+    const name = lockEntryName(lockPath);
+    const list = entriesByName.get(name) ?? [];
+    list.push(meta);
+    entriesByName.set(name, list);
+  }
+  const reachable = new Set();
+  const queue = [...roots];
+  while (queue.length > 0) {
+    const name = queue.pop();
+    if (reachable.has(name)) continue;
+    reachable.add(name);
+    for (const meta of entriesByName.get(name) ?? []) {
+      for (const group of [
+        meta.dependencies,
+        meta.optionalDependencies,
+        meta.peerDependencies,
+      ]) {
+        for (const dependency of Object.keys(group ?? {})) {
+          if (!reachable.has(dependency)) queue.push(dependency);
+        }
+      }
+    }
+  }
+  const lines = [];
+  for (const [lockPath, meta] of Object.entries(packages)) {
+    if (!lockPath.startsWith("node_modules/")) continue;
+    if (!reachable.has(lockEntryName(lockPath))) continue;
+    lines.push(`${lockPath}@${meta.version ?? ""}#${meta.integrity ?? ""}`);
+  }
+  lines.sort();
+  return sha256(lines.join("\n"));
+}
+
+export async function scienceDependencyDigest() {
+  const lock = JSON.parse(
+    await readFile(path.join(root, "package-lock.json"), "utf8"),
+  );
+  return computeScienceDependencyDigest(lock);
 }
 
 function commandOutput(command, arguments_) {
@@ -451,8 +529,11 @@ export async function evaluateScientificReport(report) {
       ]),
     ),
   );
+  const currentScienceDependencyDigest = await scienceDependencyDigest();
   if (
     report.environment?.generatorSha256 !== sha256(generatorBytes) ||
+    report.environment?.scienceDependencySha256 !==
+      currentScienceDependencyDigest ||
     report.fixtures?.fixtureManifestSha256 !== sha256(fixtureManifestBytes) ||
     report.fixtures?.validationPointManifestSha256 !==
       sha256(validationPointsBytes) ||
