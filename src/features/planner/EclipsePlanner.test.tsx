@@ -263,7 +263,9 @@ describe("EclipsePlanner acceptance", () => {
         name: /Spanish solar eclipse planning map/i,
       }),
     ).toBeTruthy();
-    expect(screen.getByText(/Choose a place or click anywhere on the map/i)).toBeTruthy();
+    expect(
+      screen.getByText(/Choose a place, paste coordinates, or click the map/i),
+    ).toBeTruthy();
     expect(screen.getByText("1,088 places · 124 shown")).toBeTruthy();
     expect(screen.getByRole("searchbox", { name: /Search the map places/i })).toBeTruthy();
     expect(
@@ -462,20 +464,16 @@ describe("EclipsePlanner acceptance", () => {
     ).toBeTruthy();
   });
 
-  it("creates the same deterministic point from the coordinate form", async () => {
+  it("creates the same deterministic point from pasted coordinates", async () => {
     const user = userEvent.setup();
     renderLab();
 
     await user.type(
-      screen.getByLabelText("Latitude"),
-      String(ACCEPTANCE_SCENARIO.customPoint.latitude),
-    );
-    await user.type(
-      screen.getByLabelText("Longitude"),
-      String(ACCEPTANCE_SCENARIO.customPoint.longitude),
+      screen.getByRole("searchbox", { name: "Search the map places" }),
+      `${ACCEPTANCE_SCENARIO.customPoint.latitude}, ${ACCEPTANCE_SCENARIO.customPoint.longitude}`,
     );
     await user.click(
-      screen.getByRole("button", { name: "Analyse coordinates" }),
+      screen.getByRole("button", { name: /Go to these coordinates/i }),
     );
 
     expect(decodeURIComponent(window.location.search)).toContain(
@@ -813,28 +811,49 @@ describe("EclipsePlanner acceptance", () => {
       }),
     ).toBeTruthy();
     expect(screen.queryByText("Comparar 0/3")).toBeNull();
-    expect(screen.getByRole("button", { name: "Analizar coordenadas" })).toBeTruthy();
+    fireEvent.change(
+      screen.getByRole("searchbox", { name: "Buscar lugares del mapa" }),
+      { target: { value: "41.7636, -2.4649" } },
+    );
+    expect(
+      screen.getByRole("button", { name: /Ir a estas coordenadas/i }),
+    ).toBeTruthy();
   });
 
   it("rejects coordinates outside supported terrain coverage", () => {
     renderLab();
-    fireEvent.change(screen.getByLabelText("Latitude"), {
-      target: { value: String(ACCEPTANCE_SCENARIO.unsupportedPoint.latitude) },
-    });
-    fireEvent.change(screen.getByLabelText("Longitude"), {
-      target: { value: String(ACCEPTANCE_SCENARIO.unsupportedPoint.longitude) },
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Analyse coordinates" }));
+    fireEvent.change(
+      screen.getByRole("searchbox", { name: "Search the map places" }),
+      {
+        target: {
+          value: `${ACCEPTANCE_SCENARIO.unsupportedPoint.latitude}, ${ACCEPTANCE_SCENARIO.unsupportedPoint.longitude}`,
+        },
+      },
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: /Go to these coordinates/i }),
+    );
     expect(screen.getByRole("alert").textContent).toMatch(
       /Terrain data is not available/i,
     );
   });
 
-  it("treats blank coordinates as invalid input rather than zero degrees", () => {
+  it("never offers a coordinate result for blank or non-coordinate input", () => {
     renderLab();
-    fireEvent.click(screen.getByRole("button", { name: "Analyse coordinates" }));
-    expect(screen.getByRole("alert").textContent).toMatch(
-      /valid decimal latitude and longitude/i,
-    );
+    const search = screen.getByRole("searchbox", {
+      name: "Search the map places",
+    });
+    expect(
+      screen.queryByRole("button", { name: /Go to these coordinates/i }),
+    ).toBeNull();
+    fireEvent.change(search, { target: { value: "   " } });
+    expect(
+      screen.queryByRole("button", { name: /Go to these coordinates/i }),
+    ).toBeNull();
+    fireEvent.change(search, { target: { value: "Soria" } });
+    expect(
+      screen.queryByRole("button", { name: /Go to these coordinates/i }),
+    ).toBeNull();
+    expect(decodeURIComponent(window.location.search)).not.toContain("geo:0");
   });
 });
