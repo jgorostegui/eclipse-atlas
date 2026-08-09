@@ -92,6 +92,7 @@ export function HelpPanel({
           summary={t("help.map.summary")}
         >
           <p>{t("help.map.body")}</p>
+          <p>{t("help.map.baseBody")}</p>
         </HelpSection>
 
         <HelpSection

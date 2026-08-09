@@ -8,6 +8,7 @@ import {
 import type { CandidateCategory } from "../../data/candidates";
 import type { EclipseEventId } from "../../domain/eclipse-events";
 import type { MapViewSelection } from "../../data/map-view";
+import type { MapBaseLayerId } from "../map/base-layers";
 import { officialObservationDirectories } from "../../data/official-observation-directories";
 import type { MessageKey, MessageValues } from "../../i18n/messages";
 import type { MappedCandidate } from "../map/EclipseMap";
@@ -28,6 +29,12 @@ const skyMapViews = [
   ["eclipse-day-cloud-forecast", "map.atmosphere.forecast"],
 ] as const satisfies readonly [MapViewSelection, MessageKey][];
 
+const baseLayerViews = [
+  ["osm", "map.base.osmShort", "map.base.osm"],
+  ["ign-mtn", "map.base.mtnShort", "map.base.mtn"],
+  ["ign-pnoa", "map.base.pnoaShort", "map.base.pnoa"],
+] as const satisfies readonly [MapBaseLayerId, MessageKey, MessageKey][];
+
 const categoryLabels: Record<CandidateCategory, MessageKey> = {
   "totality-city": "explore.category.totalityCity",
   "city-reference": "explore.category.cityReference",
@@ -42,12 +49,16 @@ const categoryLabels: Record<CandidateCategory, MessageKey> = {
 export function MapViewPicker({
   value,
   onChange,
+  baseLayer,
+  onBaseLayerChange,
   eventId,
   t,
   headingId = "map-views-title",
 }: {
   value: MapViewSelection;
   onChange: (selection: MapViewSelection) => void;
+  baseLayer: MapBaseLayerId;
+  onBaseLayerChange: (id: MapBaseLayerId) => void;
   eventId: EclipseEventId;
   t: Translate;
   headingId?: string;
@@ -89,6 +100,24 @@ export function MapViewPicker({
             <div>{renderViews(skyMapViews)}</div>
           </div>
         )}
+        <div className="rail-map-view-group">
+          <span>{t("map.base.label")}</span>
+          <div>
+            {baseLayerViews.map(([id, shortKey, fullKey]) => (
+              <button
+                key={id}
+                type="button"
+                className={baseLayer === id ? "is-active" : ""}
+                aria-pressed={baseLayer === id}
+                aria-label={t(fullKey)}
+                title={t(fullKey)}
+                onClick={() => onBaseLayerChange(id)}
+              >
+                {t(shortKey)}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

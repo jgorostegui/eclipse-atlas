@@ -36,6 +36,11 @@ import {
   officialUmbraFrameFeature,
   UMBRA_LEAFLET_STYLE,
 } from "./umbra-leaflet-layer";
+import {
+  IGN_BASE_ATTRIBUTION,
+  ignBaseLayers,
+  type MapBaseLayerId,
+} from "./base-layers";
 import { groupCollidingReferences } from "./reference-marker-groups";
 import {
   CLOUD_COVER_LEGEND_GRADIENT,
@@ -75,6 +80,7 @@ type EclipseMapProps = {
   eventId: EclipseEventId;
   overviewRequestKey: number;
   overviewSelection: MapViewSelection;
+  baseLayerId: MapBaseLayerId;
   climateByCandidateId: Readonly<Record<string, CloudClimatePoint>>;
   forecastByCandidateId: Readonly<Record<string, EclipseDayForecast>>;
   atmosphereStatus: "idle" | "loading" | "ready" | "error";
@@ -136,6 +142,7 @@ export function EclipseMap({
   eventId,
   overviewRequestKey,
   overviewSelection,
+  baseLayerId,
   climateByCandidateId,
   forecastByCandidateId,
   atmosphereStatus,
@@ -250,6 +257,24 @@ export function EclipseMap({
       previousSelectedIdRef.current = null;
     };
   }, [retryKey]);
+
+  useEffect(() => {
+    const L = leafletRef.current;
+    const map = mapRef.current;
+    if (!L || !map || status !== "ready" || baseLayerId === "osm") return;
+    const definition = ignBaseLayers[baseLayerId];
+    // Sits above the always-on OSM underlay and below the overlay pane, so
+    // areas outside IGN national coverage keep a readable street base.
+    const layer = L.tileLayer(definition.urlTemplate, {
+      attribution: IGN_BASE_ATTRIBUTION,
+      maxZoom: definition.maxZoom,
+      zIndex: 2,
+      crossOrigin: true,
+    }).addTo(map);
+    return () => {
+      layer.remove();
+    };
+  }, [baseLayerId, status]);
 
   useEffect(() => {
     const map = mapRef.current;

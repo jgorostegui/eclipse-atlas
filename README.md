@@ -26,7 +26,10 @@ separate.
 - See the Sun and Moon against an elevation profile calculated from IGN/CNIG data.
 - Compare up to three locations without reducing astronomy, terrain and weather to a
   single score.
-- Review August cloud climatology and event-day forecasts when they become available.
+- Review August cloud climatology, event-day model forecasts when they become available,
+  and the official AEMET municipal forecast for the 2026 eclipse day.
+- Switch the base map between OpenStreetMap and the official IGN topographic map or
+  PNOA aerial imagery.
 - Share the selected event, location, comparison and map layer through the page URL.
 - Use the application in English or Spanish on desktop, tablet and mobile.
 

@@ -10,6 +10,7 @@ import {
   type SupplementalCloudModelId,
 } from "../../domain/weather";
 import type { MessageKey, MessageValues } from "../../i18n/messages";
+import type { MunicipalForecast } from "./municipal-forecast";
 
 type Translate = (key: MessageKey, values?: MessageValues) => string;
 type NumberFormatter = (
@@ -37,6 +38,18 @@ export type SupplementalForecastState =
 export type SupplementalForecastStates = Readonly<
   Record<SupplementalCloudModelId, SupplementalForecastState>
 >;
+
+export type MunicipalForecastPanelState =
+  | Readonly<{ status: "idle" | "loading" }>
+  | Readonly<{
+      status: "ready";
+      forecast: MunicipalForecast;
+      forecastDate: string;
+      updatedAt: Date | null;
+    }>
+  | Readonly<{ status: "no-municipality" }>
+  | Readonly<{ status: "no-forecast"; municipalityName: string }>
+  | Readonly<{ status: "error" }>;
 
 type ModelHour = Readonly<{
   validAt: Date;
@@ -146,6 +159,114 @@ function modelRows(
       };
     }),
   ];
+}
+
+function formatForecastDay(date: Date, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
+    day: "2-digit",
+    month: "short",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+function MunicipalForecastBlock({
+  state,
+  onRetry,
+  locale,
+  t,
+  formatNumber,
+}: {
+  state: MunicipalForecastPanelState;
+  onRetry: () => void;
+  locale: string;
+  t: Translate;
+  formatNumber: NumberFormatter;
+}) {
+  if (state.status === "idle") return null;
+
+  return (
+    <div
+      className="weather-municipal"
+      aria-busy={state.status === "loading"}
+    >
+      <span>{t("sky.municipal.title")}</span>
+      {state.status === "ready" ? (
+        <div>
+          <strong>{state.forecast.skyStateSpanish}</strong>
+          {(state.forecast.temperatureMaximumCelsius !== null &&
+            state.forecast.temperatureMinimumCelsius !== null) ||
+          state.forecast.precipitationProbabilityPercent !== null ? (
+            <small>
+              {[
+                state.forecast.temperatureMaximumCelsius !== null &&
+                state.forecast.temperatureMinimumCelsius !== null
+                  ? t("sky.municipal.temperatures", {
+                      max: formatNumber(
+                        state.forecast.temperatureMaximumCelsius,
+                      ),
+                      min: formatNumber(
+                        state.forecast.temperatureMinimumCelsius,
+                      ),
+                    })
+                  : null,
+                state.forecast.precipitationProbabilityPercent !== null
+                  ? t("sky.municipal.precipitation", {
+                      percent: formatNumber(
+                        state.forecast.precipitationProbabilityPercent,
+                      ),
+                    })
+                  : null,
+              ]
+                .filter((part) => part !== null)
+                .join(" · ")}
+            </small>
+          ) : null}
+          <small>
+            {t("sky.municipal.municipality", {
+              name: state.forecast.municipalityName,
+              code: state.forecast.ineCode,
+            })}
+          </small>
+          <small>{t("sky.municipal.note")}</small>
+          <small>
+            {t(
+              state.updatedAt
+                ? "sky.municipal.provenance"
+                : "sky.municipal.provenanceNoUpdate",
+              {
+                date: formatForecastDay(
+                  new Date(`${state.forecastDate}T12:00:00.000Z`),
+                  locale,
+                ),
+                ...(state.updatedAt
+                  ? { updated: formatForecastDay(state.updatedAt, locale) }
+                  : {}),
+              },
+            )}
+          </small>
+        </div>
+      ) : (
+        <div>
+          <strong>
+            {state.status === "loading"
+              ? t("sky.municipal.loading")
+              : state.status === "no-municipality"
+                ? t("sky.municipal.noMunicipality")
+                : state.status === "no-forecast"
+                  ? t("sky.municipal.noForecast", {
+                      name: state.municipalityName,
+                    })
+                  : t("sky.municipal.error")}
+          </strong>
+          {state.status === "error" && (
+            <button type="button" onClick={onRetry}>
+              {t("sky.retry")}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function ModelStatus({ status, t }: { status: ModelRow["status"]; t: Translate }) {
@@ -416,10 +537,12 @@ export function SkyEvidence({
   forecastStatus,
   forecastPresentation,
   supplementalForecasts,
+  municipalForecast,
   eclipse,
   displayTimeZone,
   onRetryClimate,
   onRetryForecast,
+  onRetryMunicipalForecast,
   locale,
   t,
   formatNumber,
@@ -433,10 +556,12 @@ export function SkyEvidence({
   forecastStatus: "idle" | "loading" | "ready" | "error";
   forecastPresentation: ForecastPresentation | null;
   supplementalForecasts: SupplementalForecastStates;
+  municipalForecast: MunicipalForecastPanelState;
   eclipse: EclipseCircumstances | null;
   displayTimeZone: SpanishDisplayTimeZone;
   onRetryClimate: () => void;
   onRetryForecast: () => void;
+  onRetryMunicipalForecast: () => void;
   locale: string;
   t: Translate;
   formatNumber: NumberFormatter;
@@ -528,6 +653,13 @@ export function SkyEvidence({
             </div>
           )}
         </div>
+        <MunicipalForecastBlock
+          state={municipalForecast}
+          onRetry={onRetryMunicipalForecast}
+          locale={locale}
+          t={t}
+          formatNumber={formatNumber}
+        />
         <a
           className="weather-aemet-link"
           href={aemetUrl}

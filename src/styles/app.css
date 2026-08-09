@@ -1919,7 +1919,46 @@ a {
   font-size: 10px;
 }
 
+.weather-municipal {
+  display: grid;
+  gap: 6px;
+  padding: 11px 12px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid #b8c6ca;
+  border-radius: 6px;
+}
+
+.weather-municipal > span {
+  color: #53636a;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.weather-municipal > div {
+  display: grid;
+  gap: 3px;
+}
+
+.weather-municipal strong {
+  color: #173d4b;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.weather-municipal small {
+  color: #53636a;
+  font-size: 10px;
+}
+
+.weather-municipal button {
+  justify-self: start;
+  margin-top: 4px;
+}
+
 .weather-climate button,
+.weather-municipal button,
 .sky-evidence__retry {
   min-height: 36px;
   padding: 6px 10px;

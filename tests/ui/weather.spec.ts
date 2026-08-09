@@ -193,6 +193,18 @@ test("keeps climate and live forecast separate in selected-place details", async
   await expect(sky).toContainText("Precipitación (hora anterior)");
   await expect(sky).toContainText("Viento / racha (racha máx. de las 3 h anteriores)");
   await expect(sky).toContainText("pasada 03 ago, 00:00 UTC");
+  const municipal = sky.locator(".weather-municipal");
+  await expect(municipal).toContainText("Previsión municipal oficial de AEMET");
+  await expect(municipal).toContainText("Poco nuboso");
+  await expect(municipal).toContainText("Máx. 31 °C · mín. 14 °C");
+  await expect(municipal).toContainText("5 % de prob. de precipitación");
+  await expect(municipal).toContainText("Municipio: Soria · INE 42173");
+  await expect(municipal).toContainText(
+    "Un valor para todo el término municipal, no para esta coordenada exacta.",
+  );
+  await expect(municipal).toContainText(
+    /Fuente: AEMET vía IGN · previsión del día del eclipse, 12 ago\.? · actualizada 09 ago\.?/,
+  );
   const aemet = sky.getByRole("link", {
     name: "Previsión de AEMET para Soria",
   });

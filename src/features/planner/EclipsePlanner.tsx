@@ -104,9 +104,18 @@ import {
 import {
   SkyEvidence,
   type ForecastPresentation,
+  type MunicipalForecastPanelState,
   type SupplementalForecastState,
   type SupplementalForecastStates,
 } from "../weather/WeatherEvidence";
+import {
+  fetchMunicipalForecastCatalog,
+  municipalForecastByName,
+  resolveMunicipality,
+  type MunicipalForecastCatalog,
+  type ResolvedMunicipality,
+} from "../weather/municipal-forecast";
+import type { MapBaseLayerId } from "../map/base-layers";
 
 type ObserverElevationState =
   | { status: "loading" }
@@ -764,6 +773,14 @@ export default function EclipsePlanner() {
   }));
   const [supplementalForecastRetryKey, setSupplementalForecastRetryKey] =
     useState(0);
+  const [baseLayerId, setBaseLayerId] = useState<MapBaseLayerId>("osm");
+  const [municipalForecast, setMunicipalForecast] =
+    useState<MunicipalForecastPanelState>({ status: "idle" });
+  const [municipalForecastRetryKey, setMunicipalForecastRetryKey] = useState(0);
+  const municipalCatalogRef = useRef<MunicipalForecastCatalog | null>(null);
+  const municipalityCacheRef = useRef(
+    new Map<string, ResolvedMunicipality | null>(),
+  );
   const forecastCacheRef = useRef<Record<string, EclipseDayForecast>>({});
   const forecastRunRef = useRef<ForecastRunMetadata | null>(null);
   const forecastRequestRef = useRef<AbortController | null>(null);
@@ -1469,6 +1486,100 @@ export default function EclipsePlanner() {
       : plannerState.layer === "eclipse-day-cloud-forecast"
         ? forecastStatus
         : "idle";
+  const selectedLatitude = selected?.candidate.latitude ?? null;
+  const selectedLongitude = selected?.candidate.longitude ?? null;
+  const selectedCatalogMunicipality = selected?.candidate.municipality ?? null;
+
+  // The AEMET municipal document only describes the 2026 eclipse day, so the
+  // lookup stays scoped to that event. The coordinate is resolved through the
+  // CartoCiudad reverse geocoder, with the catalogued municipality name as a
+  // fallback for remote points; failures and missing municipalities surface
+  // as explicit states instead of substituted values.
+  useEffect(() => {
+    const controller = new AbortController();
+    const loadCatalog = async () => {
+      const cached = municipalCatalogRef.current;
+      if (cached !== null) return cached;
+      const catalog = await fetchMunicipalForecastCatalog(controller.signal);
+      municipalCatalogRef.current = catalog;
+      return catalog;
+    };
+    const loadMunicipalForecast = async () => {
+      await Promise.resolve();
+      if (controller.signal.aborted) return;
+      if (
+        eventId !== "2026" ||
+        selectedLatitude === null ||
+        selectedLongitude === null
+      ) {
+        setMunicipalForecast({ status: "idle" });
+        return;
+      }
+      setMunicipalForecast({ status: "loading" });
+      const cacheKey = `${selectedLatitude.toFixed(5)},${selectedLongitude.toFixed(5)}`;
+      let municipality = municipalityCacheRef.current.get(cacheKey);
+      if (municipality === undefined) {
+        municipality = await resolveMunicipality(
+          selectedLatitude,
+          selectedLongitude,
+          controller.signal,
+        );
+        municipalityCacheRef.current.set(cacheKey, municipality);
+      }
+      if (controller.signal.aborted) return;
+      if (municipality === null) {
+        if (selectedCatalogMunicipality === null) {
+          setMunicipalForecast({ status: "no-municipality" });
+          return;
+        }
+        const catalog = await loadCatalog();
+        if (controller.signal.aborted) return;
+        const fallback = municipalForecastByName(
+          catalog,
+          selectedCatalogMunicipality,
+        );
+        if (fallback === null) {
+          setMunicipalForecast({ status: "no-municipality" });
+          return;
+        }
+        setMunicipalForecast({
+          status: "ready",
+          forecast: fallback,
+          forecastDate: catalog.forecastDate,
+          updatedAt: catalog.updatedAt,
+        });
+        return;
+      }
+      const catalog = await loadCatalog();
+      if (controller.signal.aborted) return;
+      const forecast = catalog.byIneCode.get(municipality.ineCode);
+      if (forecast === undefined) {
+        setMunicipalForecast({
+          status: "no-forecast",
+          municipalityName: municipality.name,
+        });
+        return;
+      }
+      setMunicipalForecast({
+        status: "ready",
+        forecast,
+        forecastDate: catalog.forecastDate,
+        updatedAt: catalog.updatedAt,
+      });
+    };
+    loadMunicipalForecast().catch(() => {
+      if (!controller.signal.aborted) {
+        setMunicipalForecast({ status: "error" });
+      }
+    });
+    return () => controller.abort();
+  }, [
+    eventId,
+    municipalForecastRetryKey,
+    selectedCatalogMunicipality,
+    selectedLatitude,
+    selectedLongitude,
+  ]);
 
   const scrollToWorkspace = useCallback(() => {
     window.requestAnimationFrame(() => {
@@ -1896,6 +2007,7 @@ export default function EclipsePlanner() {
             eventId={eventId}
             overviewRequestKey={overviewRequestKey}
             overviewSelection={plannerState.layer}
+            baseLayerId={baseLayerId}
             climateByCandidateId={climateByCandidateId}
             forecastByCandidateId={forecastByCandidateId}
             atmosphereStatus={atmosphereStatus}
@@ -1922,6 +2034,8 @@ export default function EclipsePlanner() {
             <MapViewPicker
               value={plannerState.layer}
               onChange={setOverviewSelection}
+              baseLayer={baseLayerId}
+              onBaseLayerChange={setBaseLayerId}
               eventId={eventId}
               t={t}
               headingId="mobile-map-views-title"
@@ -1958,6 +2072,8 @@ export default function EclipsePlanner() {
                 <MapViewPicker
                   value={plannerState.layer}
                   onChange={setOverviewSelection}
+                  baseLayer={baseLayerId}
+                  onBaseLayerChange={setBaseLayerId}
                   eventId={eventId}
                   t={t}
                   headingId="rail-map-views-title"
@@ -2392,6 +2508,7 @@ export default function EclipsePlanner() {
                         ] ?? null
                       }
                       supplementalForecasts={supplementalForecasts}
+                      municipalForecast={municipalForecast}
                       eclipse={selected.eclipse}
                       displayTimeZone={selected.displayTimeZone}
                       onRetryClimate={() => {
@@ -2399,6 +2516,9 @@ export default function EclipsePlanner() {
                         setClimateRetryKey((current) => current + 1);
                       }}
                       onRetryForecast={retrySelectedForecast}
+                      onRetryMunicipalForecast={() =>
+                        setMunicipalForecastRetryKey((current) => current + 1)
+                      }
                       locale={locale}
                       t={t}
                       formatNumber={formatNumber}

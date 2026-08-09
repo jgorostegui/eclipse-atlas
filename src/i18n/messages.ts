@@ -149,6 +149,13 @@ const englishMessages = {
     "The footprint where totality occurs at each sampled instant; not cloud, ambient darkness or terrain shadow.",
   "map.overlay.hidden": "Zoom out to see the regional layer",
   "map.overlay.retry": "Layer unavailable · retry",
+  "map.base.label": "Background",
+  "map.base.osm": "Street map (OpenStreetMap)",
+  "map.base.osmShort": "Streets",
+  "map.base.mtn": "Topographic map (IGN MTN)",
+  "map.base.mtnShort": "Topographic",
+  "map.base.pnoa": "Aerial photo (IGN PNOA)",
+  "map.base.pnoaShort": "Aerial photo",
   "map.umbra.play": "Play passage",
   "map.umbra.pause": "Pause",
   "map.umbra.scrubber": "Umbra passage time",
@@ -299,6 +306,22 @@ const englishMessages = {
   "sky.aemetPlace": "AEMET forecast for {municipality}",
   "sky.aemetSearch": "Find a municipality on AEMET",
   "sky.retry": "Try again",
+  "sky.municipal.title": "AEMET official municipal forecast",
+  "sky.municipal.temperatures": "High {max} °C · low {min} °C",
+  "sky.municipal.precipitation": "{percent} % precipitation probability",
+  "sky.municipal.municipality": "Municipality: {name} · INE {code}",
+  "sky.municipal.note":
+    "One value for the whole municipal territory, not this exact coordinate.",
+  "sky.municipal.provenance":
+    "Source: AEMET via IGN · eclipse-day forecast for {date} · updated {updated}",
+  "sky.municipal.provenanceNoUpdate":
+    "Source: AEMET via IGN · eclipse-day forecast for {date}",
+  "sky.municipal.loading": "Looking up the AEMET municipal forecast…",
+  "sky.municipal.noMunicipality":
+    "No Spanish municipality identified at this point.",
+  "sky.municipal.noForecast":
+    "This document carries no AEMET forecast for {name}.",
+  "sky.municipal.error": "Municipal forecast unavailable.",
   "sky.climate.title": "Typical August · 18:00 UTC",
   "sky.cloudMean": "{percent}% mean cloud cover",
   "sky.climate.range": "Middle half of evenings: {low}–{high}%",
@@ -385,6 +408,8 @@ const englishMessages = {
   "help.map.summary": "Layers, places and custom points",
   "help.map.body":
     "Choose an eclipse and map layer, then select a saved place or tap any supported coordinate. Open Explore to inspect that point in detail.",
+  "help.map.baseBody":
+    "The background changes only what the map looks like, never a calculated value. Streets is the OpenStreetMap community street map. Topographic is the official Spanish national map (IGN MTN), with contour lines and terrain names. Aerial photo is the official PNOA orthophoto (IGN), useful for checking clearings, tracks and buildings; its capture date varies by area. The IGN backgrounds cover Spain, so the street map remains visible beyond that coverage.",
   "help.data.title": "What the data means",
   "help.data.summary": "Geometry, terrain and weather stay separate",
   "help.data.body":
@@ -651,6 +676,13 @@ const spanishMessages: Record<MessageKey, string> = {
     "La huella donde ocurre la totalidad en cada instante muestreado; no representa nubes, oscuridad ambiental ni sombra del relieve.",
   "map.overlay.hidden": "Aleja el mapa para ver la capa regional",
   "map.overlay.retry": "Capa no disponible · reintentar",
+  "map.base.label": "Fondo",
+  "map.base.osm": "Callejero (OpenStreetMap)",
+  "map.base.osmShort": "Callejero",
+  "map.base.mtn": "Mapa topográfico (IGN MTN)",
+  "map.base.mtnShort": "Topográfico",
+  "map.base.pnoa": "Foto aérea (IGN PNOA)",
+  "map.base.pnoaShort": "Foto aérea",
   "map.umbra.play": "Reproducir paso",
   "map.umbra.pause": "Pausar",
   "map.umbra.scrubber": "Hora del paso de la umbra",
@@ -801,6 +833,22 @@ const spanishMessages: Record<MessageKey, string> = {
   "sky.aemetPlace": "Previsión de AEMET para {municipality}",
   "sky.aemetSearch": "Buscar municipio en AEMET",
   "sky.retry": "Reintentar",
+  "sky.municipal.title": "Previsión municipal oficial de AEMET",
+  "sky.municipal.temperatures": "Máx. {max} °C · mín. {min} °C",
+  "sky.municipal.precipitation": "{percent} % de prob. de precipitación",
+  "sky.municipal.municipality": "Municipio: {name} · INE {code}",
+  "sky.municipal.note":
+    "Un valor para todo el término municipal, no para esta coordenada exacta.",
+  "sky.municipal.provenance":
+    "Fuente: AEMET vía IGN · previsión del día del eclipse, {date} · actualizada {updated}",
+  "sky.municipal.provenanceNoUpdate":
+    "Fuente: AEMET vía IGN · previsión del día del eclipse, {date}",
+  "sky.municipal.loading": "Buscando la previsión municipal de AEMET…",
+  "sky.municipal.noMunicipality":
+    "No se ha identificado un municipio español en este punto.",
+  "sky.municipal.noForecast":
+    "Este documento no incluye previsión de AEMET para {name}.",
+  "sky.municipal.error": "Previsión municipal no disponible.",
   "sky.climate.title": "Agosto típico · 18:00 UTC",
   "sky.cloudMean": "{percent}% de nubosidad media",
   "sky.climate.range": "La mitad central de las tardes: {low}–{high}%",
@@ -887,6 +935,8 @@ const spanishMessages: Record<MessageKey, string> = {
   "help.map.summary": "Capas, lugares y puntos propios",
   "help.map.body":
     "Elige un eclipse y una capa, después selecciona un lugar o pulsa cualquier coordenada compatible. Abre Explorar para consultar el punto en detalle.",
+  "help.map.baseBody":
+    "El fondo solo cambia el aspecto del mapa, nunca un valor calculado. Callejero es el mapa de calles comunitario de OpenStreetMap. Topográfico es el mapa oficial de España (MTN del IGN), con curvas de nivel y nombres del relieve. Foto aérea es la ortofoto oficial PNOA (IGN), útil para ver claros, pistas y edificios; su fecha de captura varía según la zona. Los fondos del IGN cubren España, así que fuera de esa cobertura sigue viéndose el callejero.",
   "help.data.title": "Qué significan los datos",
   "help.data.summary": "Geometría, terreno y meteorología por separado",
   "help.data.body":

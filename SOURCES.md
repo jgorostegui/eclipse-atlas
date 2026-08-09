@@ -139,9 +139,17 @@ geometry, terrain clearance, comparison ordering, or a release gate.
   and its Open-Meteo delivery endpoint. The Open-Meteo free endpoint is non-commercial and
   rate-limited. A production operator must recheck the current licence, terms, quotas and
   availability assumptions.
-- **Official cross-check:** saved points with a known municipality open the AEMET
-  municipality search with that name already entered. Other points open the general
-  search. The application does not copy AEMET data or expose an AEMET OpenData key.
+- **Official cross-check:** for the 2026 event the selected-location panel also shows
+  the AEMET official municipal forecast for eclipse day, read live in the browser from
+  the national JSON document the IGN republishes for its eclipse visualizer. The
+  coordinate is resolved to a municipality through the IGN/CNIG CartoCiudad reverse
+  geocoder, falling back to an unambiguous catalogued municipality name for remote
+  saved places, and the value is labelled as one figure for the whole municipal
+  territory with the AEMET source and forecast date visible. It is displayed beside
+  the model rows, never merged with them, and every resolution or transport failure
+  surfaces as an explicit unavailable state. Saved points with a known municipality
+  additionally open the AEMET municipality search with that name already entered; no
+  AEMET OpenData key is used or exposed.
 - **Release boundary:** runtime weather is intentionally absent from the stable
   scientific report. Publication of a recommendation still requires an archived named
   model and run, units, retrieval time, uncertainty, interface capture and operational
@@ -275,6 +283,14 @@ Map data and the evaluation tile layer are supplied by OpenStreetMap contributor
 visible attribution. The community raster tile service has no service-level agreement and
 is governed by the OpenStreetMap Foundation tile usage policy. Material production traffic
 requires a suitable provider or a self-hosted regional archive.
+
+Two optional IGN/CNIG base maps can be selected in the map view picker: the national
+topographic raster (MTN, via WMTS) and the PNOA maximum-currency aerial orthophoto (via
+TMS). Both are
+displayed without modification under the CC BY 4.0-compatible IGN/CNIG data policy with
+visible IGN attribution while active. They cover Spanish national territory only, so the
+OpenStreetMap underlay always remains beneath them. A base map choice changes visual
+context only and never changes a calculated eclipse, terrain, or weather value.
 
 The full URLs, licenses, attribution strings, transformations, versions, and limitations
 are machine-readable in [public/sources.json](public/sources.json).

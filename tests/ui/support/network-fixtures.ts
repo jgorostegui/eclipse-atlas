@@ -82,6 +82,27 @@ function createStructuredTerrainTile(tileX: number, tileY: number) {
   return tile;
 }
 
+// Every resolved coordinate maps to the same deterministic municipality so
+// the AEMET municipal block renders stable content in UI journeys.
+const DETERMINISTIC_REVERSE_GEOCODE = {
+  id: "42.42173",
+  province: "Soria",
+  provinceCode: "42",
+  muni: "Soria",
+  muniCode: "42173",
+  type: "municipio",
+} as const;
+
+const DETERMINISTIC_MUNICIPAL_FORECASTS = {
+  date: "2026-08-12",
+  "42173": {
+    municipio: "Soria",
+    estado_cielo: "Poco nuboso",
+    precipitacion: "5",
+    temperatura: { maxima: "31", minima: "14" },
+  },
+} as const;
+
 export async function installDeterministicNetwork(
   page: Page,
   terrainMode: TerrainFixtureMode = "structured",
@@ -261,6 +282,41 @@ export async function installDeterministicNetwork(
       body: TRANSPARENT_MAP_TILE,
     });
   });
+  await page.route("https://www.ign.es/wmts/**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "image/png",
+      body: TRANSPARENT_MAP_TILE,
+    });
+  });
+  await page.route("https://tms-pnoa-ma.idee.es/**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "image/png",
+      body: TRANSPARENT_MAP_TILE,
+    });
+  });
+  await page.route(
+    "https://www.cartociudad.es/geocoder/api/geocoder/reverseGeocode**",
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(DETERMINISTIC_REVERSE_GEOCODE),
+      });
+    },
+  );
+  await page.route(
+    "https://www.ign.es/resources/cnig/weather.json",
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        headers: { "last-modified": "Sun, 09 Aug 2026 06:00:00 GMT" },
+        body: JSON.stringify(DETERMINISTIC_MUNICIPAL_FORECASTS),
+      });
+    },
+  );
 }
 
 export function collectBrowserErrors(page: Page) {
