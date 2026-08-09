@@ -1,7 +1,6 @@
 # Eclipse Atlas
 
 [![CI](https://github.com/jgorostegui/eclipse-atlas/actions/workflows/ci.yml/badge.svg)](https://github.com/jgorostegui/eclipse-atlas/actions/workflows/ci.yml)
-[![GitHub Pages](https://img.shields.io/github/deployments/jgorostegui/eclipse-atlas/github-pages?label=pages&logo=github)](https://jgorostegui.github.io/eclipse-atlas/)
 [![License: MIT](https://img.shields.io/github/license/jgorostegui/eclipse-atlas)](LICENSE)
 
 [![Eclipse Atlas map artwork showing Spain and the 2026, 2027 and 2028 eclipses](public/images/eclipse-atlas-header-1600.webp)](https://jgorostegui.github.io/eclipse-atlas/)
@@ -30,6 +29,8 @@ separate.
 - Review August cloud climatology and event-day forecasts when they become available.
 - Share the selected event, location, comparison and map layer through the page URL.
 - Use the application in English or Spanish on desktop, tablet and mobile.
+
+![Eclipse Atlas planner showing the 12 August 2026 total eclipse over Spain, with a selected place and its western terrain horizon panel](public/images/eclipse-atlas-planner-1280.jpeg)
 
 Saved places are approximate planning references, not endorsed viewing venues. The map
 does not determine access, capacity, nearby obstacles or current local conditions.
