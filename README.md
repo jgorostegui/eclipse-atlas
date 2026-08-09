@@ -22,6 +22,8 @@ separate.
   location.
 - Search a source-bound national catalogue of cities, named viewpoints, observatories
   and planetariums without treating them as ranked or endorsed viewing sites.
+- Find any Spanish settlement or nomenclátor toponym by name through the live IGN/CNIG
+  CartoCiudad geocoder, listed apart from the curated catalogue with its own attribution.
 - Inspect local contact times, eclipse circumstances and the western terrain horizon.
 - See the Sun and Moon against an elevation profile calculated from IGN/CNIG data.
 - Compare up to three locations without reducing astronomy, terrain and weather to a

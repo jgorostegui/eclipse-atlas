@@ -165,6 +165,17 @@ vi.mock("../../domain/weather", async () => {
   };
 });
 
+vi.mock("./place-name-search", async () => {
+  const actual = await vi.importActual<
+    typeof import("./place-name-search")
+  >("./place-name-search");
+  return {
+    ...actual,
+    searchPlaceNames: vi.fn(async () => []),
+    resolvePlaceNameMatch: vi.fn(async () => null),
+  };
+});
+
 vi.mock("../map/EclipseMap", () => ({
   EclipseMap: ({
     onPick,
@@ -264,7 +275,7 @@ describe("EclipsePlanner acceptance", () => {
       }),
     ).toBeTruthy();
     expect(
-      screen.getByText(/Choose a place, paste coordinates, or click the map/i),
+      screen.getByText(/Search a place, paste coordinates, or click the map/i),
     ).toBeTruthy();
     expect(screen.getByText("1,088 places · 124 shown")).toBeTruthy();
     expect(screen.getByRole("searchbox", { name: /Search the map places/i })).toBeTruthy();

@@ -267,6 +267,19 @@ by Turismo Asturias for Playa de Los Quebrantos. It is used only to test nearby 
 horizon behaviour against Punta d'El Pozacu; it is not added as an endorsed venue or a
 ranked map point.
 
+### Place-name search
+
+The search box also queries the IGN/CNIG CartoCiudad geocoder live in the browser, so a
+small settlement or nomenclátor toponym that does not meet the catalogue's population cut
+can still be found by name. Results appear in their own list section with visible IGN
+attribution, separate from the curated catalogue, and are never merged into it or ranked.
+Street, address and retail layers are excluded from the request. Selecting a result
+retrieves only the entity's WGS 84 coordinate and creates the same unverified user point
+as a pasted coordinate, subject to the same supported-terrain envelope check. A failing or
+empty answer surfaces as an explicit unavailable or no-match state, and a position the
+service cannot resolve stays unknown instead of becoming a fabricated location. No
+response geometry or other content is stored or redistributed.
+
 ### Operational information
 
 Government of Navarra and Government of Aragón pages are linked only for operations. The

@@ -56,7 +56,7 @@ const englishMessages = {
   "list.noTarget": "target eclipse not visible",
   "map.title": "Choose a location",
   "explore.title": "Explore Spain",
-  "explore.instruction": "Choose a place, paste coordinates, or click the map.",
+  "explore.instruction": "Search a place, paste coordinates, or click the map.",
   "explore.search": "Search the map places",
   "explore.closeSearch": "Close search",
   "explore.clearSearch": "Clear search",
@@ -77,6 +77,19 @@ const englishMessages = {
   "explore.category.partialContext": "partial-eclipse city",
   "explore.category.localReference": "local reference",
   "explore.category.custom": "chosen coordinate",
+  "explore.geocoder.heading": "IGN place names (CartoCiudad)",
+  "explore.geocoder.loading": "Searching IGN place names…",
+  "explore.geocoder.error": "The IGN place-name service is unavailable.",
+  "explore.geocoder.noResults": "No IGN place name matches this search.",
+  "explore.geocoder.resolveError":
+    "This place could not be resolved to a coordinate.",
+  "explore.geocoder.attribution":
+    "Place-name search © Instituto Geográfico Nacional de España",
+  "explore.geocoder.type.settlement": "settlement",
+  "explore.geocoder.type.municipality": "municipality",
+  "explore.geocoder.type.province": "province",
+  "explore.geocoder.type.toponym": "toponym",
+  "explore.geocoder.type.place": "place",
   "explore.officialDirectories": "Official regional directories",
   "explore.officialDirectoriesHelp":
     "Live organizer pages for points whose structured data is not republished here.",
@@ -583,7 +596,7 @@ const spanishMessages: Record<MessageKey, string> = {
   "list.noTarget": "el eclipse objetivo no es visible",
   "map.title": "Elige una ubicación",
   "explore.title": "Explora España",
-  "explore.instruction": "Elige un lugar, pega coordenadas o pulsa el mapa.",
+  "explore.instruction": "Busca un lugar, pega coordenadas o pulsa el mapa.",
   "explore.search": "Buscar lugares del mapa",
   "explore.closeSearch": "Cerrar búsqueda",
   "explore.clearSearch": "Borrar búsqueda",
@@ -604,6 +617,21 @@ const spanishMessages: Record<MessageKey, string> = {
   "explore.category.partialContext": "ciudad con eclipse parcial",
   "explore.category.localReference": "referencia local",
   "explore.category.custom": "coordenada elegida",
+  "explore.geocoder.heading": "Topónimos del IGN (CartoCiudad)",
+  "explore.geocoder.loading": "Buscando topónimos del IGN…",
+  "explore.geocoder.error":
+    "El servicio de topónimos del IGN no está disponible.",
+  "explore.geocoder.noResults":
+    "Ningún topónimo del IGN coincide con la búsqueda.",
+  "explore.geocoder.resolveError":
+    "No se ha podido resolver este lugar a una coordenada.",
+  "explore.geocoder.attribution":
+    "Búsqueda de topónimos © Instituto Geográfico Nacional de España",
+  "explore.geocoder.type.settlement": "población",
+  "explore.geocoder.type.municipality": "municipio",
+  "explore.geocoder.type.province": "provincia",
+  "explore.geocoder.type.toponym": "topónimo",
+  "explore.geocoder.type.place": "lugar",
   "explore.officialDirectories": "Directorios oficiales por comunidad",
   "explore.officialDirectoriesHelp":
     "Páginas en vivo de los organizadores para los puntos cuyos datos estructurados no se republican aquí.",

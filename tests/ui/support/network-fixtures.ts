@@ -93,6 +93,39 @@ const DETERMINISTIC_REVERSE_GEOCODE = {
   type: "municipio",
 } as const;
 
+// One deterministic forward-geocoder answer keeps place-name journeys stable
+// for any typed query. The synthetic name avoids colliding with catalogue
+// names asserted elsewhere, and the resolved coordinate is the same
+// terrain-supported point the coordinate-search journey uses.
+const DETERMINISTIC_GEOCODER_CANDIDATES = [
+  {
+    id: "700099001",
+    province: "Provincia Fixture",
+    provinceCode: "99",
+    muni: "Municipio Fixture",
+    muniCode: "99001",
+    type: "poblacion",
+    address: "Aldea Fixture, Aldea Fixture (Municipio Fixture)",
+    poblacion: "Aldea Fixture",
+    lat: 0.0,
+    lng: 0.0,
+    state: 0,
+    countryCode: "011",
+  },
+] as const;
+
+const DETERMINISTIC_GEOCODER_FIND = {
+  id: "700099001",
+  province: "Provincia Fixture",
+  muni: "Municipio Fixture",
+  type: "poblacion",
+  address: "Aldea Fixture",
+  poblacion: "Aldea Fixture",
+  lat: 41.7636,
+  lng: -2.4649,
+  state: 0,
+} as const;
+
 const DETERMINISTIC_MUNICIPAL_FORECASTS = {
   date: "2026-08-12",
   "42173": {
@@ -303,6 +336,26 @@ export async function installDeterministicNetwork(
         status: 200,
         contentType: "application/json",
         body: JSON.stringify(DETERMINISTIC_REVERSE_GEOCODE),
+      });
+    },
+  );
+  await page.route(
+    "https://www.cartociudad.es/geocoder/api/geocoder/candidates**",
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(DETERMINISTIC_GEOCODER_CANDIDATES),
+      });
+    },
+  );
+  await page.route(
+    "https://www.cartociudad.es/geocoder/api/geocoder/find**",
+    async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify(DETERMINISTIC_GEOCODER_FIND),
       });
     },
   );

@@ -13,6 +13,12 @@ import { officialObservationDirectories } from "../../data/official-observation-
 import type { MessageKey, MessageValues } from "../../i18n/messages";
 import type { MappedCandidate } from "../map/EclipseMap";
 import { parseCoordinateSearch } from "./coordinate-search";
+import {
+  MINIMUM_PLACE_NAME_QUERY_LENGTH,
+  resolvePlaceNameMatch,
+  searchPlaceNames,
+  type PlaceNameMatch,
+} from "./place-name-search";
 import { matchesStackedLayout } from "./responsive";
 
 type Translate = (key: MessageKey, values?: MessageValues) => string;
@@ -34,6 +40,32 @@ const baseLayerViews = [
   ["ign-mtn", "map.base.mtnShort", "map.base.mtn"],
   ["ign-pnoa", "map.base.pnoaShort", "map.base.pnoa"],
 ] as const satisfies readonly [MapBaseLayerId, MessageKey, MessageKey][];
+
+const PLACE_NAME_SEARCH_DEBOUNCE_MILLISECONDS = 300;
+
+// Layer identifiers published by the CartoCiudad geocoder, mapped to typed
+// labels; the service is not consistent about capitalization.
+function placeMatchCategoryKey(type: string): MessageKey {
+  const normalized = type.toLocaleLowerCase("es");
+  if (normalized === "poblacion") return "explore.geocoder.type.settlement";
+  if (normalized === "municipio") return "explore.geocoder.type.municipality";
+  if (normalized === "provincia") return "explore.geocoder.type.province";
+  if (normalized === "toponimo" || normalized === "ngbe") {
+    return "explore.geocoder.type.toponym";
+  }
+  return "explore.geocoder.type.place";
+}
+
+function placeMatchKey(match: PlaceNameMatch) {
+  return `${match.type}:${match.id}`;
+}
+
+function placeMatchContext(match: PlaceNameMatch) {
+  if (match.municipality === match.province) return match.province;
+  return [match.municipality, match.province]
+    .filter((value): value is string => value !== null)
+    .join(" · ");
+}
 
 const categoryLabels: Record<CandidateCategory, MessageKey> = {
   "totality-city": "explore.category.totalityCity",
@@ -135,6 +167,8 @@ export function LocationExplorer({
   eventId,
   t,
   formatNumber,
+  searchPlaces = searchPlaceNames,
+  resolvePlace = resolvePlaceNameMatch,
 }: {
   hidden: boolean;
   searchActive: boolean;
@@ -147,9 +181,19 @@ export function LocationExplorer({
   eventId: EclipseEventId;
   t: Translate;
   formatNumber: (value: number) => string;
+  searchPlaces?: typeof searchPlaceNames;
+  resolvePlace?: typeof resolvePlaceNameMatch;
 }) {
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [placeAnswer, setPlaceAnswer] = useState<Readonly<{
+    query: string;
+    status: "ready" | "error";
+    matches: readonly PlaceNameMatch[];
+  }> | null>(null);
+  const [resolvingPlaceKey, setResolvingPlaceKey] = useState<string | null>(
+    null,
+  );
   const explorerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -227,6 +271,70 @@ export function LocationExplorer({
     onSearchActiveChange(false);
     searchInputRef.current?.blur();
     onCoordinates(coordinateMatch.latitude, coordinateMatch.longitude);
+  };
+
+  // A place-name lookup is only attempted for queries that are not
+  // coordinates and reach the minimum length; anything else renders nothing.
+  const eligiblePlaceQuery = useMemo(() => {
+    if (coordinateMatch !== null) return null;
+    const trimmed = query.trim();
+    return trimmed.length >= MINIMUM_PLACE_NAME_QUERY_LENGTH ? trimmed : null;
+  }, [coordinateMatch, query]);
+
+  useEffect(() => {
+    if (eligiblePlaceQuery === null) return;
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      searchPlaces(eligiblePlaceQuery, controller.signal)
+        .then((matches) => {
+          if (controller.signal.aborted) return;
+          setPlaceAnswer({
+            query: eligiblePlaceQuery,
+            status: "ready",
+            matches,
+          });
+        })
+        .catch(() => {
+          if (controller.signal.aborted) return;
+          setPlaceAnswer({
+            query: eligiblePlaceQuery,
+            status: "error",
+            matches: [],
+          });
+        });
+    }, PLACE_NAME_SEARCH_DEBOUNCE_MILLISECONDS);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [eligiblePlaceQuery, searchPlaces]);
+
+  const placeStatus =
+    eligiblePlaceQuery === null
+      ? "idle"
+      : placeAnswer !== null && placeAnswer.query === eligiblePlaceQuery
+        ? placeAnswer.status
+        : "loading";
+  const placeMatches =
+    placeStatus === "ready" && placeAnswer !== null ? placeAnswer.matches : [];
+
+  const goToPlaceMatch = async (match: PlaceNameMatch) => {
+    setResolvingPlaceKey(placeMatchKey(match));
+    setError(null);
+    try {
+      const coordinate = await resolvePlace(match);
+      if (coordinate === null) {
+        setError(t("explore.geocoder.resolveError"));
+        return;
+      }
+      onSearchActiveChange(false);
+      searchInputRef.current?.blur();
+      onCoordinates(coordinate.latitude, coordinate.longitude);
+    } catch {
+      setError(t("explore.geocoder.resolveError"));
+    } finally {
+      setResolvingPlaceKey(null);
+    }
   };
 
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -364,6 +472,52 @@ export function LocationExplorer({
         ))}
         {visiblePoints.length === 0 && !coordinateMatch && (
           <p>{t("explore.noResults")}</p>
+        )}
+        {placeStatus !== "idle" && (
+          <>
+            <h3 className="place-list__section-heading">
+              {t("explore.geocoder.heading")}
+            </h3>
+            {placeStatus === "loading" && (
+              <p role="status">{t("explore.geocoder.loading")}</p>
+            )}
+            {placeStatus === "error" && (
+              <p role="alert">{t("explore.geocoder.error")}</p>
+            )}
+            {placeStatus === "ready" && placeMatches.length === 0 && (
+              <p>{t("explore.geocoder.noResults")}</p>
+            )}
+            {placeStatus === "ready" &&
+              placeMatches.map((match) => {
+                const context = placeMatchContext(match);
+                return (
+                  <button
+                    key={placeMatchKey(match)}
+                    type="button"
+                    disabled={resolvingPlaceKey !== null}
+                    aria-busy={
+                      resolvingPlaceKey === placeMatchKey(match) || undefined
+                    }
+                    onClick={() => void goToPlaceMatch(match)}
+                  >
+                    <span
+                      className="place-list__symbol place-list__symbol--custom"
+                      aria-hidden="true"
+                    />
+                    <span>
+                      <b>{match.name}</b>
+                      {context !== null && context !== "" && (
+                        <small>{context}</small>
+                      )}
+                    </span>
+                    <em>{t(placeMatchCategoryKey(match.type))}</em>
+                  </button>
+                );
+              })}
+            <p className="place-list__attribution">
+              {t("explore.geocoder.attribution")}
+            </p>
+          </>
         )}
       </div>
 

@@ -7,7 +7,7 @@
   },
   "environment": {
     "projectVersion": "0.1.0",
-    "gitCommit": "9ba6781d4dd37c15697f2db49669b5158f203c2e",
+    "gitCommit": "531584f64c447fc93c2921807d845f2b3cfaa2ea",
     "gitClean": false,
     "node": "v22.22.2",
     "npm": "10.9.7",
@@ -23,7 +23,7 @@
       "scripts/verification-reference-geometry.d.mts": "533211d54e06af6392397c7ee2dae676e37ec46924c208a9562b1bedbf55f79c",
       "tests/verification-reference-geometry.test.mjs": "5134a52cba5f5cc436cc00bb52709709db8455c0f4c4d53ad2880b9c21b25508",
       "verification/acceptance.json": "cd37311408983ee93de91007969670ad329ebb39193c2cb118498cf231159c78",
-      "public/sources.json": "3e6042a499db6e5dfbdfe64a8b1bb5bf880987339dac677fb353c2f754b67e10",
+      "public/sources.json": "1b68733432aa7b3410b6ab9d6aa416e66ad370de6b696789eed94ed8cb02c8be",
       "src/domain/astronomy.ts": "cef4bc9fc4fbee981e9e6c52eab8bce44fa11fea39bc8b925cdeae812290e55e",
       "src/domain/besselian-eclipse.ts": "de9110f2d5ab772524127184ca205fddd4be331ae196c03989549e04fe9684cd",
       "src/domain/besselian-eclipse.test.ts": "c65c0f463481787cea2b247440e0f57dae08ae1eb102f17e5d3ef0144cae8bca",
