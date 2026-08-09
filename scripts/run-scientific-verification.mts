@@ -1111,7 +1111,6 @@ const validationPointManifestBuffer = await readFile(
   const report = {
     schemaVersion: 2,
     reportVersion: "2.1.0",
-    generatedAt: new Date().toISOString(),
     event: {
       date: fixtureManifest.eventDate,
       timeStandard: fixtureManifest.timeStandard,

@@ -482,8 +482,7 @@ export async function evaluateScientificReport(report) {
     report?.schemaVersion !== 2 ||
     report.reportVersion !== "2.1.0" ||
     report.event?.date !== "2026-08-12" ||
-    report.event?.timeStandard !== "UTC" ||
-    typeof report.generatedAt !== "string"
+    report.event?.timeStandard !== "UTC"
   ) {
     throw new Error("Scientific verification report schema is invalid.");
   }
