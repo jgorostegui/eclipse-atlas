@@ -495,7 +495,10 @@ describe("EclipsePlanner acceptance", () => {
     ).toBeTruthy();
   });
 
-  it("blocks a fourth comparison until one point is removed", async () => {
+  // The longest acceptance journey in the file: several full renders plus
+  // typed searches routinely pass the default five-second budget on slower
+  // machines.
+  it("blocks a fourth comparison until one point is removed", { timeout: 20_000 }, async () => {
     const url = mixedComparisonUrl().replace(
       `selected=${encodeURIComponent(ACCEPTANCE_SCENARIO.saved.soria)}`,
       `selected=${encodeURIComponent(ACCEPTANCE_SCENARIO.saved.aCoruna)}`,

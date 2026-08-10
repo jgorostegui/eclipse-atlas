@@ -88,7 +88,7 @@ describe("resolvePlaceNameMatch", () => {
     const fetchMock = vi.fn<typeof globalThis.fetch>(async () =>
       jsonResponse({
         ...SAMPLE_CANDIDATE,
-        lat: 42.123456789012345,
+        lat: 42.12345678901234,
         lng: -3.567890123456789,
         geom: "MULTIPOLYGON(((0 0)))",
       }),
@@ -105,7 +105,7 @@ describe("resolvePlaceNameMatch", () => {
     expect(url.searchParams.get("id")).toBe("700000123");
     expect(url.searchParams.get("type")).toBe("Municipio");
     expect(coordinate).toEqual({
-      latitude: 42.123456789012345,
+      latitude: 42.12345678901234,
       longitude: -3.567890123456789,
     });
   });
