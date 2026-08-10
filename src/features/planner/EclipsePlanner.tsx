@@ -61,6 +61,7 @@ import {
 } from "../../app/planner-url-state";
 import { TerrainProfile } from "../horizon/TerrainProfile";
 import { EclipseTimeline } from "../eclipse/EclipseTimeline";
+import { LiveEclipseMode, LiveEvidencePanel } from "../live/LiveEclipseMode";
 import { EclipseMap, type MappedCandidate } from "../map/EclipseMap";
 import { AppHeader } from "../shell/AppHeader";
 import { HelpPanel } from "../shell/HelpPanel";
@@ -715,13 +716,17 @@ export default function EclipsePlanner() {
     };
   });
   const { view: workspaceView, exploreView } = workspaceNavigation;
+  // The live mode renders as a full-screen layer, so the workspace underneath
+  // keeps laying itself out for the view the layer will return to.
+  const layoutView =
+    workspaceView.kind === "live" ? workspaceView.returnTo : workspaceView;
   const mobileSurface = workspaceSurface(workspaceView);
   const mobileNavigationDestination =
     workspaceNavigationDestination(workspaceView);
   const panelMode =
-    workspaceView.kind === "help"
+    layoutView.kind === "help"
       ? "help"
-      : workspaceView.kind === "compare"
+      : layoutView.kind === "compare"
         ? "compare"
         : "explore";
   const previousMobileSurface = useRef(mobileSurface);
@@ -885,9 +890,10 @@ export default function EclipsePlanner() {
       setExplorerFocusRequestKey((current) => current + 1);
     } else if (view.kind === "details") {
       pendingRailFocus.current = ".detail-panel";
-    } else {
+    } else if (view.kind === "compare") {
       pendingRailFocus.current = ".rail-comparison";
     }
+    // The live layer manages its own focus when it mounts.
     setWorkspaceFocusRequestKey((current) => current + 1);
   }, []);
 
@@ -975,7 +981,9 @@ export default function EclipsePlanner() {
         ? (options.exploreView ?? exploreView)
         : ({ kind: "places" } as const);
       const updatesCurrentChildRoute =
-        (workspaceView.kind === "details" || workspaceView.kind === "help") &&
+        (workspaceView.kind === "details" ||
+          workspaceView.kind === "help" ||
+          workspaceView.kind === "live") &&
         workspaceHash(nextView) === workspaceHash(workspaceView);
       const mode =
         options.mode ?? (updatesCurrentChildRoute ? "replace" : "push");
@@ -990,7 +998,9 @@ export default function EclipsePlanner() {
         workspaceView,
       );
       const retainsWorkspaceParent =
-        nextView.kind === "details" || nextView.kind === "help";
+        nextView.kind === "details" ||
+        nextView.kind === "help" ||
+        nextView.kind === "live";
       const workspaceParentSteps = options.hasWorkspaceParent
         ? 1
         : retainsWorkspaceParent && currentParentSteps > 0
@@ -1897,9 +1907,37 @@ export default function EclipsePlanner() {
     });
   };
 
+  const openLive = () => {
+    if (workspaceView.kind === "live") return;
+    const liveView = {
+      kind: "live",
+      returnTo: primaryWorkspaceView(workspaceView),
+    } as const;
+    commitPlannerState(plannerState, {
+      hasWorkspaceParent: true,
+      view: liveView,
+    });
+  };
+
+  const closeLive = () => {
+    returnToWorkspace(
+      workspaceView.kind === "live"
+        ? workspaceView.returnTo
+        : { kind: "map" as const },
+    );
+  };
+
+  const choosePlaceFromLive = () => {
+    returnToWorkspace({ kind: "places" }, { kind: "places" });
+  };
+
   const changeMobileView = (view: MobileView) => {
     if (view === "help") {
       openHelp();
+      return;
+    }
+    if (view === "live") {
+      openLive();
       return;
     }
     if (view === "explore") {
@@ -1926,12 +1964,12 @@ export default function EclipsePlanner() {
     );
   });
   const railContent =
-    workspaceView.kind === "help"
+    layoutView.kind === "help"
       ? "help"
-      : workspaceView.kind === "compare"
+      : layoutView.kind === "compare"
         ? "compare"
-        : workspaceView.kind === "details" ||
-            (workspaceView.kind === "map" && selected)
+        : layoutView.kind === "details" ||
+            (layoutView.kind === "map" && selected)
           ? "details"
           : "places";
   const setActiveRailWidth = (width: number) => {
@@ -1943,7 +1981,7 @@ export default function EclipsePlanner() {
     setRailWidthCustomized(false);
     setRailWidth(defaultDesktopRailWidth(size));
   };
-  const detailDestination = detailReturnView(workspaceView);
+  const detailDestination = detailReturnView(layoutView);
   const detailBackLabel: MessageKey =
     detailDestination === "map"
       ? "detail.backToMap"
@@ -1964,6 +2002,7 @@ export default function EclipsePlanner() {
         eventId={eventId}
         onEventSelect={selectEvent}
         onHome={resetToOverview}
+        inert={workspaceView.kind === "live"}
       />
 
       <h1 className="sr-only" id="planner-title">{t("planner.title")}</h1>
@@ -1996,6 +2035,9 @@ export default function EclipsePlanner() {
         id="map"
         aria-labelledby="planner-title"
         data-mobile-view={mobileSurface}
+        // The live layer is modal: everything it covers leaves the focus
+        // order and the accessibility tree while it is open.
+        inert={workspaceView.kind === "live" || undefined}
       >
         <div className="map-panel">
           <EclipseMap
@@ -2528,6 +2570,29 @@ export default function EclipsePlanner() {
                   )}
                 </section>
 
+                <section
+                  id={selectedPlacePanelId("live")}
+                  className="detail-evidence-panel detail-evidence-panel--live"
+                  role="tabpanel"
+                  aria-labelledby={selectedPlaceTabId("live")}
+                  hidden={detailEvidenceView !== "live"}
+                >
+                  {/* Mounted only while shown: a hidden countdown would keep
+                      duplicate text in the document and a clock nobody reads. */}
+                  {detailEvidenceView === "live" && (
+                    <LiveEvidencePanel
+                      point={{
+                        name: selected.candidate.name,
+                        eclipse: selected.eclipse,
+                        displayTimeZone: selected.displayTimeZone,
+                        elevationStatus: selected.observerElevation.status,
+                      }}
+                      active={workspaceView.kind !== "live"}
+                      onOpenFullscreen={openLive}
+                    />
+                  )}
+                </section>
+
               </div>
           </section>
           ) : null}
@@ -2569,7 +2634,25 @@ export default function EclipsePlanner() {
         activeView={mobileNavigationDestination}
         onChange={changeMobileView}
         t={t}
+        inert={workspaceView.kind === "live"}
       />
+      {workspaceView.kind === "live" && (
+        <LiveEclipseMode
+          point={
+            selected
+              ? {
+                  name: selected.candidate.name,
+                  eclipse: selected.eclipse,
+                  displayTimeZone: selected.displayTimeZone,
+                  elevationStatus: selected.observerElevation.status,
+                }
+              : null
+          }
+          eventId={eventId}
+          onClose={closeLive}
+          onChoosePlace={choosePlaceFromLive}
+        />
+      )}
     </main>
   );
 }

@@ -55,7 +55,7 @@ Development:
 ```bash
 npm ci
 npm run dev          # Vite dev server on http://localhost:3000
-npm run build        # tsc project build, then vite build into dist/
+npm run build        # tsc project build, vite build into dist/, then generate dist/sw.js
 npm run preview      # serve the production build
 ```
 
@@ -88,7 +88,10 @@ inputs): `places:generate`, `climate:generate`, `overlays:generate`,
 
 A static SPA. `src/main.tsx` mounts one tree: `I18nProvider` wrapping `AppErrorBoundary`
 wrapping `EclipsePlanner`. WebGL and Three.js are intentionally absent from the interface.
-Paths below are relative to `src/`.
+The build also writes `dist/sw.js` (`scripts/generate-service-worker.mjs`): a service
+worker that precaches the app shell so the live mode keeps working without coverage.
+Registration skips local hosts, and Playwright blocks service workers so `page.route`
+fixtures stay authoritative. Paths below are relative to `src/`.
 
 ### The scientific core (`domain/`)
 
@@ -126,6 +129,16 @@ assembles the header, the `PlannerRail`, the map, the timeline, and the evidence
 - **`horizon/`** renders the terrain profile and the eclipse animation with a
   model-then-paint split: `horizon-canvas-renderer.ts` builds a serializable scene, then
   paints it to a 2D canvas, which keeps the geometry testable.
+- **`live/`** is the eclipse-day live countdown: a pure phase machine over the contact
+  times, a clock-sync module that calibrates the device clock against the deployment
+  edge's `X-Timer` header with a dual civil/monotonic anchor (the synchronized state
+  needs three or more samples, renews periodically, and degrades to explicit partial,
+  suspect, or divergent states rather than staying green), and hooks for the ticking
+  clock and the screen wake lock. It renders twice from one shared instrument: as the
+  third selected-place evidence tab in the panel's light language, and as a dark
+  full-screen layer (workspace hash `#live`, the mobile navigation destination and the
+  tab's explicit "full screen" action). The calibration is presentation-layer only and
+  never alters a calculated contact time.
 - Smaller areas: **`eclipse/`** (contact timeline), **`eclipse-events/`** (event switcher),
   **`weather/`**, **`shell/`** (header, help, mobile nav), **`errors/`** (boundary).
   `safety/` and `sources/` are empty placeholders.

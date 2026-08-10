@@ -17,6 +17,21 @@ if (!root) {
   throw new Error("The application root element is missing.");
 }
 
+// Offline shell for the live eclipse mode. Local hosts are excluded so a
+// preview build cannot leave a worker controlling the dev server origin.
+if (
+  import.meta.env.PROD &&
+  "serviceWorker" in navigator &&
+  !["localhost", "127.0.0.1"].includes(window.location.hostname)
+) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").catch(() => {
+      // The app works without offline copies; a failed registration is not
+      // worth interrupting anyone over.
+    });
+  });
+}
+
 createRoot(root).render(
   <StrictMode>
     <I18nProvider>

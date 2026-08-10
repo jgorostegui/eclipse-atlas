@@ -12,12 +12,15 @@ type AppHeaderProps = Readonly<{
   eventId: EclipseEventId;
   onEventSelect: (eventId: EclipseEventId) => void;
   onHome: () => void;
+  /** True while a modal layer covers the header. */
+  inert?: boolean;
 }>;
 
 export function AppHeader({
   eventId,
   onEventSelect,
   onHome,
+  inert,
 }: AppHeaderProps) {
   const { t } = useI18n();
   const baseUrl = import.meta.env.BASE_URL;
@@ -33,7 +36,7 @@ export function AppHeader({
   } as CSSProperties;
 
   return (
-    <header className="masthead">
+    <header className="masthead" inert={inert || undefined}>
       <div
         className="masthead-art"
         aria-hidden="true"

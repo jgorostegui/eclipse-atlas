@@ -1,6 +1,7 @@
 export const selectedPlaceEvidenceViews = [
   "horizon",
   "clouds",
+  "live",
 ] as const;
 
 export type SelectedPlaceEvidenceView =

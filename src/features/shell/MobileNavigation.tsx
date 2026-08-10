@@ -1,6 +1,6 @@
 import type { MessageKey, MessageValues } from "../../i18n/messages";
 
-export type MobileView = "map" | "explore" | "help";
+export type MobileView = "map" | "explore" | "live" | "help";
 
 type Translate = (key: MessageKey, values?: MessageValues) => string;
 
@@ -23,6 +23,15 @@ function NavigationIcon({ view }: { view: MobileView }) {
     );
   }
 
+  if (view === "live") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7.4v4.6l3.1 1.9" />
+      </svg>
+    );
+  }
+
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true">
       <circle cx="12" cy="12" r="8.5" />
@@ -35,19 +44,27 @@ export function MobileNavigation({
   activeView,
   onChange,
   t,
+  inert,
 }: {
   activeView: MobileView;
   onChange: (view: MobileView) => void;
   t: Translate;
+  /** True while a modal layer covers the navigation. */
+  inert?: boolean;
 }) {
   const destinations = [
     ["map", "nav.map"],
     ["explore", "panel.explore"],
+    ["live", "nav.live"],
     ["help", "nav.help"],
   ] as const satisfies readonly (readonly [MobileView, MessageKey])[];
 
   return (
-    <nav className="mobile-navigation" aria-label={t("nav.mobileLabel")}>
+    <nav
+      className="mobile-navigation"
+      aria-label={t("nav.mobileLabel")}
+      inert={inert || undefined}
+    >
       {destinations.map(([view, label]) => (
         <button
           key={view}

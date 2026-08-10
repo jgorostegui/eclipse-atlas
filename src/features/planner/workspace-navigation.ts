@@ -14,6 +14,10 @@ export type WorkspaceView =
   | Readonly<{
       kind: "help";
       returnTo: WorkspacePrimaryView;
+    }>
+  | Readonly<{
+      kind: "live";
+      returnTo: WorkspacePrimaryView;
     }>;
 
 export type WorkspaceExploreView =
@@ -37,6 +41,7 @@ const VIEW_HASHES: Readonly<Record<WorkspaceView["kind"], string>> = {
   details: "#details",
   compare: "#comparison",
   help: "#help",
+  live: "#live",
 };
 
 function isBaseView(value: unknown): value is WorkspaceBaseView {
@@ -54,7 +59,10 @@ export function isWorkspaceView(value: unknown): value is WorkspaceView {
   if (isPrimaryView(value)) return true;
   if (!value || typeof value !== "object") return false;
   const candidate = value as { kind?: unknown; returnTo?: unknown };
-  return candidate.kind === "help" && isPrimaryView(candidate.returnTo);
+  return (
+    (candidate.kind === "help" || candidate.kind === "live") &&
+    isPrimaryView(candidate.returnTo)
+  );
 }
 
 export function isWorkspaceExploreView(
@@ -73,7 +81,10 @@ function workspaceViewsEqual(left: WorkspaceView, right: WorkspaceView): boolean
   if (left.kind === "details" && right.kind === "details") {
     return left.returnTo === right.returnTo;
   }
-  if (left.kind === "help" && right.kind === "help") {
+  if (
+    (left.kind === "help" && right.kind === "help") ||
+    (left.kind === "live" && right.kind === "live")
+  ) {
     return workspaceViewsEqual(left.returnTo, right.returnTo);
   }
   return true;
@@ -92,7 +103,8 @@ export function workspaceHistoryState(
     existing && typeof existing === "object"
       ? (existing as Record<string, unknown>)
       : {};
-  const retainsWorkspaceParent = view.kind === "details" || view.kind === "help";
+  const retainsWorkspaceParent =
+    view.kind === "details" || view.kind === "help" || view.kind === "live";
   const storedView = (base as WorkspaceHistoryState).eclipseAtlasWorkspace;
   const existingParentSteps =
     isWorkspaceView(storedView) && workspaceViewsEqual(storedView, view)
@@ -138,7 +150,7 @@ export function workspaceHistoryParentSteps(
   view: WorkspaceView,
 ) {
   if (
-    (view.kind !== "details" && view.kind !== "help") ||
+    (view.kind !== "details" && view.kind !== "help" && view.kind !== "live") ||
     historyState === null ||
     typeof historyState !== "object"
   ) {
@@ -171,11 +183,13 @@ export function workspaceViewFromLocation(
     if (persisted.kind === "details") {
       if (hasSelection) return persisted;
     } else if (
-      persisted.kind === "help" &&
+      (persisted.kind === "help" || persisted.kind === "live") &&
       persisted.returnTo.kind === "details" &&
       !hasSelection
     ) {
-      return { kind: "help", returnTo: { kind: "map" } };
+      return persisted.kind === "help"
+        ? { kind: "help", returnTo: { kind: "map" } }
+        : { kind: "live", returnTo: { kind: "map" } };
     } else {
       return persisted;
     }
@@ -189,14 +203,20 @@ export function workspaceViewFromLocation(
   if (hash === VIEW_HASHES.help) {
     return { kind: "help", returnTo: { kind: "map" } };
   }
+  if (hash === VIEW_HASHES.live) {
+    return { kind: "live", returnTo: { kind: "map" } };
+  }
   return { kind: "map" };
 }
 
 export function primaryWorkspaceView(view: WorkspaceView): WorkspacePrimaryView {
-  return view.kind === "help" ? view.returnTo : view;
+  return view.kind === "help" || view.kind === "live" ? view.returnTo : view;
 }
 
 export function workspaceSurface(view: WorkspaceView): "map" | "explore" | "help" {
+  // The live mode is a full-screen layer: the surface underneath stays on the
+  // view it will return to.
+  if (view.kind === "live") return workspaceSurface(view.returnTo);
   if (view.kind === "map") return "map";
   if (view.kind === "help") return "help";
   return "explore";
@@ -204,7 +224,8 @@ export function workspaceSurface(view: WorkspaceView): "map" | "explore" | "help
 
 export function workspaceNavigationDestination(
   view: WorkspaceView,
-): "map" | "explore" | "help" {
+): "map" | "explore" | "help" | "live" {
+  if (view.kind === "live") return "live";
   if (view.kind === "help") return "help";
   if (view.kind === "map") return "map";
   if (view.kind === "details" && view.returnTo === "map") return "map";
@@ -220,6 +241,11 @@ export function viewAfterClearingSelection(view: WorkspaceView): WorkspaceView {
   if (view.kind === "details") return { kind: view.returnTo };
   if (view.kind === "help" && view.returnTo.kind === "details") {
     return { kind: view.returnTo.returnTo };
+  }
+  if (view.kind === "live" && view.returnTo.kind === "details") {
+    // The live mode stays open on its empty state; only the view underneath
+    // falls back, since the details panel needs a selection.
+    return { kind: "live", returnTo: { kind: view.returnTo.returnTo } };
   }
   return view;
 }

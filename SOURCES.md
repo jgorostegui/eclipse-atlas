@@ -305,6 +305,26 @@ visible IGN attribution while active. They cover Spanish national territory only
 OpenStreetMap underlay always remains beneath them. A base map choice changes visual
 context only and never changes a calculated eclipse, terrain, or weather value.
 
+### Clock calibration
+
+The live eclipse mode counts down to the modelled contact times of the selected place.
+Those instants come from the local calculation; the network is used only to check the
+device clock. On entry the application sends a few HEAD requests to its own deployment
+origin and reads the CDN timing header (Fastly `X-Timer`, a Unix timestamp with
+microsecond resolution stamped when the request reaches the edge). The lowest-latency
+samples estimate the device-clock offset, which is displayed with its estimated
+uncertainty and age instead of being applied silently. The synchronized state requires
+at least three kept samples; a thinner calibration is presented as partial and is not
+persisted, while a redundant one is kept in the browser's local storage so a later
+offline session can reuse it at reduced confidence. Each probe times out after a few
+seconds, the calibration renews periodically while the mode stays open, and a resume or
+device-clock change degrades the state until a fresh calibration confirms the offset.
+No response body is read and no third-party time service is contacted. Without a usable
+response the mode says so and runs on the uncorrected device clock. The correction never
+changes a calculated contact time, only the clock the countdown is read against, and the
+displayed precision of the countdown does not imply that the modelled contact instants
+themselves are known to that precision.
+
 The full URLs, licenses, attribution strings, transformations, versions, and limitations
 are machine-readable in [public/sources.json](public/sources.json).
 

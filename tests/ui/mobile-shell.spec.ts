@@ -26,7 +26,7 @@ test("keeps the map primary and opens selected-place details on demand", async (
   const navigation = page.getByRole("navigation", {
     name: "Navegación móvil",
   });
-  await expect(navigation.getByRole("button")).toHaveCount(3);
+  await expect(navigation.getByRole("button")).toHaveCount(4);
   await expect(
     navigation.getByRole("button", { name: "Mapa", exact: true }),
   ).toHaveAttribute("aria-current", "page");
@@ -346,7 +346,7 @@ test("keeps comparison contextual instead of adding a fourth destination", async
   await expect(
     page.getByRole("article", { name: "Datos de comparación de Soria" }),
   ).toBeVisible();
-  await expect(navigation.getByRole("button")).toHaveCount(3);
+  await expect(navigation.getByRole("button")).toHaveCount(4);
   await expect(
     navigation.getByRole("button", { name: "Comparar", exact: true }),
   ).toHaveCount(0);
@@ -469,7 +469,7 @@ test("keeps the compact header and navigation usable at 320 pixels", async ({
   expect(headerGroups.primaryRight).toBeLessThanOrEqual(headerGroups.actionsLeft);
   await expect(
     page.getByRole("navigation", { name: "Navegación móvil" }).getByRole("button"),
-  ).toHaveCount(3);
+  ).toHaveCount(4);
 
   await page.getByRole("button", { name: "Abrir los detalles de Soria" }).click();
   await page

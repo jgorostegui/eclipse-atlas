@@ -36,6 +36,7 @@ describe("SelectedPlaceEvidenceTabs", () => {
 
     const horizon = screen.getByRole("tab", { name: "Horizon" });
     const clouds = screen.getByRole("tab", { name: "Clouds" });
+    const live = screen.getByRole("tab", { name: "Clock · countdown" });
     expect(horizon.getAttribute("aria-selected")).toBe("true");
     expect(horizon.getAttribute("aria-controls")).toBe(
       "selected-place-panel-horizon",
@@ -50,11 +51,11 @@ describe("SelectedPlaceEvidenceTabs", () => {
     expect(document.activeElement).toBe(horizon);
 
     fireEvent.keyDown(horizon, { key: "ArrowLeft" });
-    expect(onSelect).toHaveBeenLastCalledWith("clouds");
-    expect(document.activeElement).toBe(clouds);
+    expect(onSelect).toHaveBeenLastCalledWith("live");
+    expect(document.activeElement).toBe(live);
 
-    fireEvent.keyDown(clouds, { key: "End" });
-    expect(onSelect).toHaveBeenLastCalledWith("clouds");
-    expect(document.activeElement).toBe(clouds);
+    fireEvent.keyDown(live, { key: "End" });
+    expect(onSelect).toHaveBeenLastCalledWith("live");
+    expect(document.activeElement).toBe(live);
   });
 });

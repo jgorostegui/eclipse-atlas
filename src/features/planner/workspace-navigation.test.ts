@@ -20,6 +20,7 @@ describe("workspace navigation", () => {
     [{ kind: "details", returnTo: "map" }, "#details"],
     [{ kind: "compare" }, "#comparison"],
     [{ kind: "help", returnTo: { kind: "places" } }, "#help"],
+    [{ kind: "live", returnTo: { kind: "map" } }, "#live"],
   ])("serializes $kind", (view, expectedHash) => {
     expect(workspaceHash(view)).toBe(expectedHash);
   });
@@ -146,6 +147,54 @@ describe("workspace navigation", () => {
     expect(workspaceViewFromLocation("#unknown", false, null)).toEqual({
       kind: "map",
     });
+  });
+
+  it("opens a direct live link over the map", () => {
+    expect(workspaceViewFromLocation("#live", true, null)).toEqual({
+      kind: "live",
+      returnTo: { kind: "map" },
+    });
+  });
+
+  it("restores the live mode with its recorded return view", () => {
+    const view: WorkspaceView = { kind: "live", returnTo: { kind: "places" } };
+    const state = workspaceHistoryState(null, view, { parentSteps: 1 });
+
+    expect(workspaceViewFromLocation("#live", true, state)).toEqual(view);
+    expect(workspaceHasHistoryParent(state, view)).toBe(true);
+  });
+
+  it("does not let the live mode return to details without a selection", () => {
+    const state = workspaceHistoryState(null, {
+      kind: "live",
+      returnTo: { kind: "details", returnTo: "places" },
+    });
+
+    expect(workspaceViewFromLocation("#live", false, state)).toEqual({
+      kind: "live",
+      returnTo: { kind: "map" },
+    });
+  });
+
+  it("keeps the live layer over its underlying surface", () => {
+    const overMap: WorkspaceView = { kind: "live", returnTo: { kind: "map" } };
+    const overDetail: WorkspaceView = {
+      kind: "live",
+      returnTo: { kind: "details", returnTo: "places" },
+    };
+
+    expect(workspaceSurface(overMap)).toBe("map");
+    expect(workspaceSurface(overDetail)).toBe("explore");
+    expect(workspaceNavigationDestination(overMap)).toBe("live");
+  });
+
+  it("keeps the live mode open when the selection is cleared", () => {
+    expect(
+      viewAfterClearingSelection({
+        kind: "live",
+        returnTo: { kind: "details", returnTo: "places" },
+      }),
+    ).toEqual({ kind: "live", returnTo: { kind: "places" } });
   });
 
   it("keeps details on their parent mobile destination", () => {

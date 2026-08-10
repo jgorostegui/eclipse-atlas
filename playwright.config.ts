@@ -16,6 +16,9 @@ export default defineConfig({
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
+    // Deterministic network fixtures rely on page.route, which a service
+    // worker would bypass.
+    serviceWorkers: "block",
   },
   webServer: {
     command: "node scripts/serve-test-build.mjs --port 4173",
