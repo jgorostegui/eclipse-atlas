@@ -354,14 +354,14 @@ test("preserves a comparison through history, the live URL and reload", async ({
     planner.getByRole("heading", { name: "Soria", exact: true }),
   ).toBeVisible();
 
-  await planner.getByRole("button", { name: "+ Añadir a comparación" }).click();
+  await planner.getByRole("button", { name: "+ Guardar para comparar" }).click();
   await expect(planner.getByRole("button", { name: "Comparar 1" })).toBeVisible();
   await planner.getByRole("button", { name: "Volver a lugares" }).click();
   await expect(
     planner.getByRole("heading", { name: "Explora España", exact: true }),
   ).toBeVisible();
   await selectPlace("Burgos");
-  await planner.getByRole("button", { name: "+ Añadir a comparación" }).click();
+  await planner.getByRole("button", { name: "+ Guardar para comparar" }).click();
   await planner.getByRole("button", { name: "Comparar 2" }).click();
 
   await expect(

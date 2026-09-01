@@ -16,14 +16,18 @@ import { HorizonAnimation } from "./HorizonAnimation";
 import { terrainErrorMessageKey } from "./terrain-error-message";
 
 type TerrainProfileProps = {
+  active: boolean;
   location: CandidateLocation;
   eventId: EclipseEventId;
   eclipse: EclipseCircumstances | null;
   elevationStatus: "loading" | "ready" | "error";
   onRetryElevation?: () => void;
   onResult?: (locationId: string, result: TerrainHorizon) => void;
+  onStatus?: (locationId: string, status: TerrainCalculationStatus) => void;
   cachedResult?: TerrainHorizon;
 };
+
+export type TerrainCalculationStatus = "loading" | "ready" | "error";
 
 type TerrainState =
   | { status: "loading"; key: string }
@@ -31,12 +35,14 @@ type TerrainState =
   | { status: "error"; key: string; message: string };
 
 export function TerrainProfile({
+  active,
   location,
   eventId,
   eclipse,
   elevationStatus,
   onRetryElevation,
   onResult,
+  onStatus,
   cachedResult,
 }: TerrainProfileProps) {
   const { t } = useI18n();
@@ -169,6 +175,10 @@ export function TerrainProfile({
           verdict: t(`horizon.${assessment.intersection}`),
         });
 
+  useEffect(() => {
+    onStatus?.(location.id, activeState.status);
+  }, [activeState.status, location.id, onStatus]);
+
   return (
     <section className="horizon-card" aria-labelledby="terrain-profile-title">
       <div className="section-heading">
@@ -180,23 +190,16 @@ export function TerrainProfile({
         </span>
       </div>
 
-      <div className="horizon-card__content" aria-live="polite">
+      <div className="horizon-card__content">
         {result && eclipse ? (
-          <>
-            <p
-              className="horizon-display-note"
-              aria-label={t("horizon.displayScaleDescription")}
-            >
-              {t("horizon.displayScale")}
-            </p>
-            <HorizonAnimation
-              key={`${eclipse.eventId}:${location.id}:${location.latitude}:${location.longitude}`}
-              latitude={location.latitude}
-              longitude={location.longitude}
-              eclipse={eclipse}
-              horizon={result}
-            />
-          </>
+          <HorizonAnimation
+            key={`${eclipse.eventId}:${location.id}:${location.latitude}:${location.longitude}`}
+            active={active}
+            latitude={location.latitude}
+            longitude={location.longitude}
+            eclipse={eclipse}
+            horizon={result}
+          />
         ) : activeState.status === "error" ? (
           <div className="horizon-chart-wrap">
           <div className="horizon-fallback" role="status">

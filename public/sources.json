@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-09T21:30:00.000Z",
+  "generatedAt": "2026-09-01T00:00:00.000Z",
   "sources": [
     {
       "id": "astronomy-engine-2.1.19",
       "name": "Astronomy Engine",
       "producer": "Don Cross / CosineKitty",
       "url": "https://github.com/cosinekitty/astronomy",
-      "role": "Topocentric apparent Sun and Moon positions and angular radii, plus ideal-horizon sunset, calculated in the browser.",
+      "role": "Topocentric apparent Sun and Moon positions and angular radii, optional planet positions, plus ideal-horizon sunset, calculated in the browser.",
       "status": "in-use",
       "retrievedAt": "2026-08-02",
       "version": "2.1.19",
@@ -18,11 +18,12 @@
         "url": "https://github.com/cosinekitty/astronomy/blob/master/LICENSE"
       },
       "attribution": "Astronomy calculations by Astronomy Engine.",
-      "transformation": "The application supplies latitude, longitude and an effective observer elevation equal to IGN/CNIG TerrainRGB ground elevation plus an explicit 1.5 metre planning viewpoint height. The engine's Delta T hook selects the IERS Bulletin A value for 2026 and the NASA/GSFC long-range prediction published with the 2027 or 2028 element table. Apparent positions are evaluated at the contact and maximum instants supplied by the owned Besselian local-circumstances implementation. SearchRiseSet supplies the apparent upper-limb sunset against an ideal horizon using its documented standard refraction; the result is not a terrain or obstacle sunset. Astronomical output remains unknown when ground elevation cannot be resolved.",
+      "transformation": "The application supplies latitude, longitude and an effective observer elevation equal to IGN/CNIG TerrainRGB ground elevation plus an explicit 1.5 metre planning viewpoint height. The engine's Delta T hook selects the IERS Bulletin A value for 2026 and the NASA/GSFC long-range prediction published with the 2027 or 2028 element table. Apparent Sun and Moon positions are evaluated at the contact and maximum instants supplied by the owned Besselian local-circumstances implementation. The optional chart context evaluates Mercury, Venus, Mars, Jupiter and Saturn at the selected instant and observer. SearchRiseSet supplies the apparent upper-limb sunset against an ideal horizon using its documented standard refraction; the result is not a terrain or obstacle sunset. Astronomical output remains unknown when ground elevation cannot be resolved.",
       "limitations": [
         "Results must be validated against an independent official source before they are used for a release recommendation.",
         "The 1.5 metre viewpoint height is a planning assumption, not a measured tripod, eye or instrument height for an exact venue.",
-        "A positive apparent solar-centre altitude does not establish terrain, building or vegetation clearance at that contact."
+        "A positive apparent solar-centre altitude does not establish terrain, building or vegetation clearance at that contact.",
+        "Optional planet labels show calculated positions only and do not establish naked-eye visibility during an eclipse."
       ]
     },
     {
@@ -733,6 +734,29 @@
       "limitations": [
         "The coordinate identifies the beach page reference, not a surveyed observing position or an endorsed venue.",
         "TerrainRGB and MDT05 share IGN/CNIG elevation lineage, and neither models vegetation, temporary structures or every near-field obstruction."
+      ]
+    },
+    {
+      "id": "simbad-bright-star-context",
+      "name": "SIMBAD bright-star coordinate context",
+      "producer": "Centre de Données astronomiques de Strasbourg / Université de Strasbourg / CNRS",
+      "url": "https://simbad.cds.unistra.fr/simbad/",
+      "role": "Optional calculated positions for eight named bright stars in the selected-time horizon chart.",
+      "status": "in-use",
+      "retrievedAt": "2026-09-01",
+      "version": "SIMBAD4 1.8; Sesame/SIMBAD ICRS J2000 positions and parallaxes resolved 2026-09-01 for Pollux, Castor, Regulus, Sirius, Procyon, Capella, Betelgeuse and Aldebaran.",
+      "coverage": "Eight curated named bright stars used only when the optional calculated-sky layer is enabled.",
+      "resolution": "Source coordinates retain decimal-degree precision from SIMBAD; the application renders them only as degree-scale chart context.",
+      "license": {
+        "name": "Open Database License",
+        "url": "https://opendatacommons.org/licenses/odbl/1-0/"
+      },
+      "attribution": "This product makes use of the SIMBAD database, operated at CDS, Strasbourg, France.",
+      "transformation": "The application retains ICRS/J2000 right ascension, declination and parallax for the eight named stars. Parallax is converted to light-year distance, Astronomy Engine precesses each fixed position to the selected instant, and the browser calculates refraction-adjusted horizontal coordinates for the selected observer. Labels are clipped to the calculated horizon chart and remain off by default.",
+      "limitations": [
+        "This curated set is not a complete star catalogue and is not a guide to all objects visible during totality.",
+        "Proper motion is not propagated from J2000; the resulting sub-degree difference is below the optional chart's display purpose but the positions are not intended for telescope pointing.",
+        "A calculated position does not establish visibility; sky brightness, totality duration, cloud, extinction and observer eyesight are not modelled by this layer."
       ]
     },
     {

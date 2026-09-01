@@ -59,7 +59,10 @@ import {
   type PlannerUrlParseResult,
   type PlannerUrlStateV1,
 } from "../../app/planner-url-state";
-import { TerrainProfile } from "../horizon/TerrainProfile";
+import {
+  TerrainProfile,
+  type TerrainCalculationStatus,
+} from "../horizon/TerrainProfile";
 import { EclipseTimeline } from "../eclipse/EclipseTimeline";
 import { LiveEclipseMode, LiveEvidencePanel } from "../live/LiveEclipseMode";
 import { EclipseMap, type MappedCandidate } from "../map/EclipseMap";
@@ -369,11 +372,19 @@ function MobileSelectedSummary({
 
 function EclipseOutcome({
   point,
+  terrain,
+  terrainStatus,
+  forecast,
+  forecastStatus,
   t,
   formatNumber,
   formatTime,
 }: {
   point: ScientificCandidate;
+  terrain: TerrainHorizon | undefined;
+  terrainStatus: TerrainCalculationStatus;
+  forecast: EclipseDayForecast | null;
+  forecastStatus: "idle" | "loading" | "ready" | "error";
   t: Translate;
   formatNumber: NumberFormatter;
   formatTime: (date: Date | null, timeZone: SpanishDisplayTimeZone) => string;
@@ -381,6 +392,29 @@ function EclipseOutcome({
   const eclipse = point.eclipse;
   const durationLabel =
     eclipse?.kind === "annular" ? "metric.annularity" : "metric.totality";
+  const clearance = terrainClearance(point, terrain);
+  const horizonValue =
+    clearance === null
+      ? terrain
+        ? t("outcome.horizonUnknown")
+        : terrainStatus === "error"
+          ? t("outcome.unavailable")
+          : terrainStatus === "ready"
+            ? t("outcome.horizonUnknown")
+            : t("outcome.pending")
+      : `${clearance >= 0 ? "+" : ""}${formatNumber(clearance, {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })}°`;
+  const cloudsValue = forecast
+    ? cloudRange(forecast, formatNumber)
+    : point.eventId !== "2026"
+      ? t("outcome.noForecast")
+      : forecastStatus === "loading"
+        ? t("outcome.pending")
+        : forecastStatus === "error"
+          ? t("outcome.unavailable")
+          : t("outcome.noForecast");
 
   return (
     <section className="eclipse-outcome" aria-label={t("detail.factsLabel")}>
@@ -418,6 +452,22 @@ function EclipseOutcome({
               : t("state.unknown"),
           })}
         </time>
+      </div>
+      <div className="eclipse-outcome__evidence">
+        <div>
+          <span>{t("outcome.horizon")}</span>
+          <strong
+            className={
+              clearance !== null && clearance < 0 ? "is-blocked" : undefined
+            }
+          >
+            {horizonValue}
+          </strong>
+        </div>
+        <div>
+          <span>{t("outcome.clouds")}</span>
+          <strong>{cloudsValue}</strong>
+        </div>
       </div>
     </section>
   );
@@ -754,6 +804,9 @@ export default function EclipsePlanner() {
   >({});
   const [terrainResults, setTerrainResults] = useState<
     Record<string, TerrainHorizon>
+  >({});
+  const [terrainStatuses, setTerrainStatuses] = useState<
+    Record<string, TerrainCalculationStatus>
   >({});
   const [climateState, setClimateState] = useState<CloudClimateState>({
     status: "loading",
@@ -1479,9 +1532,19 @@ export default function EclipsePlanner() {
       mappedCandidates.find((point) => point.candidate.id === id),
     )
     .filter((point): point is ScientificCandidate => Boolean(point));
-  const selectedTerrain = selected
-    ? terrainResults[terrainResultKey(eventId, selected.candidate.id)]
+  const selectedTerrainKey = selected
+    ? terrainResultKey(eventId, selected.candidate.id)
+    : null;
+  const selectedTerrain = selectedTerrainKey
+    ? terrainResults[selectedTerrainKey]
     : undefined;
+  const selectedTerrainStatus: TerrainCalculationStatus = selectedTerrain
+    ? "ready"
+    : selected?.observerElevation.status === "error"
+      ? "error"
+      : selectedTerrainKey
+        ? terrainStatuses[selectedTerrainKey] ?? "loading"
+        : "loading";
   const selectedOfficialOperationLabel = selected
     ? officialOperationLabel(selected.candidate.operations.status)
     : null;
@@ -1650,10 +1713,27 @@ export default function EclipsePlanner() {
 
   const saveTerrainResult = useCallback(
     (id: string, result: TerrainHorizon) => {
+      const resultKey = terrainResultKey(eventId, id);
       setTerrainResults((current) => ({
         ...current,
-        [terrainResultKey(eventId, id)]: result,
+        [resultKey]: result,
       }));
+      setTerrainStatuses((current) => ({
+        ...current,
+        [resultKey]: "ready",
+      }));
+    },
+    [eventId],
+  );
+
+  const saveTerrainStatus = useCallback(
+    (id: string, status: TerrainCalculationStatus) => {
+      const resultKey = terrainResultKey(eventId, id);
+      setTerrainStatuses((current) =>
+        current[resultKey] === status
+          ? current
+          : { ...current, [resultKey]: status },
+      );
     },
     [eventId],
   );
@@ -1787,6 +1867,7 @@ export default function EclipsePlanner() {
           ? "totality-duration"
           : plannerState.layer;
       setTerrainResults({});
+      setTerrainStatuses({});
       setComparisonNotice(null);
       commitPlannerState({
         ...plannerState,
@@ -2068,6 +2149,12 @@ export default function EclipsePlanner() {
             t={t}
             formatNumber={formatNumber}
           />
+          {!selected && (
+            <div className="map-selection-guide" role="note">
+              <strong>{t("map.selectionGuide.title")}</strong>
+              <span>{t("map.selectionGuide.body")}</span>
+            </div>
+          )}
           <details
             className={`mobile-map-view-picker ${
               railContent === "details" ? "is-desktop-visible" : ""
@@ -2315,6 +2402,14 @@ export default function EclipsePlanner() {
 
               <EclipseOutcome
                 point={selected}
+                terrain={selectedTerrain}
+                terrainStatus={selectedTerrainStatus}
+                forecast={
+                  eventId === "2026"
+                    ? forecastByCandidateId[selected.candidate.id] ?? null
+                    : null
+                }
+                forecastStatus={forecastStatus}
                 t={t}
                 formatNumber={formatNumber}
                 formatTime={formatTime}
@@ -2334,6 +2429,11 @@ export default function EclipsePlanner() {
                   hidden={detailEvidenceView !== "horizon"}
                 >
                   <TerrainProfile
+                    active={
+                      detailEvidenceView === "horizon" &&
+                      (plannerWorkspaceSize.width > 900 ||
+                        mobileSurface === "explore")
+                    }
                     location={selected.candidate}
                     eventId={eventId}
                     eclipse={selected.eclipse}
@@ -2342,6 +2442,7 @@ export default function EclipsePlanner() {
                       retryObserverElevation(selected.candidate.id)
                     }
                     onResult={saveTerrainResult}
+                    onStatus={saveTerrainStatus}
                     cachedResult={selectedTerrain}
                   />
                   <div className="technical-facts">

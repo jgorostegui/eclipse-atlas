@@ -28,7 +28,8 @@ separate.
 - Follow eclipse day in a full-screen live mode: a countdown to each contact of the
   selected spot, a device clock checked against a network time stamp with its offset and
   states shown, and an app shell that keeps working after coverage drops.
-- See the Sun and Moon against an elevation profile calculated from IGN/CNIG data.
+- See the Sun and Moon against an elevation profile calculated from IGN/CNIG data,
+  with optional calculated planet and bright-star positions near the selected view.
 - Compare up to three locations without reducing astronomy, terrain and weather to a
   single score.
 - Review August cloud climatology, event-day model forecasts when they become available,

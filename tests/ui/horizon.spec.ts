@@ -10,6 +10,10 @@ const SORIA_URL = "/?state=1&lang=es&selected=place%3Asoria&layer=none";
 const ALTO_LA_CRUZ_DETAILS_URL =
   "/?state=1&lang=es&selected=place%3Aalto-la-cruz-viewpoint&layer=none#details";
 
+test.beforeEach(async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+});
+
 type Bounds = {
   top: number;
   right: number;
@@ -132,6 +136,8 @@ test("keeps the real terrain profile stable through C1–C4 and across reloads",
   await expect(
     facts.getByText("totalidad · 1 min 44 s", { exact: true }),
   ).toBeVisible();
+  await expect(facts).toContainText("Horizonte");
+  await expect(facts).toContainText("Nubes");
 
   const horizon = page.getByRole("region", { name: "Horizonte oeste" });
   const chart = horizon.locator("canvas.horizon-canvas");
@@ -240,6 +246,37 @@ test("keeps the real terrain profile stable through C1–C4 and across reloads",
   expect((await canvasState(reloaded)).terrainSignature).toBe(
     alto.terrainSignature,
   );
+  expect(browserErrors).toEqual([]);
+});
+
+test("reveals the central phase once and exposes optional calculated sky context", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await installDeterministicNetwork(page);
+  const browserErrors = collectBrowserErrors(page);
+  await page.goto(SORIA_URL);
+
+  const horizon = page.getByRole("region", { name: "Horizonte oeste" });
+  const chart = horizon.locator("canvas.horizon-canvas");
+  await expect(chart).toHaveAttribute("data-render-state", "ready");
+  await expect(
+    horizon.getByRole("button", { name: "Pausar animación del horizonte" }),
+  ).toBeVisible();
+  await expect(
+    horizon.getByRole("button", { name: /Máximo ·/ }),
+  ).toHaveAttribute("aria-pressed", "true", { timeout: 5_000 });
+  await expect(
+    horizon.getByRole("button", {
+      name: "Repetir animación de la fase central",
+    }),
+  ).toBeVisible();
+
+  const sky = horizon.getByRole("button", { name: "Mostrar cielo calculado" });
+  await sky.click();
+  await expect(sky).toHaveAttribute("aria-pressed", "true");
+  await expect(chart).toHaveAttribute("data-celestial-count", "13");
+
   expect(browserErrors).toEqual([]);
 });
 

@@ -1,4 +1,11 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   calculateEclipseCircumstances,
@@ -73,6 +80,7 @@ function renderAnimation(
   return render(
     <I18nProvider>
       <HorizonAnimation
+        active
         latitude={fixtureLatitude}
         longitude={fixtureLongitude}
         eclipse={eclipseFixture}
@@ -91,10 +99,26 @@ function canvas(container: HTMLElement) {
 beforeEach(() => {
   window.history.replaceState(null, "", "/?lang=en");
   window.localStorage.clear();
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn(() => ({
+      matches: true,
+      media: "(prefers-reduced-motion: reduce)",
+      onchange: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    })),
+  );
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("HorizonAnimation", () => {
   it("opens at maximum and moves through every exact contact without changing terrain", async () => {
@@ -118,6 +142,21 @@ describe("HorizonAnimation", () => {
     expect(chart.dataset.renderer).toBe("canvas-2d");
     expect(chart.dataset.phase).toBe("total");
     expect(chart.dataset.clearanceBracket).toBe("visible");
+    expect(chart.dataset.displayMagnification).toBeTruthy();
+    expect(screen.getByText(/Discs ×\d+/)).toBeTruthy();
+    expect(
+      screen.getByRole("button", { name: "Replay central-phase reveal" }),
+    ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Show calculated sky context" }),
+    );
+    expect(chart.dataset.celestialCount).toBe("13");
+    expect(
+      screen
+        .getByText(/Their visibility is not guaranteed/)
+        .classList.contains("horizon-celestial-note"),
+    ).toBe(true);
+    expect(chart.getAttribute("aria-label")).toContain("Jupiter: altitude");
     expect(terrainSignature).toMatch(/^[0-9a-f]{8}$/);
     expect(screen.getByText("+7.2°")).toBeTruthy();
     expect(view.container.querySelectorAll(".horizon-contact-jumps button"))
@@ -187,5 +226,72 @@ describe("HorizonAnimation", () => {
     expect(canvas(view.container).dataset.phase).toBe("partial");
     expect(screen.queryByRole("button", { name: /C2/ })).toBeNull();
     expect(screen.queryByRole("button", { name: /C3/ })).toBeNull();
+  });
+
+  it("does not restart autoplay after leaving the horizon mid-reveal", () => {
+    const frames = new Map<number, FrameRequestCallback>();
+    let frameId = 0;
+    vi.stubGlobal(
+      "matchMedia",
+      vi.fn(() => ({
+        matches: false,
+        media: "(prefers-reduced-motion: reduce)",
+        onchange: null,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    );
+    const requestAnimationFrame = vi.fn((callback: FrameRequestCallback) => {
+      frameId += 1;
+      frames.set(frameId, callback);
+      return frameId;
+    });
+    const cancelAnimationFrame = vi.fn((id: number) => frames.delete(id));
+    vi.stubGlobal("requestAnimationFrame", requestAnimationFrame);
+    vi.stubGlobal("cancelAnimationFrame", cancelAnimationFrame);
+    const view = render(
+      <I18nProvider>
+        <HorizonAnimation
+          active
+          latitude={latitude + 0.0001}
+          longitude={longitude}
+          eclipse={eclipse}
+          horizon={horizon}
+        />
+      </I18nProvider>,
+    );
+    const startFrame = frames.get(1);
+    if (!startFrame) throw new Error("Expected the scheduled reveal frame.");
+    act(() => startFrame(performance.now()));
+    const callsAfterStart = requestAnimationFrame.mock.calls.length;
+
+    view.rerender(
+      <I18nProvider>
+        <HorizonAnimation
+          active={false}
+          latitude={latitude + 0.0001}
+          longitude={longitude}
+          eclipse={eclipse}
+          horizon={horizon}
+        />
+      </I18nProvider>,
+    );
+    view.rerender(
+      <I18nProvider>
+        <HorizonAnimation
+          active
+          latitude={latitude + 0.0001}
+          longitude={longitude}
+          eclipse={eclipse}
+          horizon={horizon}
+        />
+      </I18nProvider>,
+    );
+
+    expect(cancelAnimationFrame).toHaveBeenCalled();
+    expect(requestAnimationFrame).toHaveBeenCalledTimes(callsAfterStart);
   });
 });

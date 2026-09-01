@@ -32,6 +32,10 @@ export const SCIENTIFIC_INPUT_PATHS = [
   "src/features/horizon/horizon-scene-model.test.ts",
   "src/features/horizon/HorizonAnimation.tsx",
   "src/features/horizon/HorizonCanvasView.tsx",
+  "src/features/horizon/celestial-context.ts",
+  "src/features/horizon/celestial-context.test.ts",
+  "src/features/horizon/horizon-canvas-renderer.ts",
+  "src/features/horizon/HorizonCanvasView.test.ts",
 ];
 
 // Dependencies whose behaviour can change the report's numbers: astronomy-engine

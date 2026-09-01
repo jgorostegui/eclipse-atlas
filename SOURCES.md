@@ -41,8 +41,15 @@ number would conceal those differences.
   long-range Delta T values of 76.0 s and 76.3 s published with the corresponding
   NASA/GSFC element tables.
 - **Apparent positions:** [Astronomy Engine](https://github.com/cosinekitty/astronomy),
-  version pinned in `package-lock.json`, supplies topocentric apparent Sun and Moon
-  positions and angular radii only. Its Delta T hook uses the same IERS event value.
+  version pinned in `package-lock.json`, supplies topocentric apparent Sun, Moon and
+  optional planet positions, plus solar and lunar angular radii. Its Delta T hook uses
+  the same event-specific value.
+- **Optional bright-star context:** eight named bright-star ICRS/J2000 positions and
+  parallaxes are retained from SIMBAD/CDS under ODbL with attribution. Astronomy Engine
+  precesses those fixed positions and converts them to the selected observer's apparent
+  horizontal coordinates. The chart labels calculated positions only; it does not claim
+  that a planet or star will be visible during totality. Proper motion is not propagated,
+  and the curated set is not a complete sky catalogue.
 - **Inputs:** WGS 84 latitude and longitude plus observer ground elevation decoded from
   the IGN/CNIG TerrainRGB tile at the selected coordinate and an explicit 1.5 metre
   planning viewpoint height.

@@ -1,4 +1,11 @@
-import { useMemo, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import {
   calculateEclipseAnimationTrack,
   interpolateEclipseAnimationSample,
@@ -8,10 +15,20 @@ import type { TerrainHorizon } from "../../domain/terrain-horizon";
 import { displayTimeZoneForSupportedCoordinate } from "../../domain/terrain-coverage";
 import { useI18n } from "../../i18n/useI18n";
 import type { MessageKey } from "../../i18n/messages";
+import {
+  calculateCelestialContext,
+  type CelestialObjectId,
+} from "./celestial-context";
 import { lowerSolarEdgeTerrainMargin } from "./horizon-animation-model";
 import { HorizonCanvasView } from "./HorizonCanvasView";
+import {
+  HORIZON_REVEAL_DURATION_MS,
+  horizonRevealProgress,
+  type HorizonRevealTimeline,
+} from "./horizon-reveal";
 
 type HorizonAnimationProps = {
+  active: boolean;
   latitude: number;
   longitude: number;
   eclipse: EclipseCircumstances;
@@ -23,6 +40,24 @@ type EclipseVisualPhase = "partial" | "total" | "annular";
 
 type HorizonSliderStyle = CSSProperties & {
   "--horizon-progress": string;
+};
+
+const revealedHorizonLocations = new Set<string>();
+
+const CELESTIAL_LABEL_KEYS: Record<CelestialObjectId, MessageKey> = {
+  mercury: "horizon.sky.mercury",
+  venus: "horizon.sky.venus",
+  mars: "horizon.sky.mars",
+  jupiter: "horizon.sky.jupiter",
+  saturn: "horizon.sky.saturn",
+  pollux: "horizon.sky.pollux",
+  castor: "horizon.sky.castor",
+  regulus: "horizon.sky.regulus",
+  sirius: "horizon.sky.sirius",
+  procyon: "horizon.sky.procyon",
+  capella: "horizon.sky.capella",
+  betelgeuse: "horizon.sky.betelgeuse",
+  aldebaran: "horizon.sky.aldebaran",
 };
 
 function focusWindow(eclipse: EclipseCircumstances) {
@@ -67,7 +102,27 @@ function visualPhaseAt(
   return "partial";
 }
 
+function revealTimes(eclipse: EclipseCircumstances) {
+  if (eclipse.totalBegin && eclipse.totalEnd) {
+    return {
+      start: new Date(eclipse.totalBegin.getTime() - 30_000),
+      end: new Date(eclipse.totalEnd.getTime() + 30_000),
+    };
+  }
+  return {
+    start: new Date(eclipse.peak.getTime() - 5 * 60_000),
+    end: new Date(eclipse.peak.getTime() + 5 * 60_000),
+  };
+}
+
+function boundedTime(time: Date, start: Date, end: Date) {
+  return new Date(
+    Math.min(end.getTime(), Math.max(start.getTime(), time.getTime())),
+  );
+}
+
 export function HorizonAnimation({
+  active,
   latitude,
   longitude,
   eclipse,
@@ -90,7 +145,77 @@ export function HorizonAnimation({
     ((eclipse.peak.getTime() - focusRange.start.getTime()) /
       (focusRange.end.getTime() - focusRange.start.getTime())) *
     1000;
+  const progressForTime = useCallback(
+    (time: Date) =>
+      ((time.getTime() - focusRange.start.getTime()) /
+        (focusRange.end.getTime() - focusRange.start.getTime())) *
+      1000,
+    [focusRange.end, focusRange.start],
+  );
+  const revealTimeline = useMemo<HorizonRevealTimeline>(() => {
+    const times = revealTimes(eclipse);
+    return {
+      startProgress: progressForTime(
+        boundedTime(times.start, focusRange.start, focusRange.end),
+      ),
+      peakProgress,
+      endProgress: progressForTime(
+        boundedTime(times.end, focusRange.start, focusRange.end),
+      ),
+    };
+  }, [eclipse, focusRange.end, focusRange.start, peakProgress, progressForTime]);
   const [progress, setProgress] = useState(peakProgress);
+  const [isRevealing, setIsRevealing] = useState(false);
+  const [showCelestialContext, setShowCelestialContext] = useState(false);
+  const revealFrameRef = useRef<number | null>(null);
+  const revealStartedRef = useRef(false);
+  const revealKey = `${eclipse.eventId}:${latitude.toFixed(6)}:${longitude.toFixed(6)}`;
+
+  const cancelReveal = useCallback((markSeen: boolean) => {
+    if (revealFrameRef.current !== null) {
+      window.cancelAnimationFrame(revealFrameRef.current);
+      revealFrameRef.current = null;
+    }
+    if (markSeen) revealedHorizonLocations.add(revealKey);
+    setIsRevealing(false);
+  }, [revealKey]);
+
+  const startReveal = useCallback(() => {
+    cancelReveal(false);
+    revealStartedRef.current = true;
+    setProgress(revealTimeline.startProgress);
+    setIsRevealing(true);
+    const startedAt = performance.now();
+    const tick = (now: number) => {
+      const elapsed = now - startedAt;
+      setProgress(horizonRevealProgress(elapsed, revealTimeline));
+      if (elapsed >= HORIZON_REVEAL_DURATION_MS) {
+        revealFrameRef.current = null;
+        revealedHorizonLocations.add(revealKey);
+        setProgress(revealTimeline.peakProgress);
+        setIsRevealing(false);
+        return;
+      }
+      revealFrameRef.current = window.requestAnimationFrame(tick);
+    };
+    revealFrameRef.current = window.requestAnimationFrame(tick);
+  }, [cancelReveal, revealKey, revealTimeline]);
+
+  useEffect(() => {
+    if (!active) return;
+    const reducedMotion =
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    if (reducedMotion || revealedHorizonLocations.has(revealKey)) {
+      revealedHorizonLocations.add(revealKey);
+      return;
+    }
+    const startFrame = window.requestAnimationFrame(() => startReveal());
+    return () => {
+      window.cancelAnimationFrame(startFrame);
+      cancelReveal(revealStartedRef.current);
+    };
+  }, [active, cancelReveal, revealKey, startReveal]);
+
   const sample = interpolateEclipseAnimationSample(track, progress / 1000);
   const phase = visualPhaseAt(eclipse, sample.time);
   const phaseLabel = t(`horizon.phase.${phase}`);
@@ -101,10 +226,6 @@ export function HorizonAnimation({
     "--horizon-progress": `${progress / 10}%`,
   };
 
-  const progressForTime = (time: Date) =>
-    ((time.getTime() - focusRange.start.getTime()) /
-      (focusRange.end.getTime() - focusRange.start.getTime())) *
-    1000;
   const lowerLimbMargin = lowerSolarEdgeTerrainMargin(horizon, sample);
   const maximumClearance =
     horizon.solarDiscAssessment?.fullDiscClearanceDegrees ?? null;
@@ -127,6 +248,41 @@ export function HorizonAnimation({
     }),
   });
   const isMaximum = Math.abs(sample.time.getTime() - eclipse.peak.getTime()) < 500;
+  const celestialObjects = useMemo(
+    () => {
+      if (!showCelestialContext) return [];
+      const selectedSample = interpolateEclipseAnimationSample(
+        track,
+        progress / 1000,
+      );
+      return calculateCelestialContext({
+        time: selectedSample.time,
+        latitude,
+        longitude,
+        observerElevationMetres: eclipse.observerElevationMetres,
+      }).map((object) => ({
+        ...object,
+        label: t(CELESTIAL_LABEL_KEYS[object.id]),
+      }));
+    },
+    [
+      eclipse.observerElevationMetres,
+      latitude,
+      longitude,
+      progress,
+      showCelestialContext,
+      t,
+      track,
+    ],
+  );
+  const limitingTerrainLabel = horizon.solarDiscAssessment
+    ? t("horizon.limitingTerrainCallout", {
+        distance: formatNumber(
+          horizon.solarDiscAssessment.limitingDistanceKilometres,
+          { minimumFractionDigits: 1, maximumFractionDigits: 1 },
+        ),
+      })
+    : null;
 
   return (
     <div className="horizon-animation">
@@ -161,6 +317,36 @@ export function HorizonAnimation({
       </ul>
 
       <div className="horizon-chart-wrap">
+        <div className="horizon-chart-actions">
+          <button
+            type="button"
+            aria-label={t(
+              isRevealing ? "horizon.reveal.pause" : "horizon.reveal.replay",
+            )}
+            title={t(
+              isRevealing ? "horizon.reveal.pause" : "horizon.reveal.replay",
+            )}
+            onClick={() => {
+              if (isRevealing) cancelReveal(true);
+              else startReveal();
+            }}
+          >
+            <span aria-hidden="true">{isRevealing ? "Ⅱ" : "▶"}</span>
+          </button>
+          <button
+            type="button"
+            className={showCelestialContext ? "is-active" : undefined}
+            aria-pressed={showCelestialContext}
+            aria-label={t("horizon.sky.toggle")}
+            title={t("horizon.sky.toggle")}
+            onClick={() => {
+              cancelReveal(true);
+              setShowCelestialContext((current) => !current);
+            }}
+          >
+            <span aria-hidden="true">✦</span>
+          </button>
+        </div>
         <HorizonCanvasView
           track={track}
           sample={sample}
@@ -168,6 +354,27 @@ export function HorizonAnimation({
           accessibleTitle={t("horizon.animationTitle")}
           accessibleDescription={accessibleDescription}
           discInsetLabel={t("horizon.discInset", { phase: phaseLabel })}
+          discScaleLabel={(factor) =>
+            t("horizon.displayScale", {
+              factor: formatNumber(Math.max(1, Math.round(factor))),
+            })
+          }
+          limitingTerrainLabel={limitingTerrainLabel}
+          celestialObjects={celestialObjects}
+          celestialDescription={
+            showCelestialContext ? t("horizon.sky.description") : null
+          }
+          celestialObjectDescription={(object) =>
+            t("horizon.sky.objectPosition", {
+              name: object.label,
+              altitude: formatNumber(object.altitudeDegrees, {
+                maximumFractionDigits: 1,
+              }),
+              azimuth: formatNumber(object.azimuthDegrees, {
+                maximumFractionDigits: 1,
+              }),
+            })
+          }
           phase={phase}
           isMaximum={isMaximum}
           formatNumber={formatNumber}
@@ -188,7 +395,10 @@ export function HorizonAnimation({
               className={isCurrent ? "is-current" : undefined}
               aria-label={`${t(label)} · ${formatTime(time, timeZone)}`}
               aria-pressed={isCurrent}
-              onClick={() => setProgress(progressForTime(time))}
+              onClick={() => {
+                cancelReveal(true);
+                setProgress(progressForTime(time));
+              }}
             >
               <span>{t(label).split(" · ")[0]}</span>
               <time dateTime={time.toISOString()}>
@@ -210,7 +420,10 @@ export function HorizonAnimation({
             style={sliderStyle}
             aria-label={t("horizon.scrubber")}
             aria-valuetext={formatTime(sample.time, timeZone)}
-            onChange={(event) => setProgress(Number(event.target.value))}
+            onChange={(event) => {
+              cancelReveal(true);
+              setProgress(Number(event.target.value));
+            }}
           />
         </label>
         <time dateTime={sample.time.toISOString()}>

@@ -46,6 +46,7 @@ function renderProfile(
   return render(
     <I18nProvider>
       <TerrainProfile
+        active
         location={location}
         eventId="2026"
         eclipse={eclipse}
@@ -89,17 +90,16 @@ describe("TerrainProfile recovery", () => {
     expect(calculateTerrainHorizon).not.toHaveBeenCalled();
   });
 
-  it("labels the enlarged disc presentation without changing the evidence", async () => {
-    vi.mocked(calculateTerrainHorizon).mockResolvedValueOnce(horizon);
-    renderProfile();
+  it("reports a terminal terrain error instead of remaining loading", async () => {
+    vi.mocked(calculateTerrainHorizon).mockRejectedValueOnce(
+      new TerrainHorizonError("network", "Temporary network failure"),
+    );
+    const onStatus = vi.fn();
+    renderProfile({ onStatus });
 
-    expect(
-      await screen.findByText("Discs enlarged"),
-    ).toBeTruthy();
-    expect(
-      screen.getByLabelText(
-        "Sun and Moon discs are enlarged for visibility; their centres and the terrain profile retain their calculated positions.",
-      ),
-    ).toBeTruthy();
+    await waitFor(() =>
+      expect(onStatus).toHaveBeenLastCalledWith(location.id, "error"),
+    );
   });
+
 });

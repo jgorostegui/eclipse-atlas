@@ -9,7 +9,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { StrictMode } from "react";
+import { StrictMode, useEffect } from "react";
 import { I18nProvider } from "../../i18n/I18nProvider";
 import { calculateTerrainElevation } from "../../domain/terrain-horizon";
 import EclipsePlanner from "./EclipsePlanner";
@@ -82,6 +82,8 @@ vi.mock("../../domain/terrain-horizon", async () => {
     ),
   };
 });
+
+let terrainProfileStatus: "loading" | "ready" | "error" = "loading";
 
 vi.mock("../../domain/weather", async () => {
   const actual = await vi.importActual<typeof import("../../domain/weather")>(
@@ -202,24 +204,37 @@ vi.mock("../map/EclipseMap", () => ({
 
 vi.mock("../horizon/TerrainProfile", () => ({
   TerrainProfile: ({
+    location,
     elevationStatus,
     onRetryElevation,
+    onStatus,
   }: {
+    location: { id: string };
     elevationStatus: "loading" | "ready" | "error";
     onRetryElevation?: () => void;
-  }) => (
-    <div>
-      Terrain profile placeholder
-      {elevationStatus === "error" && (
-        <button type="button" onClick={onRetryElevation}>
-          Retry elevation
-        </button>
-      )}
-    </div>
-  ),
+    onStatus?: (
+      locationId: string,
+      status: "loading" | "ready" | "error",
+    ) => void;
+  }) => {
+    useEffect(() => {
+      onStatus?.(location.id, terrainProfileStatus);
+    }, [location.id, onStatus]);
+    return (
+      <div>
+        Terrain profile placeholder
+        {elevationStatus === "error" && (
+          <button type="button" onClick={onRetryElevation}>
+            Retry elevation
+          </button>
+        )}
+      </div>
+    );
+  },
 }));
 
 beforeEach(() => {
+  terrainProfileStatus = "loading";
   window.localStorage.clear();
   window.history.replaceState(
     null,
@@ -394,6 +409,28 @@ describe("EclipsePlanner acceptance", () => {
     expect(screen.queryByText(/score|\/100/i)).toBeNull();
   });
 
+  it("shows a terrain failure as unavailable in the selected outcome", async () => {
+    terrainProfileStatus = "error";
+    window.history.replaceState(
+      null,
+      "",
+      plannerUrl([
+        `selected=${ACCEPTANCE_SCENARIO.saved.soria}`,
+        "layer=none",
+      ]),
+    );
+    renderLab();
+
+    const facts = screen.getByRole("region", {
+      name: "Eclipse data for the selected point",
+    });
+    await waitFor(() =>
+      expect(
+        facts.querySelector(".eclipse-outcome__evidence")?.textContent,
+      ).toContain("HorizonUnavailable"),
+    );
+  });
+
   it("returns details to the explorer without losing its working state", async () => {
     const user = userEvent.setup();
     renderLab();
@@ -511,7 +548,7 @@ describe("EclipsePlanner acceptance", () => {
     const user = userEvent.setup();
     renderLab();
 
-    await user.click(screen.getByRole("button", { name: "+ Add to comparison" }));
+    await user.click(screen.getByRole("button", { name: "+ Save to compare" }));
     expect(
       screen.getByText(/Three points are already in the comparison/i),
     ).toBeTruthy();
@@ -549,7 +586,7 @@ describe("EclipsePlanner acceptance", () => {
     );
     if (!selectedPlace) throw new Error("Expected selected place in explorer.");
     await user.click(selectedPlace);
-    await user.click(screen.getByRole("button", { name: "+ Add to comparison" }));
+    await user.click(screen.getByRole("button", { name: "+ Save to compare" }));
     expect(screen.getByRole("button", { name: "Compare 3" })).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Compare 3" }));
     expect(

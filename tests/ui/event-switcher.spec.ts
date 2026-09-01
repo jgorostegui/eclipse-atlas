@@ -14,6 +14,12 @@ test("defaults a clean planner URL to the next eclipse after event day", async (
 
   await expect(page).toHaveTitle("2 AGO 2027 · Eclipse Atlas");
   await expect(page).toHaveURL(/event=2027/);
+  await expect(page.locator(".map-selection-guide")).toContainText(
+    "Elige un punto para comprobarlo",
+  );
+  await expect(page.locator(".map-selection-guide")).toContainText(
+    "Los colores dan contexto regional.",
+  );
 });
 
 test("loads the 2027 eclipse as a complete planner state", async ({ page }) => {

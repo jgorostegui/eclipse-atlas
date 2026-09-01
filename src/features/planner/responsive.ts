@@ -5,7 +5,7 @@ export type WorkspaceSize = Readonly<{
   height: number;
 }>;
 
-const DEFAULT_RAIL_WIDTH_RATIO = 0.33;
+const DEFAULT_RAIL_WIDTH_RATIO = 0.36;
 const MINIMUM_RAIL_WIDTH = 420;
 const MAXIMUM_RAIL_WIDTH_RATIO = 0.42;
 const MINIMUM_MAP_WIDTH = 420;

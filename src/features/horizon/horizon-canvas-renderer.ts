@@ -4,9 +4,9 @@ import {
   type TerrainHorizon,
 } from "../../domain/terrain-horizon";
 import {
+  createTerrainAltitudeLookup,
   mergeAnimationTerrainProfile,
   signedAzimuthDifference,
-  terrainAltitudeAtAzimuth,
 } from "./horizon-animation-model";
 import { horizonAtmosphereAtSolarAltitude } from "./horizon-atmosphere";
 import {
@@ -15,6 +15,7 @@ import {
   horizonTerrainSignature,
   type OrthographicViewBounds,
 } from "./horizon-scene-model";
+import type { CalculatedCelestialObject } from "./celestial-context";
 
 export type HorizonPhase = "partial" | "total" | "annular";
 
@@ -25,13 +26,22 @@ export type HorizonNumberFormatter = (
 
 type CanvasPoint = { x: number; y: number };
 type CanvasDisc = CanvasPoint & { radiusX: number; radiusY: number };
+type CanvasTerrainPoint = CanvasPoint & { distanceKilometres: number };
+type CanvasTrackPoint = CanvasPoint & { terrainVisible: boolean };
+type CanvasCelestialObject = CanvasPoint &
+  CalculatedCelestialObject & { label: string };
+
+export type LabelledCelestialObject = CalculatedCelestialObject & {
+  label: string;
+};
 
 export type HorizonCanvasScene = {
   width: number;
   height: number;
   bounds: OrthographicViewBounds;
-  terrain: CanvasPoint[];
-  track: CanvasPoint[];
+  terrain: CanvasTerrainPoint[];
+  track: CanvasTrackPoint[];
+  celestialObjects: CanvasCelestialObject[];
   sun: CanvasDisc;
   moon: CanvasDisc;
   displaySun: CanvasDisc;
@@ -80,6 +90,7 @@ export function createHorizonCanvasScene({
   width,
   height,
   isMaximum,
+  celestialObjects = [],
 }: {
   track: EclipseAnimationSample[];
   sample: EclipseAnimationSample;
@@ -87,11 +98,14 @@ export function createHorizonCanvasScene({
   width: number;
   height: number;
   isMaximum: boolean;
+  celestialObjects?: readonly LabelledCelestialObject[];
 }): HorizonCanvasScene {
   if (width <= 0 || height <= 0) {
     throw new RangeError("Canvas dimensions must be positive.");
   }
   const model = createHorizonSceneModel(track, horizon);
+  const mergedTerrain = mergeAnimationTerrainProfile(horizon);
+  const terrainAltitudeAt = createTerrainAltitudeLookup(mergedTerrain);
   // This is a fitted planning chart rather than a literal camera field of
   // view. Independent axes let the complete calculated terrain sweep occupy
   // the available width while the full C1-C4 altitude range remains visible.
@@ -171,13 +185,16 @@ export function createHorizonCanvasScene({
     radiusX: sample.moonAngularRadiusDegrees * displayAngularScale,
     radiusY: sample.moonAngularRadiusDegrees * displayAngularScale,
   };
-  const insetWidth = compact
-    ? Math.min(126, width * 0.32)
-    : Math.min(164, width * 0.23);
-  const insetHeight = compact ? 108 : 138;
-  const insetX = width - insetWidth - (compact ? 10 : 16);
-  const insetY = compact ? 10 : 16;
-  const insetSunRadius = Math.min(insetWidth * 0.3, insetHeight * 0.34);
+  const shortChart = height < 220;
+  const insetWidth = shortChart
+    ? Math.min(82, width * 0.23)
+    : compact
+      ? Math.min(108, width * 0.29)
+      : Math.min(146, width * 0.21);
+  const insetHeight = shortChart ? 70 : compact ? 92 : 120;
+  const insetX = width - insetWidth - (shortChart ? 7 : compact ? 10 : 16);
+  const insetY = shortChart ? 7 : compact ? 10 : 16;
+  const insetSunRadius = Math.min(insetWidth * 0.28, insetHeight * 0.3);
   const insetCentreX = insetX + insetWidth / 2;
   const insetCentreY = insetY + insetHeight * 0.42;
   const insetScale = insetSunRadius / sample.sunAngularRadiusDegrees;
@@ -194,10 +211,7 @@ export function createHorizonCanvasScene({
     (sample.moonAltitudeDegrees - sample.sunAltitudeDegrees) * insetScale;
   const assessment = horizon.solarDiscAssessment;
   const limitingTerrainAltitude = assessment
-    ? terrainAltitudeAtAzimuth(
-        mergeAnimationTerrainProfile(horizon),
-        assessment.limitingTerrainAzimuthDegrees,
-      )
+    ? terrainAltitudeAt(assessment.limitingTerrainAzimuthDegrees)
     : null;
   const bracket =
     isMaximum && assessment && limitingTerrainAltitude !== null
@@ -223,6 +237,7 @@ export function createHorizonCanvasScene({
     terrain: model.terrain.map((point) => ({
       x: x(point.relativeAzimuthDegrees),
       y: y(point.altitudeDegrees),
+      distanceKilometres: point.limitingDistanceKilometres,
     })),
     track: track.map((point) => ({
       x: x(
@@ -232,6 +247,23 @@ export function createHorizonCanvasScene({
         ),
       ),
       y: y(point.sunAltitudeDegrees),
+      terrainVisible: (() => {
+        const terrainAltitude = terrainAltitudeAt(point.sunAzimuthDegrees);
+        return (
+          terrainAltitude !== null &&
+          point.sunAltitudeDegrees + point.sunAngularRadiusDegrees > terrainAltitude
+        );
+      })(),
+    })),
+    celestialObjects: celestialObjects.map((object) => ({
+      ...object,
+      x: x(
+        signedAzimuthDifference(
+          object.azimuthDegrees,
+          model.centreAzimuthDegrees,
+        ),
+      ),
+      y: y(object.altitudeDegrees),
     })),
     sun,
     moon,
@@ -315,10 +347,12 @@ export function paintHorizonCanvas(
   {
     phase,
     discInsetLabel,
+    limitingTerrainLabel,
     formatNumber,
   }: {
     phase: HorizonPhase;
     discInsetLabel: string;
+    limitingTerrainLabel: string | null;
     formatNumber: HorizonNumberFormatter;
   },
 ) {
@@ -360,10 +394,11 @@ export function paintHorizonCanvas(
   context.save();
   context.font = `600 ${width < 560 ? 10 : 11}px "IBM Plex Mono", monospace`;
   context.textBaseline = "middle";
+  const altitudeStep = height < 220 ? 8 : 4;
   for (
-    let altitude = Math.ceil(scene.bounds.bottom / 4) * 4;
+    let altitude = Math.ceil(scene.bounds.bottom / altitudeStep) * altitudeStep;
     altitude <= scene.bounds.top;
-    altitude += 4
+    altitude += altitudeStep
   ) {
     const y =
       ((scene.bounds.top - altitude) /
@@ -394,6 +429,19 @@ export function paintHorizonCanvas(
       if (index === 0) context.moveTo(point.x, point.y);
       else context.lineTo(point.x, point.y);
     });
+    context.setLineDash([3, 6]);
+    context.strokeStyle = "rgba(202,214,220,0.34)";
+    context.lineWidth = 1.2;
+    context.stroke();
+    context.beginPath();
+    for (let index = 1; index < scene.track.length; index += 1) {
+      const previous = scene.track[index - 1];
+      const current = scene.track[index];
+      if (!previous.terrainVisible || !current.terrainVisible) continue;
+      context.moveTo(previous.x, previous.y);
+      context.lineTo(current.x, current.y);
+    }
+    context.setLineDash([]);
     context.strokeStyle = "rgba(255,194,85,0.14)";
     context.lineWidth = width < 560 ? 5 : 7;
     context.shadowColor = "rgba(255,190,73,0.3)";
@@ -404,6 +452,86 @@ export function paintHorizonCanvas(
     context.strokeStyle = "rgba(255,226,166,0.82)";
     context.lineWidth = 1.4;
     context.stroke();
+    context.restore();
+  }
+
+  if (scene.celestialObjects.length > 0) {
+    context.save();
+    context.textBaseline = "middle";
+    context.font = `600 ${width < 560 ? 9 : 10}px "IBM Plex Mono", monospace`;
+    const occupiedLabels: Array<{
+      left: number;
+      right: number;
+      top: number;
+      bottom: number;
+    }> = [];
+    for (const object of scene.celestialObjects) {
+      if (
+        object.x < 12 ||
+        object.x > width - 12 ||
+        object.y < 12 ||
+        object.y > height - 18
+      ) {
+        continue;
+      }
+      const radius =
+        object.kind === "star"
+          ? 1.7
+          : Math.max(
+              2.1,
+              Math.min(4.2, 3.3 - (object.magnitude ?? 1) * 0.35),
+            );
+      context.beginPath();
+      context.arc(object.x, object.y, radius, 0, Math.PI * 2);
+      context.fillStyle = object.kind === "star" ? "#f3f6ff" : "#ffd46d";
+      context.shadowColor = context.fillStyle;
+      context.shadowBlur = object.kind === "star" ? 5 : 8;
+      context.fill();
+      context.shadowBlur = 0;
+      const measuredWidth = context.measureText(object.label).width;
+      let labelX = object.x + radius + 4;
+      if (
+        object.y >= scene.inset.y - 4 &&
+        object.y <= scene.inset.y + scene.inset.height + 4 &&
+        labelX + measuredWidth >= scene.inset.x - 4
+      ) {
+        labelX = object.x - measuredWidth - radius - 4;
+      }
+      labelX = Math.min(
+        width - measuredWidth - 5,
+        Math.max(5, labelX),
+      );
+      let labelY = object.y;
+      let labelBox = {
+        left: labelX - 2,
+        right: labelX + measuredWidth + 2,
+        top: labelY - 6,
+        bottom: labelY + 6,
+      };
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        const overlaps = occupiedLabels.some(
+          (box) =>
+            labelBox.left < box.right &&
+            labelBox.right > box.left &&
+            labelBox.top < box.bottom &&
+            labelBox.bottom > box.top,
+        );
+        if (!overlaps) break;
+        labelY += 12;
+        labelBox = {
+          ...labelBox,
+          top: labelY - 6,
+          bottom: labelY + 6,
+        };
+      }
+      if (labelBox.bottom > height - 5) continue;
+      occupiedLabels.push(labelBox);
+      context.lineWidth = 3;
+      context.strokeStyle = "rgba(7,17,31,0.7)";
+      context.strokeText(object.label, labelX, labelY);
+      context.fillStyle = "rgba(245,248,251,0.94)";
+      context.fillText(object.label, labelX, labelY);
+    }
     context.restore();
   }
 
@@ -502,6 +630,26 @@ export function paintHorizonCanvas(
   );
   context.lineWidth = 1.15;
   context.stroke();
+  for (let index = 1; index < scene.terrain.length; index += 1) {
+    const previous = scene.terrain[index - 1];
+    const current = scene.terrain[index];
+    const distanceFraction = Math.min(
+      1,
+      Math.max(
+        0,
+        (previous.distanceKilometres + current.distanceKilometres) / 200,
+      ),
+    );
+    const red = Math.round(232 - distanceFraction * 48);
+    const green = Math.round(180 + distanceFraction * 30);
+    const blue = Math.round(105 + distanceFraction * 96);
+    context.beginPath();
+    context.moveTo(previous.x, previous.y);
+    context.lineTo(current.x, current.y);
+    context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${0.72 - distanceFraction * 0.24})`;
+    context.lineWidth = 1.25;
+    context.stroke();
+  }
   context.restore();
 
   if (scene.bracket) {
@@ -527,6 +675,30 @@ export function paintHorizonCanvas(
     context.moveTo(measurementX - 6, scene.bracket.lowerSolarEdgeY);
     context.lineTo(measurementX + 6, scene.bracket.lowerSolarEdgeY);
     context.stroke();
+    if (limitingTerrainLabel) {
+      context.font = `700 ${width < 560 ? 9 : 10}px "IBM Plex Mono", monospace`;
+      const labelWidth = Math.min(
+        width - 20,
+        context.measureText(limitingTerrainLabel).width + 14,
+      );
+      const labelX = Math.min(
+        width - labelWidth - 8,
+        Math.max(8, scene.bracket.x - labelWidth / 2),
+      );
+      const labelY = Math.max(8, scene.bracket.terrainY - 31);
+      context.beginPath();
+      context.moveTo(scene.bracket.x, scene.bracket.terrainY - 2);
+      context.lineTo(scene.bracket.x, labelY + 20);
+      context.strokeStyle = "rgba(239,244,246,0.7)";
+      context.lineWidth = 1;
+      context.stroke();
+      roundedRectangle(context, labelX, labelY, labelWidth, 20, 5);
+      context.fillStyle = "rgba(5,13,25,0.86)";
+      context.fill();
+      context.fillStyle = "rgba(247,249,250,0.96)";
+      context.textBaseline = "middle";
+      context.fillText(limitingTerrainLabel, labelX + 7, labelY + 10);
+    }
     context.restore();
   }
 
@@ -595,12 +767,14 @@ export function paintHorizonCanvas(
   context.font = `700 ${width < 560 ? 9 : 11}px Manrope, sans-serif`;
   context.textAlign = "center";
   context.textBaseline = "alphabetic";
-  context.fillText(
-    discInsetLabel,
-    inset.centreX,
-    inset.y + inset.height - 9,
-    inset.width - 12,
-  );
+  if (width >= 350) {
+    context.fillText(
+      discInsetLabel,
+      inset.centreX,
+      inset.y + inset.height - 9,
+      inset.width - 12,
+    );
+  }
   context.restore();
 
   context.save();

@@ -264,7 +264,7 @@ test("keeps map and inspector sound across tablets and desktops", async ({
           expect(
             railRatio,
             `${viewport.name}: wide layout does not adapt the inspector`,
-          ).toBeLessThanOrEqual(0.345);
+          ).toBeLessThanOrEqual(0.365);
         }
         if (viewport.width >= 1920) {
           expect(

@@ -212,7 +212,7 @@ test("keeps climate and live forecast separate in selected-place details", async
   expect(new URL(await aemet.getAttribute("href") ?? "").searchParams.get("str"))
     .toBe("Soria");
   await page
-    .getByRole("button", { name: "+ Añadir a comparación", exact: true })
+    .getByRole("button", { name: "+ Guardar para comparar", exact: true })
     .click();
   await page.getByRole("button", { name: "Comparar 1", exact: true }).click();
   await expect(

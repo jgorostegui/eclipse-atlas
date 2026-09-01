@@ -115,7 +115,7 @@ test("keeps one inspector width while opening and closing details", async ({
   const defaultWidth = Number(
     await splitter.getAttribute("aria-valuenow"),
   );
-  expect(defaultWidth / 2351).toBeCloseTo(0.33, 3);
+  expect(defaultWidth / 2351).toBeCloseTo(0.36, 3);
 
   const search = page.getByRole("searchbox", {
     name: "Buscar lugares del mapa",
@@ -294,7 +294,7 @@ test("keeps child data changes monotonic through Close and Forward", async ({
     .locator('.place-list button[data-candidate-id="soria"]')
     .click();
   await page
-    .getByRole("button", { name: "+ Añadir a comparación", exact: true })
+    .getByRole("button", { name: "+ Guardar para comparar", exact: true })
     .click();
   await expect(page).toHaveURL(/compare=place%3Asoria/);
 
@@ -308,7 +308,10 @@ test("keeps child data changes monotonic through Close and Forward", async ({
   await expect(page).toHaveURL(/#details$/);
   await expect(page).toHaveURL(/compare=place%3Asoria/);
   await expect(
-    page.getByRole("button", { name: "✓ En comparación", exact: true }),
+    page.getByRole("button", {
+      name: "✓ Guardado para comparar",
+      exact: true,
+    }),
   ).toHaveAttribute("aria-pressed", "true");
 });
 

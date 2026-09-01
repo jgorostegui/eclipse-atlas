@@ -334,7 +334,7 @@ test("keeps comparison contextual instead of adding a fourth destination", async
     .click();
 
   await page
-    .getByRole("button", { name: "+ Añadir a comparación", exact: true })
+    .getByRole("button", { name: "+ Guardar para comparar", exact: true })
     .click();
   const openComparison = page.getByRole("button", {
     name: "Comparar 1",
@@ -473,10 +473,10 @@ test("keeps the compact header and navigation usable at 320 pixels", async ({
 
   await page.getByRole("button", { name: "Abrir los detalles de Soria" }).click();
   await page
-    .getByRole("button", { name: "+ Añadir a comparación", exact: true })
+    .getByRole("button", { name: "+ Guardar para comparar", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "✓ En comparación", exact: true }),
+    page.getByRole("button", { name: "✓ Guardado para comparar", exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Comparar 1", exact: true }),

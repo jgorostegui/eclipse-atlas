@@ -93,4 +93,61 @@ describe("Canvas horizon projection", () => {
     expect(scene.terrain.every((point) => Number.isFinite(point.x + point.y)))
       .toBe(true);
   });
+
+  it("projects optional sky context and marks a path hidden behind terrain", () => {
+    const current = sample(180);
+    const blockingHorizon = {
+      ...horizon,
+      profile: horizon.profile.map((point) => ({
+        ...point,
+        horizonAltitudeDegrees: 47,
+      })),
+    } as unknown as TerrainHorizon;
+    const scene = createHorizonCanvasScene({
+      track: [sample(175), current, sample(185)],
+      sample: current,
+      horizon: blockingHorizon,
+      width: 720,
+      height: 450,
+      isMaximum: false,
+      celestialObjects: [
+        {
+          id: "jupiter",
+          kind: "planet",
+          altitudeDegrees: 40,
+          azimuthDegrees: 180,
+          magnitude: -2,
+          label: "Jupiter",
+        },
+      ],
+    });
+
+    expect(scene.track.every(({ terrainVisible }) => !terrainVisible)).toBe(
+      true,
+    );
+    expect(scene.celestialObjects).toHaveLength(1);
+    expect(scene.celestialObjects[0]).toMatchObject({
+      label: "Jupiter",
+      kind: "planet",
+    });
+    expect(scene.terrain.every(({ distanceKilometres }) => distanceKilometres === 2))
+      .toBe(true);
+  });
+
+  it("does not present track segments outside terrain coverage as visible", () => {
+    const scene = createHorizonCanvasScene({
+      track: [sample(160), sample(180), sample(200)],
+      sample: sample(180),
+      horizon,
+      width: 720,
+      height: 450,
+      isMaximum: false,
+    });
+
+    expect(scene.track.map(({ terrainVisible }) => terrainVisible)).toEqual([
+      false,
+      true,
+      false,
+    ]);
+  });
 });

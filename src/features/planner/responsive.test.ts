@@ -30,7 +30,7 @@ describe("desktop inspector sizing", () => {
   ])("keeps the inspector fluid on a $name", ({ width, height }) => {
     const inspectorWidth = defaultDesktopRailWidth({ width, height });
 
-    expect(inspectorWidth / width).toBeCloseTo(0.33, 6);
+    expect(inspectorWidth / width).toBeCloseTo(0.36, 6);
   });
 
   it("does not change the automatic width when only workspace height changes", () => {
@@ -42,7 +42,7 @@ describe("desktop inspector sizing", () => {
     );
 
     expect(tall).toBe(wide);
-    expect(tall / 1920).toBeCloseTo(0.33, 6);
+    expect(tall / 1920).toBeCloseTo(0.36, 6);
   });
 
   it.each([

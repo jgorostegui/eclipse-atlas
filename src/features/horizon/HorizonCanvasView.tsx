@@ -12,6 +12,7 @@ import {
   paintHorizonCanvas,
   type HorizonNumberFormatter,
   type HorizonPhase,
+  type LabelledCelestialObject,
 } from "./horizon-canvas-renderer";
 
 type HorizonCanvasViewProps = {
@@ -21,6 +22,11 @@ type HorizonCanvasViewProps = {
   accessibleTitle: string;
   accessibleDescription: string;
   discInsetLabel: string;
+  discScaleLabel: (factor: number) => string;
+  limitingTerrainLabel: string | null;
+  celestialObjects: readonly LabelledCelestialObject[];
+  celestialDescription: string | null;
+  celestialObjectDescription: (object: LabelledCelestialObject) => string;
   phase: HorizonPhase;
   isMaximum: boolean;
   formatNumber: HorizonNumberFormatter;
@@ -33,6 +39,11 @@ export function HorizonCanvasView({
   accessibleTitle,
   accessibleDescription,
   discInsetLabel,
+  discScaleLabel,
+  limitingTerrainLabel,
+  celestialObjects,
+  celestialDescription,
+  celestialObjectDescription,
   phase,
   isMaximum,
   formatNumber,
@@ -48,8 +59,17 @@ export function HorizonCanvasView({
         width: dimensions.width,
         height: dimensions.height,
         isMaximum,
+        celestialObjects,
       }),
-    [dimensions.height, dimensions.width, horizon, isMaximum, sample, track],
+    [
+      celestialObjects,
+      dimensions.height,
+      dimensions.width,
+      horizon,
+      isMaximum,
+      sample,
+      track,
+    ],
   );
 
   useLayoutEffect(() => {
@@ -97,10 +117,26 @@ export function HorizonCanvasView({
     paintHorizonCanvas(context, scene, {
       phase,
       discInsetLabel,
+      limitingTerrainLabel,
       formatNumber,
     });
     canvas.dataset.renderState = "ready";
-  }, [discInsetLabel, formatNumber, phase, scene]);
+  }, [discInsetLabel, formatNumber, limitingTerrainLabel, phase, scene]);
+
+  const celestialSummary = celestialDescription
+    ? [
+        celestialDescription,
+        ...scene.celestialObjects
+          .filter(
+            (object) =>
+              object.x >= 12 &&
+              object.x <= scene.width - 12 &&
+              object.y >= 12 &&
+              object.y <= scene.height - 18,
+          )
+          .map(celestialObjectDescription),
+      ].join(" ")
+    : null;
 
   return (
     <>
@@ -108,7 +144,7 @@ export function HorizonCanvasView({
         ref={canvasRef}
         className="horizon-canvas"
         role="img"
-        aria-label={`${accessibleTitle}. ${accessibleDescription}`}
+        aria-label={`${accessibleTitle}. ${accessibleDescription}${celestialSummary ? ` ${celestialSummary}` : ""}`}
         data-renderer="canvas-2d"
         data-render-state="initialising"
         data-terrain-signature={scene.terrainSignature}
@@ -125,6 +161,8 @@ export function HorizonCanvasView({
         ).toFixed(3)}
         data-sky-upper={scene.atmosphere.skyUpper}
         data-phase={phase}
+        data-celestial-count={scene.celestialObjects.length}
+        data-display-magnification={scene.displayMagnification.toFixed(2)}
         data-clearance-bracket={scene.bracket ? "visible" : "hidden"}
         data-clearance-state={
           scene.bracket?.intersection ??
@@ -132,7 +170,16 @@ export function HorizonCanvasView({
           "unavailable"
         }
       />
+      <span
+        className="horizon-display-note"
+        aria-label={discScaleLabel(scene.displayMagnification)}
+      >
+        {discScaleLabel(scene.displayMagnification)}
+      </span>
       <span className="sr-only">{discInsetLabel}</span>
+      {celestialDescription && (
+        <span className="horizon-celestial-note">{celestialDescription}</span>
+      )}
     </>
   );
 }
