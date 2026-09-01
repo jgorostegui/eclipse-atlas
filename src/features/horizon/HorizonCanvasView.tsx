@@ -178,7 +178,7 @@ export function HorizonCanvasView({
       </span>
       <span className="sr-only">{discInsetLabel}</span>
       {celestialDescription && (
-        <span className="horizon-celestial-note">{celestialDescription}</span>
+        <span className="sr-only">{celestialDescription}</span>
       )}
     </>
   );

@@ -7,7 +7,7 @@
   },
   "environment": {
     "projectVersion": "0.1.0",
-    "gitCommit": "66bd57847677f7e51b99a010aae0ce91bee55a2e",
+    "gitCommit": "e5119a44c0b0caa8c8551d8dcbb031ac4fdf0f4b",
     "gitClean": false,
     "node": "v22.17.0",
     "npm": "10.9.2",
@@ -38,10 +38,10 @@
       "src/features/horizon/horizon-scene-model.ts": "ce449d6fa6905932f2ab57679891cc05491dcf471b8e24836abf16e472312660",
       "src/features/horizon/horizon-scene-model.test.ts": "7a0a74a829671aa7e17baa5a6c99e7d41f076eaa2a08bbe73f6edb3f11037ed4",
       "src/features/horizon/HorizonAnimation.tsx": "b75a19e0964849f926dcf549992670f6216b737b2020fe8d492178e62e382215",
-      "src/features/horizon/HorizonCanvasView.tsx": "9959e9110dd40202288b54fd3e921287912682aa21b8f55e5f4d2554e6ad3960",
+      "src/features/horizon/HorizonCanvasView.tsx": "7f4afdf41ee7aaa1b0229bdf88535700e7fe8d673920d14745245cd56af8b312",
       "src/features/horizon/celestial-context.ts": "a49e07955499b4f50c5295d1a5a84426dfac3d6a7645882a60eb7d09a4172588",
       "src/features/horizon/celestial-context.test.ts": "c12eadda3849c0f29b6519e203db2027015784696394b562412bc447a099f893",
-      "src/features/horizon/horizon-canvas-renderer.ts": "946b40de9ea46557e2484cdef9af2a1876381ec81b503cf0760e560fab39e381",
+      "src/features/horizon/horizon-canvas-renderer.ts": "afcf21c1b62900b00bfd694353b3102e895b379570b05244f4326d6702413f62",
       "src/features/horizon/HorizonCanvasView.test.ts": "40f461a29db3ebca5eea9d0e6e1542152e1a432c65cbb1bc3ddf58939b927303"
     },
     "dependencyVersions": {

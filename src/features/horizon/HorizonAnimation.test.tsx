@@ -154,7 +154,7 @@ describe("HorizonAnimation", () => {
     expect(
       screen
         .getByText(/Their visibility is not guaranteed/)
-        .classList.contains("horizon-celestial-note"),
+        .classList.contains("sr-only"),
     ).toBe(true);
     expect(chart.getAttribute("aria-label")).toContain("Jupiter: altitude");
     expect(terrainSignature).toMatch(/^[0-9a-f]{8}$/);

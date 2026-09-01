@@ -458,13 +458,27 @@ export function paintHorizonCanvas(
   if (scene.celestialObjects.length > 0) {
     context.save();
     context.textBaseline = "middle";
-    context.font = `600 ${width < 560 ? 9 : 10}px "IBM Plex Mono", monospace`;
+    context.font = `400 ${width < 560 ? 9 : 10}px Manrope, sans-serif`;
     const occupiedLabels: Array<{
       left: number;
       right: number;
       top: number;
       bottom: number;
-    }> = [];
+    }> = [
+      { left: 0, right: width < 560 ? 100 : 112, top: 0, bottom: 54 },
+      {
+        left: scene.inset.x - 4,
+        right: scene.inset.x + scene.inset.width + 4,
+        top: scene.inset.y - 4,
+        bottom: scene.inset.y + scene.inset.height + 4,
+      },
+      {
+        left: scene.displaySun.x - scene.displaySun.radiusX - 9,
+        right: scene.displaySun.x + scene.displaySun.radiusX + 9,
+        top: scene.displaySun.y - scene.displaySun.radiusY - 9,
+        bottom: scene.displaySun.y + scene.displaySun.radiusY + 9,
+      },
+    ];
     for (const object of scene.celestialObjects) {
       if (
         object.x < 12 ||
@@ -489,47 +503,56 @@ export function paintHorizonCanvas(
       context.fill();
       context.shadowBlur = 0;
       const measuredWidth = context.measureText(object.label).width;
-      let labelX = object.x + radius + 4;
-      if (
-        object.y >= scene.inset.y - 4 &&
-        object.y <= scene.inset.y + scene.inset.height + 4 &&
-        labelX + measuredWidth >= scene.inset.x - 4
-      ) {
-        labelX = object.x - measuredWidth - radius - 4;
-      }
-      labelX = Math.min(
-        width - measuredWidth - 5,
-        Math.max(5, labelX),
-      );
-      let labelY = object.y;
-      let labelBox = {
-        left: labelX - 2,
-        right: labelX + measuredWidth + 2,
-        top: labelY - 6,
-        bottom: labelY + 6,
-      };
-      for (let attempt = 0; attempt < 4; attempt += 1) {
-        const overlaps = occupiedLabels.some(
-          (box) =>
-            labelBox.left < box.right &&
-            labelBox.right > box.left &&
-            labelBox.top < box.bottom &&
-            labelBox.bottom > box.top,
-        );
-        if (!overlaps) break;
-        labelY += 12;
-        labelBox = {
-          ...labelBox,
-          top: labelY - 6,
-          bottom: labelY + 6,
+      const sidePlacements = [
+        { x: object.x + radius + 5, y: object.y },
+        { x: object.x - measuredWidth - radius - 5, y: object.y },
+      ];
+      const verticalPlacements = [
+        { x: object.x - measuredWidth / 2, y: object.y - 12 },
+        { x: object.x - measuredWidth / 2, y: object.y + 12 },
+      ];
+      const placements =
+        object.kind === "star"
+          ? [...verticalPlacements, ...sidePlacements]
+          : [...sidePlacements, ...verticalPlacements];
+      const placement = placements.find(({ x: labelX, y: labelY }) => {
+        const labelBox = {
+          left: labelX - 5,
+          right: labelX + measuredWidth + 5,
+          top: labelY - 7,
+          bottom: labelY + 7,
         };
-      }
-      if (labelBox.bottom > height - 5) continue;
+        return (
+          labelBox.left >= 5 &&
+          labelBox.right <= width - 5 &&
+          labelBox.top >= 5 &&
+          labelBox.bottom <= height - 5 &&
+          !occupiedLabels.some(
+            (box) =>
+              labelBox.left < box.right &&
+              labelBox.right > box.left &&
+              labelBox.top < box.bottom &&
+              labelBox.bottom > box.top,
+          )
+        );
+      });
+      if (!placement) continue;
+      const labelX = placement.x;
+      const labelY = placement.y;
+      const labelBox = {
+        left: labelX - 5,
+        right: labelX + measuredWidth + 5,
+        top: labelY - 7,
+        bottom: labelY + 7,
+      };
       occupiedLabels.push(labelBox);
-      context.lineWidth = 3;
-      context.strokeStyle = "rgba(7,17,31,0.7)";
+      context.lineWidth = 1.5;
+      context.strokeStyle = "rgba(7,17,31,0.5)";
       context.strokeText(object.label, labelX, labelY);
-      context.fillStyle = "rgba(245,248,251,0.94)";
+      context.fillStyle =
+        object.kind === "star"
+          ? "rgba(241,245,252,0.86)"
+          : "rgba(255,239,198,0.95)";
       context.fillText(object.label, labelX, labelY);
     }
     context.restore();
