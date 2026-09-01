@@ -155,6 +155,31 @@ describe("calibrateClock", () => {
     expect(result).toEqual({ ok: false, reason: "aborted" });
   });
 
+  it("bounds the whole calibration when the time source stops responding", async () => {
+    const timer = fakeClock();
+    const probe: ClockProbe = {
+      ...timer.clock,
+      fetchTimeSource: (signal) =>
+        new Promise((_, reject) => {
+          signal?.addEventListener(
+            "abort",
+            () => reject(new DOMException("Aborted", "AbortError")),
+            { once: true },
+          );
+        }),
+    };
+
+    await expect(calibrateClock(probe, { timeoutMs: 10 })).resolves.toEqual({
+      ok: false,
+      reason: "timed-out",
+    });
+  });
+
+  it("rejects an invalid calibration timeout", async () => {
+    await expect(calibrateClock(scriptedProbe([]), { timeoutMs: 0 })).rejects
+      .toThrow(RangeError);
+  });
+
   it("survives a mix of failures as long as one sample lands", async () => {
     const result = await calibrateClock(
       scriptedProbe([

@@ -221,7 +221,11 @@ vi.mock("../horizon/TerrainProfile", () => ({
 
 beforeEach(() => {
   window.localStorage.clear();
-  window.history.replaceState(null, "", "/");
+  window.history.replaceState(
+    null,
+    "",
+    "/?state=1&lang=en&event=2026&layer=totality-duration",
+  );
   Object.defineProperty(Element.prototype, "scrollIntoView", {
     configurable: true,
     value: vi.fn(),

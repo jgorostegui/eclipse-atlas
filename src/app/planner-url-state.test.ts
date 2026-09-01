@@ -1,14 +1,22 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import {
   MAX_COMPARISON_POINTS,
   PLANNER_URL_STATE_VERSION,
   createGeoLocationReference,
   customCandidateId,
+  defaultPlannerEclipseEventId,
   parsePlannerUrl,
   plannerLocationReferenceKey,
   serializePlannerUrl,
   type PlannerUrlStateV1,
 } from "./planner-url-state";
+
+beforeAll(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date("2026-08-12T12:00:00.000Z"));
+});
+
+afterAll(() => vi.useRealTimers());
 
 function url(search: string) {
   return new URL(`https://example.test/planner${search}`);
@@ -37,6 +45,25 @@ function state(
 }
 
 describe("planner URL state v1", () => {
+  it.each([
+    ["2026-08-12T21:59:59.999Z", "2026"],
+    ["2026-08-12T22:00:00.000Z", "2027"],
+    ["2027-08-02T21:59:59.999Z", "2027"],
+    ["2027-08-02T22:00:00.000Z", "2028"],
+    ["2029-01-01T00:00:00.000Z", "2028"],
+  ] as const)(
+    "chooses %s as the default planning date boundary",
+    (timestamp, eventId) => {
+      expect(defaultPlannerEclipseEventId(new Date(timestamp))).toBe(eventId);
+    },
+  );
+
+  it("rejects an invalid date for the default event", () => {
+    expect(() => defaultPlannerEclipseEventId(new Date(Number.NaN))).toThrow(
+      RangeError,
+    );
+  });
+
   it("parses a complete Soria, Burgos and Bardenas comparison", () => {
     const result = parsePlannerUrl(
       url(

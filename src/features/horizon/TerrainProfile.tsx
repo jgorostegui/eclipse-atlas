@@ -182,13 +182,21 @@ export function TerrainProfile({
 
       <div className="horizon-card__content" aria-live="polite">
         {result && eclipse ? (
-          <HorizonAnimation
-            key={`${eclipse.eventId}:${location.id}:${location.latitude}:${location.longitude}`}
-            latitude={location.latitude}
-            longitude={location.longitude}
-            eclipse={eclipse}
-            horizon={result}
-          />
+          <>
+            <p
+              className="horizon-display-note"
+              aria-label={t("horizon.displayScaleDescription")}
+            >
+              {t("horizon.displayScale")}
+            </p>
+            <HorizonAnimation
+              key={`${eclipse.eventId}:${location.id}:${location.latitude}:${location.longitude}`}
+              latitude={location.latitude}
+              longitude={location.longitude}
+              eclipse={eclipse}
+              horizon={result}
+            />
+          </>
         ) : activeState.status === "error" ? (
           <div className="horizon-chart-wrap">
           <div className="horizon-fallback" role="status">

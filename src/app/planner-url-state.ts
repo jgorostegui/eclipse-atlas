@@ -10,6 +10,8 @@ import {
 import { isSupportedTerrainCoordinate } from "../domain/terrain-horizon";
 import {
   DEFAULT_ECLIPSE_EVENT_ID,
+  eclipseEvent,
+  eclipseEventIds,
   isEclipseEventId,
   type EclipseEventId,
 } from "../domain/eclipse-events";
@@ -41,6 +43,7 @@ const PLANNER_PARAMETERS = [
   "compare",
 ] as const satisfies readonly PlannerUrlParameter[];
 const DECIMAL_COORDINATE = /^-?(?:\d+(?:\.\d*)?|\.\d+)$/;
+const PLANNER_DATE_TIME_ZONE = "Europe/Madrid";
 
 export type PlaceLocationReference = Readonly<{
   kind: "place";
@@ -141,11 +144,42 @@ function scalarParameter(
   return values[0] ?? null;
 }
 
+function calendarDateKeyInPlannerTimeZone(date: Date) {
+  if (!Number.isFinite(date.getTime())) {
+    throw new RangeError("Planner date must be valid.");
+  }
+  const parts = new Intl.DateTimeFormat("en", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: PLANNER_DATE_TIME_ZONE,
+    year: "numeric",
+  }).formatToParts(date);
+  const value = (type: Intl.DateTimeFormatPartTypes) =>
+    Number(parts.find((part) => part.type === type)?.value);
+  return value("year") * 10_000 + value("month") * 100 + value("day");
+}
+
+/**
+ * Selects the next event by Spain's civil date. The event remains current for
+ * its whole calendar day and advances at midnight on the following day.
+ */
+export function defaultPlannerEclipseEventId(
+  now: Date = new Date(),
+): EclipseEventId {
+  const today = calendarDateKeyInPlannerTimeZone(now);
+  return (
+    eclipseEventIds.find((eventId) => {
+      const event = eclipseEvent(eventId);
+      return event.year * 10_000 + (event.monthIndex + 1) * 100 + event.day >= today;
+    }) ?? eclipseEventIds.at(-1)!
+  );
+}
+
 function safeDefaultState(locale: Locale | null): PlannerUrlStateV1 {
   return {
     version: PLANNER_URL_STATE_VERSION,
     locale,
-    eventId: DEFAULT_ECLIPSE_EVENT_ID,
+    eventId: defaultPlannerEclipseEventId(),
     selected: null,
     compared: [],
     layer: "totality-duration",

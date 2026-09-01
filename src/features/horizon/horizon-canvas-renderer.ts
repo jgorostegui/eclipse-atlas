@@ -11,7 +11,6 @@ import {
 import { horizonAtmosphereAtSolarAltitude } from "./horizon-atmosphere";
 import {
   createHorizonSceneModel,
-  fitHorizonBoundsToAspect,
   horizonChartViewBounds,
   horizonTerrainSignature,
   type OrthographicViewBounds,
@@ -35,6 +34,9 @@ export type HorizonCanvasScene = {
   track: CanvasPoint[];
   sun: CanvasDisc;
   moon: CanvasDisc;
+  displaySun: CanvasDisc;
+  displayMoon: CanvasDisc;
+  displayMagnification: number;
   inset: {
     x: number;
     y: number;
@@ -90,10 +92,10 @@ export function createHorizonCanvasScene({
     throw new RangeError("Canvas dimensions must be positive.");
   }
   const model = createHorizonSceneModel(track, horizon);
-  const bounds = fitHorizonBoundsToAspect(
-    horizonChartViewBounds(model, 0.45, 0.45),
-    width / height,
-  );
+  // This is a fitted planning chart rather than a literal camera field of
+  // view. Independent axes let the complete calculated terrain sweep occupy
+  // the available width while the full C1-C4 altitude range remains visible.
+  const bounds = horizonChartViewBounds(model, 0, 0.45);
   const x = (relativeAzimuthDegrees: number) =>
     ((relativeAzimuthDegrees - bounds.left) / (bounds.right - bounds.left)) *
     width;
@@ -128,6 +130,47 @@ export function createHorizonCanvasScene({
     radiusY: verticalRadius(radiusDegrees),
   });
   const compact = width < 560;
+  const sun = projectDisc(
+    sample.sunAltitudeDegrees,
+    sample.sunAzimuthDegrees,
+    sample.sunAngularRadiusDegrees,
+  );
+  const moon = projectDisc(
+    sample.moonAltitudeDegrees,
+    sample.moonAzimuthDegrees,
+    sample.moonAngularRadiusDegrees,
+  );
+  // The true half-degree discs are illegible beside the full eclipse path.
+  // Magnify the pair around the Sun's exact chart centre, preserving their
+  // angular size ratio and relative phase geometry. The UI labels this
+  // presentation explicitly; terrain clearance still uses the raw model.
+  const displaySunRadius = compact ? 12 : 15;
+  const displayMagnification =
+    displaySunRadius / Math.max(0.000_001, sun.radiusY);
+  const displayAngularScale =
+    displaySunRadius / sample.sunAngularRadiusDegrees;
+  const displaySun: CanvasDisc = {
+    x: sun.x,
+    y: sun.y,
+    radiusX: displaySunRadius,
+    radiusY: displaySunRadius,
+  };
+  const displayMoon: CanvasDisc = {
+    x:
+      sun.x +
+      signedAzimuthDifference(
+        sample.moonAzimuthDegrees,
+        sample.sunAzimuthDegrees,
+      ) *
+        Math.cos((sample.sunAltitudeDegrees * Math.PI) / 180) *
+        displayAngularScale,
+    y:
+      sun.y -
+      (sample.moonAltitudeDegrees - sample.sunAltitudeDegrees) *
+        displayAngularScale,
+    radiusX: sample.moonAngularRadiusDegrees * displayAngularScale,
+    radiusY: sample.moonAngularRadiusDegrees * displayAngularScale,
+  };
   const insetWidth = compact
     ? Math.min(126, width * 0.32)
     : Math.min(164, width * 0.23);
@@ -190,16 +233,11 @@ export function createHorizonCanvasScene({
       ),
       y: y(point.sunAltitudeDegrees),
     })),
-    sun: projectDisc(
-      sample.sunAltitudeDegrees,
-      sample.sunAzimuthDegrees,
-      sample.sunAngularRadiusDegrees,
-    ),
-    moon: projectDisc(
-      sample.moonAltitudeDegrees,
-      sample.moonAzimuthDegrees,
-      sample.moonAngularRadiusDegrees,
-    ),
+    sun,
+    moon,
+    displaySun,
+    displayMoon,
+    displayMagnification,
     inset: {
       x: insetX,
       y: insetY,
@@ -294,10 +332,25 @@ export function paintHorizonCanvas(
   context.fillStyle = sky;
   context.fillRect(0, 0, width, height);
 
+  const zeroAltitudeY =
+    ((scene.bounds.top - 0) / (scene.bounds.top - scene.bounds.bottom)) *
+    height;
+  const horizonHaze = context.createLinearGradient(
+    0,
+    Math.max(0, zeroAltitudeY - Math.max(70, height * 0.18)),
+    0,
+    Math.min(height, zeroAltitudeY + 18),
+  );
+  horizonHaze.addColorStop(0, "rgba(244,185,64,0)");
+  horizonHaze.addColorStop(0.72, "rgba(244,185,64,0.08)");
+  horizonHaze.addColorStop(1, "rgba(255,217,145,0.18)");
+  context.fillStyle = horizonHaze;
+  context.fillRect(0, 0, width, height);
+
   drawEllipseGlow(
     context,
-    scene.sun.x,
-    scene.sun.y,
+    scene.displaySun.x,
+    scene.displaySun.y,
     Math.max(90, width * 0.16),
     Math.max(58, height * 0.16),
     atmosphere.sunGlow,
@@ -323,9 +376,13 @@ export function paintHorizonCanvas(
     context.moveTo(0, y);
     context.lineTo(width, y);
     context.stroke();
-    if (y > 14 && y < height - 16) {
+    if (y > 14 && y < height - (altitude === 0 ? 4 : 16)) {
       context.fillStyle = "rgba(242,246,247,0.78)";
-      context.fillText(`${formatNumber(altitude)}°`, 9, y - 9);
+      context.fillText(
+        `${formatNumber(altitude === 0 ? 0 : altitude)}°`,
+        9,
+        y - (altitude === 0 ? 22 : 9),
+      );
     }
   }
   context.restore();
@@ -333,47 +390,91 @@ export function paintHorizonCanvas(
   if (scene.track.length > 1) {
     context.save();
     context.beginPath();
-    context.setLineDash([3, 6]);
-    context.strokeStyle = "rgba(255,218,148,0.64)";
-    context.lineWidth = 1.3;
     scene.track.forEach((point, index) => {
       if (index === 0) context.moveTo(point.x, point.y);
       else context.lineTo(point.x, point.y);
     });
+    context.strokeStyle = "rgba(255,194,85,0.14)";
+    context.lineWidth = width < 560 ? 5 : 7;
+    context.shadowColor = "rgba(255,190,73,0.3)";
+    context.shadowBlur = width < 560 ? 8 : 13;
+    context.stroke();
+    context.shadowBlur = 0;
+    context.setLineDash([3, 6]);
+    context.strokeStyle = "rgba(255,226,166,0.82)";
+    context.lineWidth = 1.4;
     context.stroke();
     context.restore();
   }
 
+  const displaySun = scene.displaySun;
+  const displayMoon = scene.displayMoon;
+  if (phase === "total") {
+    drawEllipseGlow(
+      context,
+      displaySun.x,
+      displaySun.y,
+      displaySun.radiusX * 3.2,
+      displaySun.radiusY * 3.2,
+      "#f7ecce",
+      0.72,
+    );
+  }
   context.save();
-  context.fillStyle = "#ffd46d";
+  const sunFill = context.createRadialGradient(
+    displaySun.x - displaySun.radiusX * 0.28,
+    displaySun.y - displaySun.radiusY * 0.3,
+    displaySun.radiusX * 0.08,
+    displaySun.x,
+    displaySun.y,
+    displaySun.radiusX,
+  );
+  sunFill.addColorStop(0, "#fff4ba");
+  sunFill.addColorStop(0.58, "#ffd46d");
+  sunFill.addColorStop(1, "#e99a24");
+  context.fillStyle = sunFill;
   context.strokeStyle = "rgba(255,244,204,0.9)";
-  context.lineWidth = 1;
+  context.lineWidth = 1.2;
+  context.shadowColor = "rgba(255,190,74,0.88)";
+  context.shadowBlur = width < 560 ? 12 : 18;
   context.beginPath();
   context.ellipse(
-    scene.sun.x,
-    scene.sun.y,
-    scene.sun.radiusX,
-    scene.sun.radiusY,
+    displaySun.x,
+    displaySun.y,
+    displaySun.radiusX,
+    displaySun.radiusY,
     0,
     0,
     Math.PI * 2,
   );
   context.fill();
   context.stroke();
+  context.shadowBlur = 0;
   context.fillStyle = "#07111f";
-  context.strokeStyle = "rgba(220,231,238,0.44)";
+  context.strokeStyle = "rgba(229,238,244,0.68)";
   context.beginPath();
   context.ellipse(
-    scene.moon.x,
-    scene.moon.y,
-    scene.moon.radiusX,
-    scene.moon.radiusY,
+    displayMoon.x,
+    displayMoon.y,
+    displayMoon.radiusX,
+    displayMoon.radiusY,
     0,
     0,
     Math.PI * 2,
   );
   context.fill();
   context.stroke();
+  if (phase === "total") {
+    const coronaRadius =
+      Math.max(displaySun.radiusX, displayMoon.radiusX) + 2.5;
+    context.beginPath();
+    context.arc(displaySun.x, displaySun.y, coronaRadius, 0, Math.PI * 2);
+    context.strokeStyle = "rgba(255,247,220,0.94)";
+    context.lineWidth = 1.8;
+    context.shadowColor = "rgba(235,241,255,0.92)";
+    context.shadowBlur = width < 560 ? 10 : 15;
+    context.stroke();
+  }
   context.restore();
 
   context.save();
@@ -405,16 +506,26 @@ export function paintHorizonCanvas(
 
   if (scene.bracket) {
     const blocked = scene.bracket.intersection !== "fully-clear";
+    const bracketOffset = scene.displaySun.radiusX + 8;
+    const bracketDirection =
+      scene.bracket.x + bracketOffset <= width - 10 ? 1 : -1;
+    const measurementX = Math.min(
+      width - 10,
+      Math.max(
+        10,
+        scene.bracket.x + bracketOffset * bracketDirection,
+      ),
+    );
     context.save();
-    context.strokeStyle = blocked ? "#ff8d7b" : "rgba(240,245,246,0.88)";
-    context.lineWidth = 2;
+    context.strokeStyle = blocked ? "#ff8d7b" : "rgba(240,245,246,0.66)";
+    context.lineWidth = 1.5;
     context.beginPath();
-    context.moveTo(scene.bracket.x, scene.bracket.terrainY);
-    context.lineTo(scene.bracket.x, scene.bracket.lowerSolarEdgeY);
-    context.moveTo(scene.bracket.x - 6, scene.bracket.terrainY);
-    context.lineTo(scene.bracket.x + 6, scene.bracket.terrainY);
-    context.moveTo(scene.bracket.x - 6, scene.bracket.lowerSolarEdgeY);
-    context.lineTo(scene.bracket.x + 6, scene.bracket.lowerSolarEdgeY);
+    context.moveTo(measurementX, scene.bracket.terrainY);
+    context.lineTo(measurementX, scene.bracket.lowerSolarEdgeY);
+    context.moveTo(measurementX - 6, scene.bracket.terrainY);
+    context.lineTo(measurementX + 6, scene.bracket.terrainY);
+    context.moveTo(measurementX - 6, scene.bracket.lowerSolarEdgeY);
+    context.lineTo(measurementX + 6, scene.bracket.lowerSolarEdgeY);
     context.stroke();
     context.restore();
   }

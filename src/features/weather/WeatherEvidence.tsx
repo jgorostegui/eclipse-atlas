@@ -527,6 +527,39 @@ function WeatherSummary({
   );
 }
 
+export function FutureSkyEvidence({
+  eventDate,
+  t,
+}: {
+  eventDate: string;
+  t: Translate;
+}) {
+  return (
+    <section
+      className="weather-future"
+      aria-label={t("sky.future.title")}
+    >
+      <div className="weather-future__card">
+        <span className="weather-future__icon" aria-hidden="true">
+          <svg viewBox="0 0 40 40" focusable="false">
+            <circle cx="14" cy="13" r="6" />
+            <path d="M8 31h22a6 6 0 0 0 .5-12 9 9 0 0 0-17.2 2.8A4.7 4.7 0 0 0 8 31Z" />
+          </svg>
+        </span>
+        <div className="weather-future__copy">
+          <span>{t("sky.future.eyebrow")}</span>
+          <h3>{t("sky.future.title")}</h3>
+          <p>{t("sky.future")}</p>
+        </div>
+        <div className="weather-future__event">
+          <span>{t("sky.future.event")}</span>
+          <strong>{eventDate}</strong>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function SkyEvidence({
   locationName,
   aemetMunicipality,

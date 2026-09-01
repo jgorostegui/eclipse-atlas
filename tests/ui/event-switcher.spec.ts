@@ -4,6 +4,18 @@ import {
   installDeterministicNetwork,
 } from "./support/network-fixtures";
 
+test("defaults a clean planner URL to the next eclipse after event day", async ({
+  page,
+}) => {
+  await installDeterministicNetwork(page);
+  await page.clock.install({ time: new Date("2026-08-13T00:00:00.000Z") });
+
+  await page.goto("/?lang=es");
+
+  await expect(page).toHaveTitle("2 AGO 2027 · Eclipse Atlas");
+  await expect(page).toHaveURL(/event=2027/);
+});
+
 test("loads the 2027 eclipse as a complete planner state", async ({ page }) => {
   await installDeterministicNetwork(page);
   const browserErrors = collectBrowserErrors(page);
@@ -21,9 +33,46 @@ test("loads the 2027 eclipse as a complete planner state", async ({ page }) => {
   });
   await expect(facts).toContainText("total");
   await expect(facts).toContainText("4 min 48 s");
+  await page.getByRole("tab", { name: "Nubes", exact: true }).click();
+  const futureForecast = page.getByRole("region", {
+    name: "La ventana de previsión aún no está abierta",
+  });
+  await expect(futureForecast).toContainText(
+    "Los modelos operativos solo cubren fechas próximas al evento.",
+  );
+  await expect(futureForecast).toContainText("2 AGO 2027");
   await expect(page).toHaveURL(/event=2027/);
   await expect(page).toHaveURL(/selected=place%3Aceuta/);
   await expect(browserErrors).toEqual([]);
+});
+
+test("keeps the future forecast state contained on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await installDeterministicNetwork(page);
+  const browserErrors = collectBrowserErrors(page);
+  await page.goto(
+    "/?state=1&lang=es&event=2027&selected=place%3Aceuta&layer=totality-duration#map",
+  );
+
+  await page
+    .getByRole("button", { name: "Abrir los detalles de Ceuta" })
+    .click();
+  await page.getByRole("tab", { name: "Nubes", exact: true }).click();
+  const futureForecast = page.getByRole("region", {
+    name: "La ventana de previsión aún no está abierta",
+  });
+  await expect(futureForecast).toBeVisible();
+  const geometry = await futureForecast.evaluate((element) => ({
+    clientWidth: element.clientWidth,
+    scrollWidth: element.scrollWidth,
+  }));
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  expect(browserErrors).toEqual([]);
 });
 
 test("switches to the 2028 annular eclipse without leaving the map", async ({

@@ -88,4 +88,18 @@ describe("TerrainProfile recovery", () => {
     expect(onRetryElevation).toHaveBeenCalledOnce();
     expect(calculateTerrainHorizon).not.toHaveBeenCalled();
   });
+
+  it("labels the enlarged disc presentation without changing the evidence", async () => {
+    vi.mocked(calculateTerrainHorizon).mockResolvedValueOnce(horizon);
+    renderProfile();
+
+    expect(
+      await screen.findByText("Discs enlarged"),
+    ).toBeTruthy();
+    expect(
+      screen.getByLabelText(
+        "Sun and Moon discs are enlarged for visibility; their centres and the terrain profile retain their calculated positions.",
+      ),
+    ).toBeTruthy();
+  });
 });

@@ -44,7 +44,11 @@ describe("Canvas horizon projection", () => {
     });
 
     expect(scene.sun.radiusX / scene.sun.radiusY).toBeGreaterThan(1.4);
+    expect(scene.displaySun.radiusX).toBe(scene.displaySun.radiusY);
+    expect(scene.displayMagnification).toBeGreaterThan(1);
     expect(scene.terrain).toHaveLength(3);
+    expect(scene.terrain[0].x).toBeCloseTo(0, 10);
+    expect(scene.terrain.at(-1)?.x).toBeCloseTo(960, 10);
   });
 
   it("keeps terrain stable while the lunar disc crosses the Sun", () => {
@@ -73,7 +77,7 @@ describe("Canvas horizon projection", () => {
     ).toBeLessThan(0);
   });
 
-  it("fits the same angular scene into a tall iPad panel", () => {
+  it("fills a tall iPad panel with the complete calculated terrain sweep", () => {
     const current = sample(180);
     const scene = createHorizonCanvasScene({
       track: [sample(175), current, sample(185)],
@@ -84,10 +88,8 @@ describe("Canvas horizon projection", () => {
       isMaximum: true,
     });
 
-    expect(scene.bounds.right - scene.bounds.left).toBeCloseTo(
-      (scene.bounds.top - scene.bounds.bottom) * (420 / 720),
-      10,
-    );
+    expect(scene.terrain[0].x).toBeCloseTo(0, 10);
+    expect(scene.terrain.at(-1)?.x).toBeCloseTo(420, 10);
     expect(scene.terrain.every((point) => Number.isFinite(point.x + point.y)))
       .toBe(true);
   });

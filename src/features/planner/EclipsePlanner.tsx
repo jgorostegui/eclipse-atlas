@@ -103,6 +103,7 @@ import {
   type WorkspaceSize,
 } from "./responsive";
 import {
+  FutureSkyEvidence,
   SkyEvidence,
   type ForecastPresentation,
   type MunicipalForecastPanelState,
@@ -2566,7 +2567,10 @@ export default function EclipsePlanner() {
                       formatNumber={formatNumber}
                     />
                   ) : (
-                    <p className="future-forecast-note">{t("sky.future")}</p>
+                    <FutureSkyEvidence
+                      eventDate={t(`events.${eventId}.fullDate`)}
+                      t={t}
+                    />
                   )}
                 </section>
 

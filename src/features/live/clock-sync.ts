@@ -41,7 +41,10 @@ export type ClockCalibration = Readonly<{
 
 export type CalibrationResult =
   | Readonly<{ ok: true; calibration: ClockCalibration }>
-  | Readonly<{ ok: false; reason: "no-network" | "no-time-source" | "aborted" }>;
+  | Readonly<{
+      ok: false;
+      reason: "no-network" | "no-time-source" | "aborted" | "timed-out";
+    }>;
 
 /**
  * The "synchronized" state requires this many kept samples; a calibration
@@ -101,6 +104,7 @@ export async function sampleClockOffset(
 
 const DEFAULT_SAMPLE_COUNT = 7;
 const MINIMUM_KEPT_SAMPLES = 3;
+export const CLOCK_CALIBRATION_TIMEOUT_MS = 8_000;
 
 function median(sorted: readonly number[]): number {
   const middle = Math.floor(sorted.length / 2);
@@ -116,51 +120,81 @@ function median(sorted: readonly number[]): number {
  */
 export async function calibrateClock(
   probe: ClockProbe,
-  options: Readonly<{ sampleCount?: number; signal?: AbortSignal }> = {},
+  options: Readonly<{
+    sampleCount?: number;
+    signal?: AbortSignal;
+    timeoutMs?: number;
+  }> = {},
 ): Promise<CalibrationResult> {
   const sampleCount = options.sampleCount ?? DEFAULT_SAMPLE_COUNT;
-  const signal = options.signal;
-  let anyResponse = false;
-  if (signal?.aborted) return { ok: false, reason: "aborted" };
-  try {
-    await probe.fetchTimeSource(signal);
-    anyResponse = true;
-  } catch {
-    // The warm-up result is discarded either way.
+  const parentSignal = options.signal;
+  const timeoutMs = options.timeoutMs ?? CLOCK_CALIBRATION_TIMEOUT_MS;
+  if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
+    throw new RangeError("Clock calibration timeout must be positive and finite.");
   }
-  const samples: ClockSample[] = [];
-  for (let index = 0; index < sampleCount; index += 1) {
-    if (signal?.aborted) return { ok: false, reason: "aborted" };
-    try {
-      const sample = await sampleClockOffset(probe, signal);
-      anyResponse = true;
-      if (sample) samples.push(sample);
-    } catch {
-      // A failed request is simply a missing sample.
-    }
-  }
-  if (signal?.aborted) return { ok: false, reason: "aborted" };
-  if (samples.length === 0) {
-    return { ok: false, reason: anyResponse ? "no-time-source" : "no-network" };
-  }
-  const byLatency = [...samples].sort((a, b) => a.roundTripMs - b.roundTripMs);
-  const keepCount = Math.max(
-    Math.min(MINIMUM_KEPT_SAMPLES, byLatency.length),
-    Math.ceil(byLatency.length / 2),
+  const timeoutController = new AbortController();
+  const timeout = globalThis.setTimeout(
+    () => timeoutController.abort(),
+    timeoutMs,
   );
-  const kept = byLatency.slice(0, keepCount);
-  const offsets = kept.map((sample) => sample.offsetMs).sort((a, b) => a - b);
-  const dispersionMs = offsets[offsets.length - 1] - offsets[0];
-  return {
-    ok: true,
-    calibration: {
-      offsetMs: median(offsets),
-      dispersionMs,
-      uncertaintyMs: kept[0].roundTripMs / 2 + dispersionMs / 2,
-      sampleCount: kept.length,
-      calibratedAtDeviceMs: probe.deviceNow(),
-    },
-  };
+  const signal = parentSignal
+    ? AbortSignal.any([parentSignal, timeoutController.signal])
+    : timeoutController.signal;
+  const abortedResult = (): CalibrationResult => ({
+    ok: false,
+    reason:
+      timeoutController.signal.aborted && !parentSignal?.aborted
+        ? "timed-out"
+        : "aborted",
+  });
+  let anyResponse = false;
+  try {
+    if (signal.aborted) return abortedResult();
+    try {
+      await probe.fetchTimeSource(signal);
+      anyResponse = true;
+    } catch {
+      // The warm-up result is discarded either way.
+    }
+    const samples: ClockSample[] = [];
+    for (let index = 0; index < sampleCount; index += 1) {
+      if (signal.aborted) return abortedResult();
+      try {
+        const sample = await sampleClockOffset(probe, signal);
+        anyResponse = true;
+        if (sample) samples.push(sample);
+      } catch {
+        // A failed request is simply a missing sample.
+      }
+    }
+    if (signal.aborted) return abortedResult();
+    if (samples.length === 0) {
+      return {
+        ok: false,
+        reason: anyResponse ? "no-time-source" : "no-network",
+      };
+    }
+    const byLatency = [...samples].sort((a, b) => a.roundTripMs - b.roundTripMs);
+    const keepCount = Math.max(
+      Math.min(MINIMUM_KEPT_SAMPLES, byLatency.length),
+      Math.ceil(byLatency.length / 2),
+    );
+    const kept = byLatency.slice(0, keepCount);
+    const offsets = kept.map((sample) => sample.offsetMs).sort((a, b) => a - b);
+    const dispersionMs = offsets[offsets.length - 1] - offsets[0];
+    return {
+      ok: true,
+      calibration: {
+        offsetMs: median(offsets),
+        dispersionMs,
+        uncertaintyMs: kept[0].roundTripMs / 2 + dispersionMs / 2,
+        sampleCount: kept.length,
+        calibratedAtDeviceMs: probe.deviceNow(),
+      },
+    };
+  } finally {
+    globalThis.clearTimeout(timeout);
+  }
 }
 
 export const CLOCK_CALIBRATION_STORAGE_KEY = "eclipse-atlas.clock-calibration";
