@@ -22,6 +22,7 @@ import {
 import { lowerSolarEdgeTerrainMargin } from "./horizon-animation-model";
 import { HorizonCanvasView } from "./HorizonCanvasView";
 import {
+  HORIZON_REVEAL_CONTEXT_MINUTES,
   HORIZON_REVEAL_DURATION_MS,
   horizonRevealProgress,
   type HorizonRevealTimeline,
@@ -104,14 +105,19 @@ function visualPhaseAt(
 
 function revealTimes(eclipse: EclipseCircumstances) {
   if (eclipse.totalBegin && eclipse.totalEnd) {
+    const contextMilliseconds = HORIZON_REVEAL_CONTEXT_MINUTES * 60_000;
     return {
-      start: new Date(eclipse.totalBegin.getTime() - 30_000),
-      end: new Date(eclipse.totalEnd.getTime() + 30_000),
+      start: new Date(eclipse.totalBegin.getTime() - contextMilliseconds),
+      centralBegin: eclipse.totalBegin,
+      centralEnd: eclipse.totalEnd,
+      end: new Date(eclipse.totalEnd.getTime() + contextMilliseconds),
     };
   }
   return {
-    start: new Date(eclipse.peak.getTime() - 5 * 60_000),
-    end: new Date(eclipse.peak.getTime() + 5 * 60_000),
+    start: new Date(eclipse.peak.getTime() - 20 * 60_000),
+    centralBegin: null,
+    centralEnd: null,
+    end: new Date(eclipse.peak.getTime() + 20 * 60_000),
   };
 }
 
@@ -158,7 +164,13 @@ export function HorizonAnimation({
       startProgress: progressForTime(
         boundedTime(times.start, focusRange.start, focusRange.end),
       ),
+      centralBeginProgress: times.centralBegin
+        ? progressForTime(times.centralBegin)
+        : null,
       peakProgress,
+      centralEndProgress: times.centralEnd
+        ? progressForTime(times.centralEnd)
+        : null,
       endProgress: progressForTime(
         boundedTime(times.end, focusRange.start, focusRange.end),
       ),

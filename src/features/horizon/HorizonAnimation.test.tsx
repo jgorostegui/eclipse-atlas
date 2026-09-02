@@ -15,6 +15,7 @@ import type { TerrainHorizon } from "../../domain/terrain-horizon";
 import { formatZonedTime } from "../../i18n/formatters";
 import { I18nProvider } from "../../i18n/I18nProvider";
 import { HorizonAnimation } from "./HorizonAnimation";
+import { HORIZON_REVEAL_CONTEXT_MINUTES } from "./horizon-reveal";
 
 const latitude = 42.3439;
 const longitude = -3.6969;
@@ -143,7 +144,9 @@ describe("HorizonAnimation", () => {
     expect(chart.dataset.phase).toBe("total");
     expect(chart.dataset.clearanceBracket).toBe("visible");
     expect(chart.dataset.displayMagnification).toBeTruthy();
-    expect(screen.getByText(/Discs ×\d+/)).toBeTruthy();
+    expect(
+      screen.getByText(/Discs ×\d+/).classList.contains("sr-only"),
+    ).toBe(true);
     expect(
       screen.getByRole("button", { name: "Replay central-phase reveal" }),
     ).toBeTruthy();
@@ -266,6 +269,20 @@ describe("HorizonAnimation", () => {
     const startFrame = frames.get(1);
     if (!startFrame) throw new Error("Expected the scheduled reveal frame.");
     act(() => startFrame(performance.now()));
+    expect(
+      screen
+        .getByRole("slider", { name: "Choose an eclipse moment" })
+        .getAttribute("aria-valuetext"),
+    ).toBe(
+      formatZonedTime(
+        "en",
+        new Date(
+          eclipse.totalBegin!.getTime() -
+            HORIZON_REVEAL_CONTEXT_MINUTES * 60_000,
+        ),
+        "Europe/Madrid",
+      ),
+    );
     const callsAfterStart = requestAnimationFrame.mock.calls.length;
 
     view.rerender(

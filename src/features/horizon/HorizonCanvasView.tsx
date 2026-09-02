@@ -170,10 +170,7 @@ export function HorizonCanvasView({
           "unavailable"
         }
       />
-      <span
-        className="horizon-display-note"
-        aria-label={discScaleLabel(scene.displayMagnification)}
-      >
+      <span className="sr-only">
         {discScaleLabel(scene.displayMagnification)}
       </span>
       <span className="sr-only">{discInsetLabel}</span>

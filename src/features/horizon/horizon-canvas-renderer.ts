@@ -458,7 +458,9 @@ export function paintHorizonCanvas(
   if (scene.celestialObjects.length > 0) {
     context.save();
     context.textBaseline = "middle";
-    context.font = `400 ${width < 560 ? 9 : 10}px Manrope, sans-serif`;
+    const planets = scene.celestialObjects.filter(
+      (object) => object.kind === "planet",
+    );
     const occupiedLabels: Array<{
       left: number;
       right: number;
@@ -502,6 +504,23 @@ export function paintHorizonCanvas(
       context.shadowBlur = object.kind === "star" ? 5 : 8;
       context.fill();
       context.shadowBlur = 0;
+      const closeToPlanet =
+        object.kind === "star" &&
+        planets.some(
+          (planet) =>
+            Math.hypot(planet.x - object.x, planet.y - object.y) <
+            (width < 560 ? 34 : 44),
+        );
+      if (closeToPlanet) continue;
+      context.font = `400 ${
+        object.kind === "planet"
+          ? width < 560
+            ? 10
+            : 11
+          : width < 560
+            ? 9
+            : 10
+      }px Manrope, sans-serif`;
       const measuredWidth = context.measureText(object.label).width;
       const sidePlacements = [
         { x: object.x + radius + 5, y: object.y },
@@ -517,10 +536,10 @@ export function paintHorizonCanvas(
           : [...sidePlacements, ...verticalPlacements];
       const placement = placements.find(({ x: labelX, y: labelY }) => {
         const labelBox = {
-          left: labelX - 5,
-          right: labelX + measuredWidth + 5,
-          top: labelY - 7,
-          bottom: labelY + 7,
+          left: labelX - 6,
+          right: labelX + measuredWidth + 6,
+          top: labelY - 9,
+          bottom: labelY + 9,
         };
         return (
           labelBox.left >= 5 &&
@@ -540,20 +559,20 @@ export function paintHorizonCanvas(
       const labelX = placement.x;
       const labelY = placement.y;
       const labelBox = {
-        left: labelX - 5,
-        right: labelX + measuredWidth + 5,
-        top: labelY - 7,
-        bottom: labelY + 7,
+        left: labelX - 6,
+        right: labelX + measuredWidth + 6,
+        top: labelY - 9,
+        bottom: labelY + 9,
       };
       occupiedLabels.push(labelBox);
-      context.lineWidth = 1.5;
-      context.strokeStyle = "rgba(7,17,31,0.5)";
-      context.strokeText(object.label, labelX, labelY);
+      context.shadowColor = "rgba(250,252,252,0.88)";
+      context.shadowBlur = 3;
       context.fillStyle =
         object.kind === "star"
-          ? "rgba(241,245,252,0.86)"
-          : "rgba(255,239,198,0.95)";
+          ? "rgba(31,52,61,0.78)"
+          : "rgba(13,40,49,0.96)";
       context.fillText(object.label, labelX, labelY);
+      context.shadowBlur = 0;
     }
     context.restore();
   }

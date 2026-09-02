@@ -265,7 +265,7 @@ test("reveals the central phase once and exposes optional calculated sky context
   ).toBeVisible();
   await expect(
     horizon.getByRole("button", { name: /Máximo ·/ }),
-  ).toHaveAttribute("aria-pressed", "true", { timeout: 5_000 });
+  ).toHaveAttribute("aria-pressed", "true", { timeout: 9_000 });
   await expect(
     horizon.getByRole("button", {
       name: "Repetir animación de la fase central",
